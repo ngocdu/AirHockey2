@@ -32,21 +32,9 @@ void b2Sprite::update(float dt){
     }
 }
 
-void b2Sprite::hide(void) {
+void b2Sprite::reset() {
     if (_body) {
         _body->SetLinearVelocity(b2Vec2_zero);
         _body->SetAngularVelocity(0);
-        _body->SetTransform(b2Vec2_zero, 0.0);
-        _body->SetAwake(false);
     }
-}
-
-void b2Sprite::reset() {}
-
-float b2Sprite::mag() {
-    if (_body) {
-        return pow(_body->GetLinearVelocity().x, 2) +
-        pow(_body->GetLinearVelocity().y, 2);
-    }
-    return 0.0;
 }

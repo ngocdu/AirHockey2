@@ -17,16 +17,6 @@
 
 class GameLayer;
 
-enum {
-    kSpritePlayer,
-    kSpriteBall
-};
-
-enum {
-    playerRadius = 160 / 2,
-    ballRadius = 85 / 2
-};
-
 USING_NS_CC;
 
 class b2Sprite : public CCSprite {
@@ -34,14 +24,13 @@ public:
     b2Sprite (GameLayer *game, int type);
     
     CC_SYNTHESIZE(b2Body *, _body, Body);
+    CC_SYNTHESIZE(b2Fixture *, _fixture, Fixture);
     CC_SYNTHESIZE(GameLayer *, _game, Game);
     CC_SYNTHESIZE(int, _type, Type);
     
     virtual void setSpritePosition(CCPoint position);
     virtual void update(float dt);
-    virtual void hide(void);
     virtual void reset(void);
-    virtual float mag();
     
 private:
 };

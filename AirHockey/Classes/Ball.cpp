@@ -13,18 +13,17 @@ Ball::~Ball() {
     
 }
 
-Ball::Ball(GameLayer * game, int type, CCPoint position) : b2Sprite(game, type) {
+Ball::Ball(GameLayer * game, int type) : b2Sprite(game, type) {
     _type = type;
-    _startPosition = position;
     _inPlay = true;
+
 }
 
-Ball * Ball::create(GameLayer *game, int type, CCPoint position) {
-    Ball *sprite = new Ball(game, type, position);
+Ball * Ball::create(GameLayer *game, int type, const char *pszFileName) {
+    Ball *sprite = new Ball(game, type);
     
     if (sprite) {
-        sprite->initBall();
-        sprite->autorelease();
+        sprite->initBall(pszFileName);
         return sprite;
     }
     
@@ -32,32 +31,38 @@ Ball * Ball::create(GameLayer *game, int type, CCPoint position) {
     return NULL;
 }
 
-void Ball::initBall() {
+void Ball::initBall(const char *pszFileName) {
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
+    if (_type == humanPlayer || _type == aiPlayer) {
+        bodyDef.linearDamping = 5.0;
+    }
+    
     _body = _game->getWorld()->CreateBody(&bodyDef);
     _body->SetSleepingAllowed(true);
-
+    _body->SetBullet(true);
+    
     b2CircleShape circle;
     b2FixtureDef fixtureDef;
     
-    if (_type == kSpriteBall) {
-        _body->SetBullet(true);
-        fixtureDef.filter.groupIndex = -10;
-        circle.m_radius = ballRadius / PTM_RATIO;
-    } else if (_type == kSpritePlayer) {
+    if (_type == humanPlayer || _type == aiPlayer) {
         fixtureDef.filter.groupIndex = 0;
-        circle.m_radius = playerRadius / PTM_RATIO;
+        fixtureDef.density = 5.0;
+        fixtureDef.friction = 0.3;
+        fixtureDef.restitution = 0.1;
+    } else if (_type == puck) {
+        fixtureDef.filter.groupIndex = -10;
+        fixtureDef.density = 1.0;
+        fixtureDef.friction = 0.0;
+        fixtureDef.restitution = 0.7;
     }
-
+    
+    this->initWithFile(pszFileName);
+    _radius = this->getContentSize().width / 2;
+    circle.m_radius = _radius / PTM_RATIO;
     fixtureDef.shape =  &circle;
-    fixtureDef.density = 5;
-    fixtureDef.restitution = 0.7;
-    
-    _body->CreateFixture(&fixtureDef);
+    _fixture = _body->CreateFixture(&fixtureDef);
     _body->SetUserData(this);
-    
-    setSpritePosition(_startPosition);
 }
 
 void Ball::reset() {

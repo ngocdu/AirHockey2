@@ -300,6 +300,9 @@
 		0F47DDF3178C1AFD0098FE42 /* 7.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F47DDE5178C1AFD0098FE42 /* 7.png */; };
 		0F47DDF4178C1AFD0098FE42 /* 8.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F47DDE6178C1AFD0098FE42 /* 8.png */; };
 		0F47DDF5178C1AFD0098FE42 /* 9.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F47DDE7178C1AFD0098FE42 /* 9.png */; };
+		0F47DE16178D66D90098FE42 /* sprite_sheet.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0F47DE06178D66D80098FE42 /* sprite_sheet.plist */; };
+		0F47DE17178D66D90098FE42 /* sprite_sheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F47DE07178D66D80098FE42 /* sprite_sheet.png */; };
+		0FAD22C5178E9CB6005276CC /* MyContactListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FAD22C3178E9CB6005276CC /* MyContactListener.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -919,6 +922,10 @@
 		0F47DDE5178C1AFD0098FE42 /* 7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 7.png; sourceTree = "<group>"; };
 		0F47DDE6178C1AFD0098FE42 /* 8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 8.png; sourceTree = "<group>"; };
 		0F47DDE7178C1AFD0098FE42 /* 9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 9.png; sourceTree = "<group>"; };
+		0F47DE06178D66D80098FE42 /* sprite_sheet.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = sprite_sheet.plist; path = Resources/sprite_sheet.plist; sourceTree = "<group>"; };
+		0F47DE07178D66D80098FE42 /* sprite_sheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sprite_sheet.png; path = Resources/sprite_sheet.png; sourceTree = "<group>"; };
+		0FAD22C3178E9CB6005276CC /* MyContactListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MyContactListener.cpp; path = Classes/MyContactListener.cpp; sourceTree = "<group>"; };
+		0FAD22C4178E9CB6005276CC /* MyContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyContactListener.h; path = Classes/MyContactListener.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -993,6 +1000,8 @@
 				0F47DA2B178C0CE60098FE42 /* CloseSelected.png */,
 				0F47DA2D178C0CE60098FE42 /* Default.png */,
 				0F47DA2F178C0CE60098FE42 /* HelloWorld.png */,
+				0F47DE06178D66D80098FE42 /* sprite_sheet.plist */,
+				0F47DE07178D66D80098FE42 /* sprite_sheet.png */,
 				0F47DA31178C0CE60098FE42 /* Icon-72.png */,
 				0F47DA33178C0CE60098FE42 /* Icon-Small-50.png */,
 				0F47DA35178C0CE60098FE42 /* Icon-Small.png */,
@@ -2117,6 +2126,8 @@
 				0F47DDBD178C0CF60098FE42 /* AppDelegate.cpp */,
 				0F47DDD2178C13E20098FE42 /* GameLayer.cpp */,
 				0F47DDD3178C13E20098FE42 /* GameLayer.h */,
+				0FAD22C3178E9CB6005276CC /* MyContactListener.cpp */,
+				0FAD22C4178E9CB6005276CC /* MyContactListener.h */,
 				0F47DDC9178C0DD00098FE42 /* b2Sprite.cpp */,
 				0F47DDCA178C0DD00098FE42 /* b2Sprite.h */,
 				0F47DDCB178C0DD00098FE42 /* Ball.cpp */,
@@ -2235,6 +2246,8 @@
 				0F47DDF3178C1AFD0098FE42 /* 7.png in Resources */,
 				0F47DDF4178C1AFD0098FE42 /* 8.png in Resources */,
 				0F47DDF5178C1AFD0098FE42 /* 9.png in Resources */,
+				0F47DE16178D66D90098FE42 /* sprite_sheet.plist in Resources */,
+				0F47DE17178D66D90098FE42 /* sprite_sheet.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2500,6 +2513,7 @@
 				0F47DDCE178C0DD10098FE42 /* Ball.cpp in Sources */,
 				0F47DDD4178C13E30098FE42 /* GameLayer.cpp in Sources */,
 				0F47DDD7178C18B20098FE42 /* GLES-Render.cpp in Sources */,
+				0FAD22C5178E9CB6005276CC /* MyContactListener.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2649,6 +2663,7 @@
 				0F47DDC8178C0CF60098FE42 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
