@@ -43,6 +43,8 @@ public:
     void gameReset();
     void scoreCounter(int player);
     
+    void Timer();
+    
     b2Vec2 ptm(CCPoint point) {
         return b2Vec2(point.x / PTM_RATIO, point.y / PTM_RATIO);
     }
@@ -54,8 +56,6 @@ private:
     float w = s.width;
     float h = s.height;
     b2Body *_groundBody;
-//    b2Fixture *_puckFixture = _puck->getFixture();
-//    b2Fixture *_p2Fixture = _player2->getFixture();
     CCSprite *_p1;
     CCSprite *_p2;    
     GLESDebugDraw *m_debugDraw;
@@ -63,20 +63,25 @@ private:
     Ball *_player1;
     Ball *_player2;
     Ball *_puck;
-    
+
     b2MouseJoint *_mouseJoint;
     
-    int score1  = 0;
-    int score2  = 0;
+    int _score1  = 0;
+    int _score2  = 0;
     int lastHit = 0;
+    int _minutes, _seconds;
+    
+    bool _playing;
     
     float x, y, px, py;
     float vx, vy, vpx, vpy;
     float pr;
     
-    CCLabelTTF *scoreLabel1;
-    CCLabelTTF *scoreLabel2;    
-//    MyContactListener *_contactListener;
+    CCLabelTTF *_scoreLabel1;
+    CCLabelTTF *_scoreLabel2;
+    CCLabelTTF *_time;
+    
+    MyContactListener *_contactListener;
 };
 
 #endif 

@@ -14,21 +14,39 @@
 GameLayer::GameLayer() {
     setTouchEnabled(true);
     setAccelerometerEnabled(true);
-//    CCSprite *backGroundImg = CCSprite::create("court.png");
-//    backGroundImg->setPosition(ccp(w/2, h/2));
-//    this->addChild(backGroundImg);
+    CCSprite *backGroundImg = CCSprite::create("court.png");
+    backGroundImg->setPosition(ccp(w/2, h/2));
+    this->addChild(backGroundImg);
     
-    scoreLabel1 = CCLabelTTF::create("0", "Arial", 40);
-    scoreLabel2 = CCLabelTTF::create("0", "Arial", 40);
-    scoreLabel1->setPosition(ccp(w - 50, h/2 - 50));
-    scoreLabel1->setRotation(90);
-    scoreLabel2->setPosition(ccp(w - 50, h/2 + 50));
-    scoreLabel2->setRotation(90);
-    this->addChild(scoreLabel1);
-    this->addChild(scoreLabel2);
-            
+    // Score Counter
+    _scoreLabel1 = CCLabelTTF::create("0", "Arial", 40);
+    _scoreLabel2 = CCLabelTTF::create("0", "Arial", 40);
+    _scoreLabel1->setPosition(ccp(w - 50, h/2 - 50));
+    _scoreLabel1->setRotation(90);
+    _scoreLabel2->setPosition(ccp(w - 50, h/2 + 50));
+    _scoreLabel2->setRotation(90);
+    this->addChild(_scoreLabel1);
+    this->addChild(_scoreLabel2);
+    
+    // Timer
+    _minutes = 2;
+    _seconds = 60;
+    _playing = true;
+    char timeBuf[20] = {0};
+	sprintf(timeBuf, "0%i:%i", _minutes, _seconds);
+
+    _time = CCLabelTTF::create(timeBuf, "Times New Roman", 34);
+	_time->setPosition(ccp(40, h/2));
+    _time->setRotation(-90);
+	this->addChild(_time, 1);
+    
+    // Physics
     this->initPhysics();
+    
+    // Scheduler
     scheduleUpdate();
+    this->schedule(schedule_selector(GameLayer::Timer), 1);
+    this->schedule(schedule_selector(GameLayer::handleProcess), 0.025);
 }
 
 #pragma mark DESTRUCTOR
@@ -51,15 +69,18 @@ void GameLayer::initPhysics()
     
     _mouseJoint = NULL;
 
+    _contactListener = new MyContactListener();
+    _world->SetContactListener(_contactListener);
+    
     m_debugDraw = new GLESDebugDraw( PTM_RATIO );
     _world->SetDebugDraw(m_debugDraw);
 
     uint32 flags = 0;
     flags += b2Draw::e_shapeBit;
-    flags += b2Draw::e_jointBit;
-    flags += b2Draw::e_aabbBit;
-    flags += b2Draw::e_pairBit;
-    flags += b2Draw::e_centerOfMassBit;
+//    flags += b2Draw::e_jointBit;
+//    flags += b2Draw::e_aabbBit;
+//    flags += b2Draw::e_pairBit;
+//    flags += b2Draw::e_centerOfMassBit;
     m_debugDraw->SetFlags(flags);
 
 
@@ -105,8 +126,8 @@ void GameLayer::initPhysics()
 }
 
 void GameLayer::createEdge(float x1, float y1,
-                          float x2, float y2,
-                          int groupIndex) {
+                           float x2, float y2,
+                           int groupIndex) {
     b2EdgeShape groundEdgeShape;
     groundEdgeShape.Set(b2Vec2(x1 / PTM_RATIO, y1 / PTM_RATIO),
                         b2Vec2(x2 / PTM_RATIO, y2 / PTM_RATIO));
@@ -134,10 +155,23 @@ void GameLayer::draw()
 #pragma mark UPDATE
 void GameLayer::update(float dt)
 {
-    _world->Step(dt, 8, 3);
-    _player1->update(dt);
-    _player2->update(dt);
-    _puck->update(dt);
+    if (_playing) {
+        _world->Step(dt, 8, 3);
+        _player1->update(dt);
+        _player2->update(dt);
+        _puck->update(dt);
+    }
+    
+    if (_minutes == 0 || _seconds == 0 || _score1 == 7 || _score2 == 7) {
+        _playing = false;
+        _score1 = _score2 = 0;
+        _scoreLabel1->setString("0");
+        _scoreLabel2->setString("0");
+        this->unscheduleAllSelectors();
+        this->unscheduleUpdate();
+    }
+    
+    
     if (_puck->getBody()->GetPosition().y*PTM_RATIO > h + _puck->getRadius()) {
         this->scoreCounter(1);
         this->gameReset();
@@ -146,6 +180,23 @@ void GameLayer::update(float dt)
     if (_puck->getBody()->GetPosition().y*PTM_RATIO < -_puck->getRadius()) {
         this->scoreCounter(2);
         this->gameReset();
+    }
+    
+    std::vector<MyContact>::iterator pos;
+    for(pos = _contactListener->_contacts.begin();
+        pos != _contactListener->_contacts.end(); ++pos) {
+        MyContact contact = *pos;
+        
+        if ((contact.fixtureA == _puck->getFixture() &&
+             contact.fixtureB == _player2->getFixture()) ||
+            (contact.fixtureA == _player2->getFixture() &&
+             contact.fixtureB == _puck->getFixture())) {
+            lastHit = 0;
+            this->defenseCenter();
+        }
+    }
+    if (lastHit >= 450) {
+        this->defenseCenter();
     }
 }
 
@@ -166,8 +217,7 @@ void GameLayer::getStateInfo() {
 void GameLayer::handleProcess() {
     lastHit+= 25;
     this->getStateInfo();
-    
-    
+        
     if (lastHit >= 450) {
         if ((y >= h / 2 - pr && y <= 3 * h /4) ||
             (y > 3 * h / 4 && x > w / 2 && x < 3 * w / 4)) {
@@ -196,7 +246,7 @@ void GameLayer::defenseRight() {
 void GameLayer::defenseCenter() {
     this->getStateInfo();
     _player2->getBody()->ApplyLinearImpulse(
-        this->ptm2(7*(w/2 - px), 7*(h - pr - 10 - py)),
+        this->ptm2(17*(w/2 - px), 17*(h - pr - 10 - py)),
         _player2->getBody()->GetWorldCenter());
 }
 
@@ -263,7 +313,8 @@ void GameLayer::ccTouchesEnded(CCSet* touches, CCEvent* event) {
 void GameLayer::gameReset() {
     _player1->reset();
     _player2->reset();
-    _puck->reset();
+    _puck->getBody()->SetLinearVelocity(b2Vec2_zero);
+    
     if (_mouseJoint != NULL) {
         _world->DestroyJoint(_mouseJoint);
         _mouseJoint = NULL;
@@ -275,16 +326,38 @@ void GameLayer::scoreCounter(int player) {
     char scoreBuf[10];
     
     if (player == 1) {
-        score1++;
-        sprintf(scoreBuf, "%d", score1);
-        scoreLabel1->setString(scoreBuf);
+        _score1++;
+        sprintf(scoreBuf, "%d", _score1);
+        _scoreLabel1->setString(scoreBuf);
+        _puck->setSpritePosition(ccp(w/2, h/2 + 2*_puck->getRadius()));
     }
     
     if (player == 2) {
-        score2++;
-        sprintf(scoreBuf, "%d", score2);
-        scoreLabel2->setString(scoreBuf);
+        _score2++;
+        sprintf(scoreBuf, "%d", _score2);
+        _scoreLabel2->setString(scoreBuf);
+        _puck->setSpritePosition(ccp(w/2, h/2 - 2*_puck->getRadius()));
     }
+}
+
+#pragma mark Timer
+void GameLayer::Timer() {
+    if(_playing && _minutes >= 0) {
+		if(_seconds > 0)	_seconds--;
+		else {
+			if(_minutes > 0) _minutes--;
+			else  _minutes = 0;
+			_seconds = 60;
+		}
+	}
+    
+	char timeBuf[20] = {0};
+	if(_minutes < 10 && _seconds < 10)
+        sprintf(timeBuf, "0%i:0%i", _minutes, _seconds);
+	else if(_minutes < 10 && _seconds >= 10)
+        sprintf(timeBuf, "0%i:%i", _minutes, _seconds);
+    
+    _time->setString(timeBuf);
 }
 
 #pragma mark SCENE
