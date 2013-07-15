@@ -11,8 +11,16 @@
 #include "Ball.h"
 #include "GLES-Render.h"
 #include "MyContactListener.h"
+#include "SimpleAudioEngine.h"
+#include "GameManager.h"
+#include "HttpClient.h"
+#include "rapidjson/rapidjson.h"
+#include "rapidjson/document.h"
+#include "Menu.h"
+#include "GetPresent.h"
 
 USING_NS_CC;
+using namespace cocos2d::extension;
 
 class GameLayer : public CCLayer {
 public:
@@ -40,10 +48,15 @@ public:
     virtual void ccTouchesMoved(CCSet* touches, CCEvent* event);
     virtual void ccTouchesEnded(CCSet* touches, CCEvent* event);
     
+    void newTurn();
     void gameReset();
     void scoreCounter(int player);
     
     void Timer();
+    void checkHighScore();
+    void onHttpRequestCompleted(CCNode *sender, void *data);
+    
+    void endGame();
     
     b2Vec2 ptm(CCPoint point) {
         return b2Vec2(point.x / PTM_RATIO, point.y / PTM_RATIO);
@@ -52,12 +65,19 @@ public:
         return b2Vec2(x / PTM_RATIO, y / PTM_RATIO);
     }
 private:
+    
     CCSize s = CCDirector::sharedDirector()->getWinSize();
     float w = s.width;
     float h = s.height;
+    
     b2Body *_groundBody;
+    
     CCSprite *_p1;
-    CCSprite *_p2;    
+    CCSprite *_p2;
+    CCSprite *_endLayerBg;
+    CCSprite *_rematchButton;
+    CCSprite *_quitButton;
+    
     GLESDebugDraw *m_debugDraw;
     
     Ball *_player1;
@@ -76,12 +96,14 @@ private:
     float x, y, px, py;
     float vx, vy, vpx, vpy;
     float pr;
+    float ew, eh;
     
     CCLabelTTF *_scoreLabel1;
     CCLabelTTF *_scoreLabel2;
     CCLabelTTF *_time;
+    CCLabelTTF *resultLabel = new CCLabelTTF;
     
     MyContactListener *_contactListener;
 };
 
-#endif 
+#endif

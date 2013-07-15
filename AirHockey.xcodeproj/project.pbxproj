@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F463BA41793A2E6003F54B2 /* GameManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F463B9E1793A2E4003F54B2 /* GameManager.cpp */; };
+		0F463BA51793A2E6003F54B2 /* Menu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F463BA01793A2E5003F54B2 /* Menu.cpp */; };
+		0F463BA61793A2E6003F54B2 /* PlayerName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F463BA21793A2E5003F54B2 /* PlayerName.cpp */; };
+		0F463BA91793A314003F54B2 /* RankingScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F463BA71793A314003F54B2 /* RankingScene.cpp */; };
+		0F463BB71793A66C003F54B2 /* rapidjson in Resources */ = {isa = PBXBuildFile; fileRef = 0F463BB61793A66C003F54B2 /* rapidjson */; };
+		0F463BBA1793B03E003F54B2 /* GetPresent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F463BB81793B03D003F54B2 /* GetPresent.cpp */; };
+		0F463BC31793D883003F54B2 /* quit.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F463BBE1793D881003F54B2 /* quit.png */; };
+		0F463BC41793D883003F54B2 /* rematch.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F463BBF1793D881003F54B2 /* rematch.png */; };
+		0F463BC51793D883003F54B2 /* sd in Resources */ = {isa = PBXBuildFile; fileRef = 0F463BC01793D881003F54B2 /* sd */; };
+		0F463BC61793D883003F54B2 /* sprite_sheet.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0F463BC11793D882003F54B2 /* sprite_sheet.plist */; };
+		0F463BC71793D883003F54B2 /* sprite_sheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F463BC21793D882003F54B2 /* sprite_sheet.png */; };
+		0F463BCA1793D967003F54B2 /* EndGameBG.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F463BC81793D966003F54B2 /* EndGameBG.png */; };
+		0F463BCB1793D967003F54B2 /* sd in Resources */ = {isa = PBXBuildFile; fileRef = 0F463BC91793D967003F54B2 /* sd */; };
 		0F47DA18178C0CE60098FE42 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F47DA17178C0CE60098FE42 /* QuartzCore.framework */; };
 		0F47DA1A178C0CE60098FE42 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F47DA19178C0CE60098FE42 /* OpenGLES.framework */; };
 		0F47DA1C178C0CE60098FE42 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F47DA1B178C0CE60098FE42 /* OpenAL.framework */; };
@@ -300,12 +313,28 @@
 		0F47DDF3178C1AFD0098FE42 /* 7.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F47DDE5178C1AFD0098FE42 /* 7.png */; };
 		0F47DDF4178C1AFD0098FE42 /* 8.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F47DDE6178C1AFD0098FE42 /* 8.png */; };
 		0F47DDF5178C1AFD0098FE42 /* 9.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F47DDE7178C1AFD0098FE42 /* 9.png */; };
-		0F47DE16178D66D90098FE42 /* sprite_sheet.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0F47DE06178D66D80098FE42 /* sprite_sheet.plist */; };
-		0F47DE17178D66D90098FE42 /* sprite_sheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F47DE07178D66D80098FE42 /* sprite_sheet.png */; };
 		0FAD22C5178E9CB6005276CC /* MyContactListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FAD22C3178E9CB6005276CC /* MyContactListener.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0F463B9E1793A2E4003F54B2 /* GameManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameManager.cpp; path = Classes/GameManager.cpp; sourceTree = "<group>"; };
+		0F463B9F1793A2E4003F54B2 /* GameManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameManager.h; path = Classes/GameManager.h; sourceTree = "<group>"; };
+		0F463BA01793A2E5003F54B2 /* Menu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Menu.cpp; path = Classes/Menu.cpp; sourceTree = "<group>"; };
+		0F463BA11793A2E5003F54B2 /* Menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Menu.h; path = Classes/Menu.h; sourceTree = "<group>"; };
+		0F463BA21793A2E5003F54B2 /* PlayerName.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlayerName.cpp; path = Classes/PlayerName.cpp; sourceTree = "<group>"; };
+		0F463BA31793A2E6003F54B2 /* PlayerName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerName.h; path = Classes/PlayerName.h; sourceTree = "<group>"; };
+		0F463BA71793A314003F54B2 /* RankingScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RankingScene.cpp; path = Classes/RankingScene.cpp; sourceTree = "<group>"; };
+		0F463BA81793A314003F54B2 /* RankingScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RankingScene.h; path = Classes/RankingScene.h; sourceTree = "<group>"; };
+		0F463BB61793A66C003F54B2 /* rapidjson */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rapidjson; path = libs/rapidjson; sourceTree = "<group>"; };
+		0F463BB81793B03D003F54B2 /* GetPresent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GetPresent.cpp; path = Classes/GetPresent.cpp; sourceTree = "<group>"; };
+		0F463BB91793B03D003F54B2 /* GetPresent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GetPresent.h; path = Classes/GetPresent.h; sourceTree = "<group>"; };
+		0F463BBE1793D881003F54B2 /* quit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = quit.png; path = Resources/quit.png; sourceTree = "<group>"; };
+		0F463BBF1793D881003F54B2 /* rematch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = rematch.png; path = Resources/rematch.png; sourceTree = "<group>"; };
+		0F463BC01793D881003F54B2 /* sd */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sd; path = Resources/sd; sourceTree = "<group>"; };
+		0F463BC11793D882003F54B2 /* sprite_sheet.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = sprite_sheet.plist; path = Resources/sprite_sheet.plist; sourceTree = "<group>"; };
+		0F463BC21793D882003F54B2 /* sprite_sheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sprite_sheet.png; path = Resources/sprite_sheet.png; sourceTree = "<group>"; };
+		0F463BC81793D966003F54B2 /* EndGameBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = EndGameBG.png; path = Resources/EndGameBG.png; sourceTree = "<group>"; };
+		0F463BC91793D967003F54B2 /* sd */ = {isa = PBXFileReference; lastKnownFileType = folder; name = sd; path = Resources/sd; sourceTree = "<group>"; };
 		0F47DA14178C0CE60098FE42 /* AirHockey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirHockey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F47DA17178C0CE60098FE42 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		0F47DA19178C0CE60098FE42 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -922,8 +951,6 @@
 		0F47DDE5178C1AFD0098FE42 /* 7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 7.png; sourceTree = "<group>"; };
 		0F47DDE6178C1AFD0098FE42 /* 8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 8.png; sourceTree = "<group>"; };
 		0F47DDE7178C1AFD0098FE42 /* 9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 9.png; sourceTree = "<group>"; };
-		0F47DE06178D66D80098FE42 /* sprite_sheet.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = sprite_sheet.plist; path = Resources/sprite_sheet.plist; sourceTree = "<group>"; };
-		0F47DE07178D66D80098FE42 /* sprite_sheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sprite_sheet.png; path = Resources/sprite_sheet.png; sourceTree = "<group>"; };
 		0FAD22C3178E9CB6005276CC /* MyContactListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MyContactListener.cpp; path = Classes/MyContactListener.cpp; sourceTree = "<group>"; };
 		0FAD22C4178E9CB6005276CC /* MyContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyContactListener.h; path = Classes/MyContactListener.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1000,9 +1027,14 @@
 				0F47DA2B178C0CE60098FE42 /* CloseSelected.png */,
 				0F47DA2D178C0CE60098FE42 /* Default.png */,
 				0F47DA2F178C0CE60098FE42 /* HelloWorld.png */,
-				0F47DE06178D66D80098FE42 /* sprite_sheet.plist */,
-				0F47DE07178D66D80098FE42 /* sprite_sheet.png */,
+				0F463BC81793D966003F54B2 /* EndGameBG.png */,
+				0F463BC91793D967003F54B2 /* sd */,
 				0F47DA31178C0CE60098FE42 /* Icon-72.png */,
+				0F463BBE1793D881003F54B2 /* quit.png */,
+				0F463BBF1793D881003F54B2 /* rematch.png */,
+				0F463BC01793D881003F54B2 /* sd */,
+				0F463BC11793D882003F54B2 /* sprite_sheet.plist */,
+				0F463BC21793D882003F54B2 /* sprite_sheet.png */,
 				0F47DA33178C0CE60098FE42 /* Icon-Small-50.png */,
 				0F47DA35178C0CE60098FE42 /* Icon-Small.png */,
 				0F47DA37178C0CE60098FE42 /* Icon-Small@2x.png */,
@@ -1031,6 +1063,7 @@
 		0F47DA49178C0CE60098FE42 /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				0F463BB61793A66C003F54B2 /* rapidjson */,
 				0F47DA4A178C0CE60098FE42 /* cocos2dx */,
 				0F47DC2D178C0CF00098FE42 /* CocosDenshion */,
 				0F47DC45178C0CF10098FE42 /* extensions */,
@@ -2124,8 +2157,18 @@
 			children = (
 				0F47DDBC178C0CF60098FE42 /* AppDelegate.h */,
 				0F47DDBD178C0CF60098FE42 /* AppDelegate.cpp */,
+				0F463B9E1793A2E4003F54B2 /* GameManager.cpp */,
+				0F463B9F1793A2E4003F54B2 /* GameManager.h */,
+				0F463BA01793A2E5003F54B2 /* Menu.cpp */,
+				0F463BA11793A2E5003F54B2 /* Menu.h */,
+				0F463BA21793A2E5003F54B2 /* PlayerName.cpp */,
+				0F463BA31793A2E6003F54B2 /* PlayerName.h */,
+				0F463BB81793B03D003F54B2 /* GetPresent.cpp */,
+				0F463BB91793B03D003F54B2 /* GetPresent.h */,
 				0F47DDD2178C13E20098FE42 /* GameLayer.cpp */,
 				0F47DDD3178C13E20098FE42 /* GameLayer.h */,
+				0F463BA71793A314003F54B2 /* RankingScene.cpp */,
+				0F463BA81793A314003F54B2 /* RankingScene.h */,
 				0FAD22C3178E9CB6005276CC /* MyContactListener.cpp */,
 				0FAD22C4178E9CB6005276CC /* MyContactListener.h */,
 				0F47DDC9178C0DD00098FE42 /* b2Sprite.cpp */,
@@ -2246,8 +2289,14 @@
 				0F47DDF3178C1AFD0098FE42 /* 7.png in Resources */,
 				0F47DDF4178C1AFD0098FE42 /* 8.png in Resources */,
 				0F47DDF5178C1AFD0098FE42 /* 9.png in Resources */,
-				0F47DE16178D66D90098FE42 /* sprite_sheet.plist in Resources */,
-				0F47DE17178D66D90098FE42 /* sprite_sheet.png in Resources */,
+				0F463BB71793A66C003F54B2 /* rapidjson in Resources */,
+				0F463BC31793D883003F54B2 /* quit.png in Resources */,
+				0F463BC41793D883003F54B2 /* rematch.png in Resources */,
+				0F463BC51793D883003F54B2 /* sd in Resources */,
+				0F463BC61793D883003F54B2 /* sprite_sheet.plist in Resources */,
+				0F463BC71793D883003F54B2 /* sprite_sheet.png in Resources */,
+				0F463BCA1793D967003F54B2 /* EndGameBG.png in Resources */,
+				0F463BCB1793D967003F54B2 /* sd in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2514,6 +2563,11 @@
 				0F47DDD4178C13E30098FE42 /* GameLayer.cpp in Sources */,
 				0F47DDD7178C18B20098FE42 /* GLES-Render.cpp in Sources */,
 				0FAD22C5178E9CB6005276CC /* MyContactListener.cpp in Sources */,
+				0F463BA41793A2E6003F54B2 /* GameManager.cpp in Sources */,
+				0F463BA51793A2E6003F54B2 /* Menu.cpp in Sources */,
+				0F463BA61793A2E6003F54B2 /* PlayerName.cpp in Sources */,
+				0F463BA91793A314003F54B2 /* RankingScene.cpp in Sources */,
+				0F463BBA1793B03E003F54B2 /* GetPresent.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
