@@ -52,7 +52,7 @@ void Ball::initBall(const char *pszFileName) {
         fixtureDef.restitution = 0.1;
     } else if (_type == puck) {
         fixtureDef.filter.groupIndex = -10;
-        fixtureDef.density = 1.0;
+        fixtureDef.density = 0.0;
         fixtureDef.friction = 0.0;
         fixtureDef.restitution = 0.7;
     }

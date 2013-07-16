@@ -10,7 +10,7 @@
 #include "rapidjson/document.h"
 #include "Menu.h"
 #include "GameLayer.h"
-#include "PlayerName.h"
+#include "Difficulty.h"
 #include "GameManager.h"
 
 USING_NS_CC;
@@ -31,13 +31,16 @@ CCScene* RankingScene::scene() {
 }
 
 bool RankingScene::init() {
-    CCSize size = CCDirector::sharedDirector()->getWinSize();
+    CCSprite *background = CCSprite::create("menu.png");
+    background->setPosition(ccp(size.width/2, size.height/2));
+    this->addChild(background);
+    
     CCLabelTTF *ranking = CCLabelTTF::create("RANKING", "Time new roman", 60);
     ranking->setPosition(ccp(size.width / 2, 9 * size.height / 10));
     this->addChild(ranking);
 
     CCHttpRequest* request = new CCHttpRequest();
-    request->setUrl("http://192.168.1.61:3000/users.json");
+    request->setUrl("http://192.168.1.104:3000/users.json");
     request->setRequestType(CCHttpRequest::kHttpGet);
     request->setResponseCallback(this, callfuncND_selector(RankingScene::onHttpRequestCompleted));
     CCHttpClient::getInstance()->send(request);
@@ -78,14 +81,14 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
     // You can get original request type from: response->request->reqType
     if (0 != strlen(response->getHttpRequest()->getTag()))
     {
-        //CCLog("%s completed", response->getHttpRequest()->getTag());
+//        CCLog("%s completed", response->getHttpRequest()->getTag());
     }
     
     int statusCode = response->getResponseCode();
     char statusString[64] = {};
     sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode,
             response->getHttpRequest()->getTag());
-    CCLog("response code: %d", statusCode);
+//    CCLog("response code: %d", statusCode);
     
     if (!response->isSucceed())
     {
@@ -149,6 +152,6 @@ void RankingScene::menuPlay(CCObject* pSender) {
         CCScene *pScene = CCTransitionFadeTR::create(2, game);
         CCDirector::sharedDirector()->replaceScene(pScene);
     } else {
-        CCDirector::sharedDirector()->replaceScene(PlayerName::scene());
+        CCDirector::sharedDirector()->replaceScene(Difficulty::scene());
     }
 }

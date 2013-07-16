@@ -8,8 +8,16 @@
 
 #include "GameLayer.h"
 
-#pragma mark CONSTRUCTOR
+#pragma mark SCENE
+CCScene* GameLayer::scene() {
+    CCScene *scene = CCScene::create();
+    GameLayer *layer = new GameLayer();
+    scene->addChild(layer);
+    layer->release();
+    return scene;
+}
 
+#pragma mark CONSTRUCTOR
 GameLayer::GameLayer() {
     setTouchEnabled(true);
     setAccelerometerEnabled(true);
@@ -72,7 +80,7 @@ GameLayer::~GameLayer() {
     delete _world;
     _world = NULL;
     
-//    delete m_debugDraw;
+    delete m_debugDraw;
 }
 
 #pragma mark INIT PHYSICS
@@ -174,45 +182,10 @@ void GameLayer::update(float dt) {
     if ((_minutes == 0 && _seconds == 0) || _score1 == 7 || _score2 == 7) {
         _playing = false ;
         this->pauseSchedulerAndActions();
-//        this->unscheduleAllSelectors() ;
-//        this->unscheduleUpdate() ;
         this->endGame();
-//        if (_score1 > _score2) {
-//            this->win() ;
-//            //---------send request to server ------------
-//            CCHttpRequest* request = new CCHttpRequest();
-//            int p = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
-//                    (GameManager::sharedGameManager()->getLevel() * 2000);
-//            GameManager::sharedGameManager()->setPoint(p);
-//            string name = GameManager::sharedGameManager()->getName();
-//            char strP[20] = {0};
-//            sprintf(strP, "%i", p);
-//            string url = "http://192.168.1.44:3000/users?name="+name+"&point="+strP+"&email=ngocduk54a2@gmail.com"+"&reward=0";
-//            request->setUrl(url.c_str());
-//            request->setRequestType(CCHttpRequest::kHttpPost);
-//            CCHttpClient::getInstance()->send(request);
-//            request->release();
-//            
-//            this->checkHighScore();
-//        }
-//        else if(_score1 <= _score2) {
-//            this->lose() ;
-//        }
-//        //---------send request to server ------------
-//        CCHttpRequest* request = new CCHttpRequest();
-//        int p = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
-//                (GameManager::sharedGameManager()->getLevel() * 2000);
-//        GameManager::sharedGameManager()->setPoint(p);
-//        string name = GameManager::sharedGameManager()->getName();
-//        char strP[20] = {0};
-//        sprintf(strP, "%i", p);
-//        string url = "http://192.168.1.44:3000/users?name="+name+"&point="+strP+"&email=ngocduk54a2@gmail.com"+"&reward=0";
-//        request->setUrl(url.c_str());
-//        request->setRequestType(CCHttpRequest::kHttpPost);
-//        CCHttpClient::getInstance()->send(request);
-//        request->release();
     }
-    
+
+    // Apply impluse when the puck is near the edges
     if (_puck->getPositionX() <= 15 + _puck->getRadius()) {
         _puck->getBody()->ApplyLinearImpulse(b2Vec2(10, 0),
                              _puck->getBody()->GetWorldCenter());
@@ -234,6 +207,7 @@ void GameLayer::update(float dt) {
         }
     }
     
+    // Gloal !!!
     if (_puck->getPositionY() > h + _puck->getRadius()) {
         this->scoreCounter(1);
         this->newTurn();
@@ -244,14 +218,20 @@ void GameLayer::update(float dt) {
         this->newTurn();
     }
     
+    // Collision Detection
     std::vector<MyContact>::iterator pos;
     for(pos = _contactListener->_contacts.begin();
         pos != _contactListener->_contacts.end(); ++pos) {
         MyContact contact = *pos;
         
-        if ((contact.fixtureA == _puck->getFixture() &&
+        if (contact.fixtureA == _puck->getFixture() ||
+            contact.fixtureB == _puck->getFixture()) {
+            SimpleAudioEngine::sharedEngine()->playEffect("hitPuck.wav");
+        }
+        
+        if ((contact.fixtureA == _puck->getFixture()     &&
              contact.fixtureB == _player2->getFixture()) ||
-            (contact.fixtureA == _player2->getFixture() &&
+            (contact.fixtureA == _player2->getFixture()  &&
              contact.fixtureB == _puck->getFixture())) {
             lastHit = 0;
             this->defenseCenter();
@@ -293,32 +273,31 @@ void GameLayer::handleProcess() {
 void GameLayer::defenseLeft() {
     this->getStateInfo();
     _player2->getBody()->ApplyLinearImpulse(
-        this->ptm2(7*(w*3/8 - px), 7*(h - pr - 10 - py)),
+        this->ptm2(50*(w*3/8 - px), 50*(h - pr - 10 - py)),
         _player2->getBody()->GetWorldCenter());
-
 }
 
 void GameLayer::defenseRight() {
     this->getStateInfo();
     _player2->getBody()->ApplyLinearImpulse(
-        this->ptm2(7*(w*5/8 - px), 7*(h - pr - 10 - py)),
+        this->ptm2(50*(w*5/8 - px), 50*(h - pr - 10 - py)),
         _player2->getBody()->GetWorldCenter());
 }
 
 void GameLayer::defenseCenter() {
     this->getStateInfo();
     _player2->getBody()->ApplyLinearImpulse(
-        this->ptm2(17*(w/2 - px), 17*(h - pr - 10 - py)),
+        this->ptm2(50*(w/2 - px), 50*(h - pr - 10 - py)),
         _player2->getBody()->GetWorldCenter());
 }
 
 void GameLayer::attack() {
     float cx = (h - 10 - pr - y)*vx/vy + x;
-    if ((cx > w/4 && cx < w*3/4) || (vx < 5 && vy < 5))
+    if ((cx > w/4 && cx < w*3/4) || (vx < 10 && vy < 10))
         _player2->getBody()->ApplyLinearImpulse(
-            b2Vec2(17*(x - px), 17*(10 + y - py)),
+            b2Vec2(15*(x - px), 15*(10 + y - py)),
             _player2->getBody()->GetWorldCenter());
-    else _player2->getBody()->SetLinearVelocity(b2Vec2((x/2 + w/4 - px) / 5, 0));
+    else _player2->getBody()->SetLinearVelocity(b2Vec2((x/2 + w/4 - px)/5, 0));
 
     
 }
@@ -326,6 +305,7 @@ void GameLayer::attack() {
 #pragma mark TOUCHES HANDLE
 void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
     if (_playing) {
+        CCLOG("%s", CCUserDefault::sharedUserDefault()->getStringForKey("Difficulty").c_str());
         if (_mouseJoint != NULL) return;
         CCTouch *touch = (CCTouch *)touches->anyObject();
         CCPoint tap = touch->getLocation();
@@ -352,20 +332,18 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
         CCTouch *touch = (CCTouch *)touches->anyObject();
         CCPoint tap = touch->getLocation();
         
-        CCRect rematchRect  = _rematchButton->boundingBox();
-        rematchRect.setRect(rematchRect.getMinX(),
-                            rematchRect.getMinY() + _endLayerBg->getPositionY() -
-                            _endLayerBg->getContentSize().height/2,
-                            rematchRect.getMaxX() - rematchRect.getMinX(),
-                            rematchRect.getMaxY() - rematchRect.getMinY());
+        CCPoint p1 = _endLayerBg->convertToWorldSpace(_rematchButton->getPosition());
+        CCPoint p2 = _endLayerBg->convertToWorldSpace(_quitButton->getPosition());
         
-        CCRect quitRect     = _quitButton->boundingBox();
-        quitRect.setRect(quitRect.getMinX(),
-                         quitRect.getMinY() + _endLayerBg->getPositionY() -
-                         _endLayerBg->getContentSize().height/2,
-                         quitRect.getMaxX() - quitRect.getMinX(),
-                         quitRect.getMaxY() - quitRect.getMinY());
+        float rmw = _rematchButton->getContentSize().width;
+        float rmh = _rematchButton->getContentSize().height;
         
+        float qw  = _quitButton->getContentSize().width;
+        float qh  = _quitButton->getContentSize().height;
+        
+        CCRect rematchRect = CCRectMake(p1.x - rmw/2, p1.y - rmh/2, rmw, rmh);
+        CCRect quitRect    = CCRectMake(p2.x - qw/2, p2.y - qh/2, qw, qh);
+                                        
         if (quitRect.containsPoint(tap)) {
             CCDirector::sharedDirector()->replaceScene(Menu::scene());
         }
@@ -479,7 +457,7 @@ void GameLayer::Timer() {
 #pragma mark Check High Score
 void GameLayer::checkHighScore() {
     CCHttpRequest* request = new CCHttpRequest();
-    request->setUrl("http://192.168.1.44:3000/users.json");
+    request->setUrl("http://192.168.1.104:3000/users.json");
     request->setRequestType(CCHttpRequest::kHttpGet);
     request->setResponseCallback(this, callfuncND_selector(GameLayer::onHttpRequestCompleted));
     CCHttpClient::getInstance()->send(request);
@@ -542,17 +520,23 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
 void GameLayer::endGame() {
     if (_score1 > _score2) {
         resultLabel->setString("YOU WIN");
-    } else {
-        resultLabel->setString("YOU LOSE");
+        //---------send request to server ------------
+        CCHttpRequest* request = new CCHttpRequest();
+        int p = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
+                (GameManager::sharedGameManager()->getLevel() * 2000);
+        GameManager::sharedGameManager()->setPoint(p);
+        string name = GameManager::sharedGameManager()->getName();
+        char strP[20] = {0};
+        sprintf(strP, "%i", p);
+        string url = "http://192.168.1.104:3000/users?name="+name+"&point="+strP+"&email=ngocduk54a2@gmail.com"+"&reward=0";
+        request->setUrl(url.c_str());
+        request->setRequestType(CCHttpRequest::kHttpPost);
+        CCHttpClient::getInstance()->send(request);
+        request->release();
+        this->checkHighScore();
     }
+    else if (_score1 == _score2) resultLabel->setString("DRAW");
+    else resultLabel->setString("YOU LOSE");
+    
     _endLayerBg->setVisible(true);
-}
-
-#pragma mark SCENE
-CCScene* GameLayer::scene() {
-    CCScene *scene = CCScene::create();
-    GameLayer *layer = new GameLayer();
-    scene->addChild(layer);
-    layer->release();
-    return scene;
 }

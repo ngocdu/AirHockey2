@@ -1,13 +1,13 @@
 //
-//  PlayerName.h
+//  Difficulty.h
 //  AirHockey
 //
 //  Created by macbook_016 on 2013/06/21.
 //
 //
 
-#ifndef __AirHockey__PlayerName__
-#define __AirHockey__PlayerName__
+#ifndef __AirHockey__Difficulty__
+#define __AirHockey__Difficulty__
 
 #include <iostream>
 #include "cocos2d.h"
@@ -15,8 +15,11 @@
 
 using namespace cocos2d;
 
-class PlayerName : public CCLayer, public extension::CCEditBoxDelegate{
+class Difficulty : public CCLayer, public extension::CCEditBoxDelegate{
 private:
+    CCSize size = CCDirector::sharedDirector()->getWinSize();
+    float w = size.width;
+    float h = size.height;
     extension::CCEditBox  *m_pEditName;
     CCLabelTTF *m_pTTFShowEditReturn;
     CCMenu *pMenu;
@@ -34,8 +37,8 @@ public:
     void menuEasy(CCObject  *pSender);
     void menuHard(CCObject  *pSender);
 
-    CREATE_FUNC(PlayerName);
+    CREATE_FUNC(Difficulty);
 };
 
 
-#endif /* defined(__AirHockey__PlayerName__) */
+#endif /* defined(__AirHockey__Difficulty__) */

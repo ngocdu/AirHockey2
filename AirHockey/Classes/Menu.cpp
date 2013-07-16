@@ -7,10 +7,12 @@
 //
 
 #include "Menu.h"
-#include "PlayerName.h"
+#include "Difficulty.h"
 #include "GameManager.h"
 #include "RankingScene.h"
+
 using namespace cocos2d;
+
 CCScene* Menu::scene() {
     CCScene *scene = CCScene::create();
     Menu *layer = Menu::create();
@@ -19,28 +21,19 @@ CCScene* Menu::scene() {
 }
 
 bool Menu::init() {
-    CCSize size = CCDirector::sharedDirector()->getWinSize();
-    _start = CCMenuItemImage::create(
-                                            "start.png",
-                                            "start.png",
-                                            this,
-                                            menu_selector(Menu::startGame));
     
-    _start->setPosition(ccp(size.width / 2.10989011, size.height / 1.5147929));
+    _start = CCMenuItemImage::create("start.png", "start.png",
+                                     this, menu_selector(Menu::startGame));
+    
+    _start->setPosition(ccp(w/2.10989011, h/1.5147929));
 
-    _ranking = CCMenuItemImage::create(
-                                           "rank.png",
-                                           "rank.png",
-                                           this,
-                                           menu_selector(Menu::ranking));
-    _ranking->setPosition(ccp(size.width / 2.10989011, size.height / 1.90689013));
+    _ranking = CCMenuItemImage::create("rank.png", "rank.png",
+                                        this, menu_selector(Menu::ranking));
+    _ranking->setPosition(ccp(w/2.10989011, h/1.90689013));
 
-    _bgm = CCMenuItemImage::create(
-                                          "bgm.png",
-                                          "bgm.png",
-                                          this,
-                                          menu_selector(Menu::bgm));
-    _bgm->setPosition(ccp(size.width / 2.10989011, size.height / 2.63239075));
+    _bgm = CCMenuItemImage::create("bgm.png", "bgm.png",
+                                    this, menu_selector(Menu::bgm));
+    _bgm->setPosition(ccp(w/2.10989011, h/2.63239075));
 
     // create menu, it's an autorelease object
     CCMenu* pMenu = CCMenu::create(_start, _ranking, _bgm, NULL);
@@ -79,8 +72,8 @@ void Menu::ranking(CCObject* pSender)
 }
 void Menu::startGame(CCObject* pSender)
 {
-    CCScene *playerNameScene = PlayerName::scene();
-    CCDirector::sharedDirector()->replaceScene(playerNameScene);
+    CCScene *DifficultyScene = Difficulty::scene();
+    CCDirector::sharedDirector()->replaceScene(DifficultyScene);
 }
 
 

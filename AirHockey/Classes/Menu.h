@@ -15,6 +15,9 @@ using namespace cocos2d;
 class Menu : public CCLayer
 {
 private:
+    CCSize size = CCDirector::sharedDirector()->getWinSize();
+    float w = size.width;
+    float h = size.height;
     CCMenuItemImage *_start;
     CCMenuItemImage *_ranking;
     CCMenuItemImage *_bgm;

@@ -14,6 +14,7 @@ using namespace cocos2d;
 class RankingScene : public CCLayer
 {
 private:
+    CCSize size = CCDirector::sharedDirector()->getWinSize();
 public:
     virtual bool init();
     static CCScene* scene();
