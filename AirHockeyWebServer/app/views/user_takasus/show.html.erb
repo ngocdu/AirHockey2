@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @user_takasu.name %>
+</p>
+
+<p>
+  <b>Point:</b>
+  <%= @user_takasu.point %>
+</p>
+
+
+<%= link_to 'Edit', edit_user_takasu_path(@user_takasu) %> |
+<%= link_to 'Back', user_takasus_path %>
