@@ -33,6 +33,7 @@ public:
     void menuMedium(CCObject *pSender);
     void menuEasy(CCObject  *pSender);
     void menuHard(CCObject  *pSender);
+    void clickBtBack(CCObject* pScene);
 
     CREATE_FUNC(PlayerName);
 };

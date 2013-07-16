@@ -8,6 +8,7 @@
 
 #include "PlayerName.h"
 #include "GameManager.h"
+#include "RankingScene.h"
 #include <string.h>
 #include "GameLayer.h"
 
@@ -54,7 +55,12 @@ bool PlayerName::init() {
     CCMenuItemFont *hardMenuItem =
     CCMenuItemFont::create("HARD", this, menu_selector(PlayerName::menuHard));
     hardMenuItem->setPosition(ccp(size.width / 2, size.height * 0.2));
-    pMenu = CCMenu::create(easyMenuItem, mediumMenuItem, hardMenuItem, NULL);
+    
+    CCMenuItemFont *back =
+    CCMenuItemFont::create("BACK", this, menu_selector(PlayerName::clickBtBack));
+    back->setPosition(ccp(size.width / 2, size.height * 0.1));
+    
+    pMenu = CCMenu::create(easyMenuItem, mediumMenuItem, hardMenuItem, back, NULL);
     pMenu->setPosition(CCPointZero);
     this->addChild(pMenu, 1);
     
@@ -98,7 +104,9 @@ void PlayerName::menuMedium(CCObject *pSender) {
     CCScene *game = GameLayer::scene();
     CCDirector::sharedDirector()->replaceScene(game);
 }
-    
+void PlayerName::clickBtBack(cocos2d::CCObject *pScene) {
+    CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
+}
 void PlayerName::menuEasy(CCObject *pSender) {
     CCUserDefault::sharedUserDefault()->setStringForKey("playerName",
                                                         m_pEditName->getText());

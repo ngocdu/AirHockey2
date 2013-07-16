@@ -16,7 +16,6 @@ GameLayer::GameLayer() {
     CCSprite *backGroundImg = CCSprite::create("court.png");
     backGroundImg->setPosition(ccp(w/2, h/2));
     this->addChild(backGroundImg);
-    
     // Score Counter
     _scoreLabel1 = CCLabelTTF::create("0", "Arial", 40);
     _scoreLabel2 = CCLabelTTF::create("0", "Arial", 40);
@@ -171,46 +170,12 @@ void GameLayer::update(float dt) {
         _puck->update(dt);
     }
     
-    if ((_minutes == 0 && _seconds == 0) || _score1 == 7 || _score2 == 7) {
+    if ((_minutes == 0 && _seconds == 0) || _score1 == 1 || _score2 == 1) {
         _playing = false ;
         this->pauseSchedulerAndActions();
 //        this->unscheduleAllSelectors() ;
 //        this->unscheduleUpdate() ;
         this->endGame();
-//        if (_score1 > _score2) {
-//            this->win() ;
-//            //---------send request to server ------------
-//            CCHttpRequest* request = new CCHttpRequest();
-//            int p = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
-//                    (GameManager::sharedGameManager()->getLevel() * 2000);
-//            GameManager::sharedGameManager()->setPoint(p);
-//            string name = GameManager::sharedGameManager()->getName();
-//            char strP[20] = {0};
-//            sprintf(strP, "%i", p);
-//            string url = "http://192.168.1.44:3000/users?name="+name+"&point="+strP+"&email=ngocduk54a2@gmail.com"+"&reward=0";
-//            request->setUrl(url.c_str());
-//            request->setRequestType(CCHttpRequest::kHttpPost);
-//            CCHttpClient::getInstance()->send(request);
-//            request->release();
-//            
-//            this->checkHighScore();
-//        }
-//        else if(_score1 <= _score2) {
-//            this->lose() ;
-//        }
-//        //---------send request to server ------------
-//        CCHttpRequest* request = new CCHttpRequest();
-//        int p = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
-//                (GameManager::sharedGameManager()->getLevel() * 2000);
-//        GameManager::sharedGameManager()->setPoint(p);
-//        string name = GameManager::sharedGameManager()->getName();
-//        char strP[20] = {0};
-//        sprintf(strP, "%i", p);
-//        string url = "http://192.168.1.44:3000/users?name="+name+"&point="+strP+"&email=ngocduk54a2@gmail.com"+"&reward=0";
-//        request->setUrl(url.c_str());
-//        request->setRequestType(CCHttpRequest::kHttpPost);
-//        CCHttpClient::getInstance()->send(request);
-//        request->release();
     }
     
     if (_puck->getPositionX() <= 15 + _puck->getRadius()) {
@@ -479,7 +444,7 @@ void GameLayer::Timer() {
 #pragma mark Check High Score
 void GameLayer::checkHighScore() {
     CCHttpRequest* request = new CCHttpRequest();
-    request->setUrl("http://192.168.1.44:3000/users.json");
+    request->setUrl("http://localhost:3000/users.json");
     request->setRequestType(CCHttpRequest::kHttpGet);
     request->setResponseCallback(this, callfuncND_selector(GameLayer::onHttpRequestCompleted));
     CCHttpClient::getInstance()->send(request);
@@ -526,6 +491,9 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
             if (document[i]["name"].GetString() == name &&
                 point == document[i]["point"].GetInt() &&
                 document[i]["reward"].GetInt() != 0) {
+                int rewark = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+                CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", rewark + 1);
+                CCUserDefault::sharedUserDefault()->setIntegerForKey("pointMax", point);
                 CCDirector::sharedDirector()->replaceScene(GetPresent::scene());
                 break;
             }
@@ -542,6 +510,21 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
 void GameLayer::endGame() {
     if (_score1 > _score2) {
         resultLabel->setString("YOU WIN");
+        //---------send request to server ------------
+        CCHttpRequest* request = new CCHttpRequest();
+        int p = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
+            (GameManager::sharedGameManager()->getLevel() * 2000);
+        GameManager::sharedGameManager()->setPoint(p);
+        string name = GameManager::sharedGameManager()->getName();
+        char strP[20] = {0};
+        sprintf(strP, "%i", p);
+        string url = "http://localhost:3000/users?name="+name+"&point="+strP+"&email=ngocduk54a2@gmail.com"+"&reward=0";
+        request->setUrl(url.c_str());
+        request->setRequestType(CCHttpRequest::kHttpPost);
+        CCHttpClient::getInstance()->send(request);
+        request->release();
+            
+        this->checkHighScore();
     } else {
         resultLabel->setString("YOU LOSE");
     }
