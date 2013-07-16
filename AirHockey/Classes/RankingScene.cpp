@@ -132,6 +132,20 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
             pointLabel->setPosition(ccp(4 * size.width / 5,
                                         size.height * (12 - dem) / 15));
             this->addChild(pointLabel);
+            int reward = document[i]["reward"].GetInt();
+            int rewardLocal = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+            string nameLocal = GameManager::sharedGameManager()->getName();
+            string name = document[i]["name"].GetString();
+            int point = document[i]["point"].GetInt();
+            int pointMax = CCUserDefault::sharedUserDefault()->getIntegerForKey("pointMax");
+            if (reward != 0 &&  rewardLocal != 0 && name == nameLocal && point == pointMax) {
+                CCMenuItemImage *bt_send_email = CCMenuItemImage::create("CloseNormal.png",
+                   "CloseNormal.png", this, menu_selector(RankingScene::clickBtSendEmail));
+                CCMenu * menu = CCMenu::create(bt_send_email, NULL);
+                menu->setPosition(ccp(4.5f * size.width / 5,
+                                      size.height * (12 - dem) / 14.5));
+                this->addChild(menu);
+            }
             dem++;
             }
         }
@@ -142,16 +156,19 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
         d = -1;
         delete []data2;
 }
+void RankingScene::clickBtSendEmail(cocos2d::CCObject *pSender) {
+    CCDirector::sharedDirector()->replaceScene(GetPresent::scene());
+}
 void RankingScene::menuMenu(CCObject* pSender) {
-    CCDirector::sharedDirector()->replaceScene(Menu::scene());
+    GameManager *game = GameManager::sharedGameManager();
+    if (game->getBgm()) {
+        game->setBgm(false);
+    } else {
+        game->setBgm(true);
+    }
+
 }
 
 void RankingScene::menuPlay(CCObject* pSender) {
-    if (GameManager::sharedGameManager()->getName() != "") {
-        CCScene *game = GameLayer::scene();
-        CCScene *pScene = CCTransitionFadeTR::create(2, game);
-        CCDirector::sharedDirector()->replaceScene(pScene);
-    } else {
-        CCDirector::sharedDirector()->replaceScene(Difficulty::scene());
-    }
+    CCDirector::sharedDirector()->replaceScene(PlayerName::scene());
 }

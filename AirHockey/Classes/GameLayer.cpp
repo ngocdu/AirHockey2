@@ -24,7 +24,6 @@ GameLayer::GameLayer() {
     CCSprite *backGroundImg = CCSprite::create("court.png");
     backGroundImg->setPosition(ccp(w/2, h/2));
     this->addChild(backGroundImg);
-    
     // Score Counter
     _scoreLabel1 = CCLabelTTF::create("0", "Arial", 40);
     _scoreLabel2 = CCLabelTTF::create("0", "Arial", 40);
@@ -179,7 +178,7 @@ void GameLayer::update(float dt) {
         _puck->update(dt);
     }
     
-    if ((_minutes == 0 && _seconds == 0) || _score1 == 7 || _score2 == 7) {
+    if ((_minutes == 0 && _seconds == 0) || _score1 == 1 || _score2 == 1) {
         _playing = false ;
         this->pauseSchedulerAndActions();
         this->endGame();
@@ -504,6 +503,9 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
             if (document[i]["name"].GetString() == name &&
                 point == document[i]["point"].GetInt() &&
                 document[i]["reward"].GetInt() != 0) {
+                int rewark = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+                CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", rewark + 1);
+                CCUserDefault::sharedUserDefault()->setIntegerForKey("pointMax", point);
                 CCDirector::sharedDirector()->replaceScene(GetPresent::scene());
                 break;
             }

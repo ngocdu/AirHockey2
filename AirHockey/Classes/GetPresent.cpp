@@ -8,7 +8,7 @@
 #include "Difficulty.h"
 #include "GameManager.h"
 #include "GameLayer.h"
-#include "Menu.h"
+#include "RankingScene.h"
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include "HttpClient.h"
@@ -44,14 +44,14 @@ bool GetPresent::init()
                                  visibleOrigin.y + visibleSize.height * 3 / 4));
     m_pEditName->setFontSize(40);
     m_pEditName->setFontColor(ccRED);
-    m_pEditName->setPlaceHolder("Email:");
+    m_pEditName->setPlaceHolder("input your Email to give reward:");
     m_pEditName->setPlaceholderFontColor(ccWHITE);
     m_pEditName->setMaxLength(55);
     m_pEditName->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
     m_pEditName->setDelegate(this);
     this->addChild(m_pEditName);
     CCMenuItemFont *sendMenuItem =
-    CCMenuItemFont::create("SendEmail", this, menu_selector(GetPresent::menuSendEmail));
+        CCMenuItemFont::create("SendEmail", this, menu_selector(GetPresent::menuSendEmail));
     sendMenuItem->setPosition(ccp(size.width / 2, size.height * 0.5));
     sendMenuItem->setFontSizeObj(70);
     sendMenuItem->setFontSize(70);
@@ -103,16 +103,17 @@ void GetPresent::menuSendEmail(CCObject *pSender)
         char strP[20] = {0};
         sprintf(strP, "%i", p);
         string email = GameManager::sharedGameManager()->getEmail();
-        string url = "http://192.168.1.68:3000/users?name="+name+"&point="+strP+"&email="+email;
+        string url = "http://192.168.1.104:3000/users?name="+name+"&point="+strP+"&email="+email;
         request->setUrl(url.c_str());
         request->setRequestType(CCHttpRequest::kHttpPost);
         CCHttpClient::getInstance()->send(request);
         request->release();
         m_pEditName->setText("email send succses");
+        CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", 0);
     }else {
         m_pEditName->setText("email fail");
     }
 }
 void GetPresent::menuBack(cocos2d::CCObject *pSender) {
-    CCDirector::sharedDirector()->replaceScene(Menu::scene());
+    CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
 }
