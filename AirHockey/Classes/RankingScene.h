@@ -22,5 +22,6 @@ public:
     
     void menuPlay(CCObject* pSender);
     void menuMenu(CCObject* pSender);
+    void clickBtSendEmail(CCObject* pSender);
 };
 #endif /* defined(__AirHockey__RankingScene__) */
