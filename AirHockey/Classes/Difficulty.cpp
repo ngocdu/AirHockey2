@@ -61,9 +61,9 @@ bool Difficulty::init() {
     CCMenuItemFont *hardMenuItem =
     CCMenuItemFont::create("HARD", this, menu_selector(Difficulty::menuHard));
     hardMenuItem->setPosition(ccp(w/2, h/4));
-    pMenu = CCMenu::create(easyMenuItem, mediumMenuItem, hardMenuItem, NULL);
+    
     CCMenuItemFont *back =
-    CCMenuItemFont::create("BACK", this, menu_selector(PlayerName::clickBtBack));
+    CCMenuItemFont::create("BACK", this, menu_selector(Difficulty::clickBtBack));
     back->setPosition(ccp(size.width / 2, size.height * 0.1));
     
     pMenu = CCMenu::create(easyMenuItem, mediumMenuItem, hardMenuItem, back, NULL);
@@ -94,7 +94,7 @@ void Difficulty::editBoxReturn(cocos2d::extension::CCEditBox* editBox) {
 }
 
 void Difficulty::menuHard(CCObject *pSender) {
-    CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName",
+    CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty",
                                                         m_pEditName->getText());
     CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Hard");
     CCUserDefault::sharedUserDefault()->flush();
@@ -104,7 +104,7 @@ void Difficulty::menuHard(CCObject *pSender) {
 }
 
 void Difficulty::menuMedium(CCObject *pSender) {
-    CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName",
+    CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty",
                                                         m_pEditName->getText());
     CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Medium");
     CCUserDefault::sharedUserDefault()->flush();
@@ -114,13 +114,12 @@ void Difficulty::menuMedium(CCObject *pSender) {
 }
 
 
-void PlayerName::clickBtBack(cocos2d::CCObject *pScene) {
+void Difficulty::clickBtBack(cocos2d::CCObject *pScene) {
     CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
 }
 
-void PlayerName::menuEasy(CCObject *pSender) {
-    void Difficulty::menuEasy(CCObject *pSender) {
-        CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName",
+void Difficulty::menuEasy(CCObject *pSender) {
+    CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty",
                                                         m_pEditName->getText());
     CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Easy");
     CCUserDefault::sharedUserDefault()->flush();

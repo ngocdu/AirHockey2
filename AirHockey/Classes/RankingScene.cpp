@@ -32,11 +32,11 @@ CCScene* RankingScene::scene() {
 
 bool RankingScene::init() {
     CCSprite *background = CCSprite::create("menu.png");
-    background->setPosition(ccp(size.width/2, size.height/2));
+    background->setPosition(ccp(w/2, h/2));
     this->addChild(background);
     
     CCLabelTTF *ranking = CCLabelTTF::create("RANKING", "Time new roman", 60);
-    ranking->setPosition(ccp(size.width / 2, 9 * size.height / 10));
+    ranking->setPosition(ccp(w/2, h*5/8));
     this->addChild(ranking);
 
     CCHttpRequest* request = new CCHttpRequest();
@@ -53,7 +53,7 @@ bool RankingScene::init() {
                                                              this,
                                                              menu_selector(RankingScene::menuPlay));
     startMenuItem->setScale(4);
-    startMenuItem->setPosition(ccp(size.width/4, size.height/8));
+    startMenuItem->setPosition(ccp(w/4, h/8));
     
     //create rankMenuItem
     CCMenuItemImage *rankMenuItem = CCMenuItemImage::create(
@@ -62,7 +62,7 @@ bool RankingScene::init() {
                                                             this,
                                                             menu_selector(RankingScene::menuMenu));
     rankMenuItem->setScale(4);
-    rankMenuItem->setPosition(ccp(size.width * 3/4, size.height/8));
+    rankMenuItem->setPosition(ccp(w * 3/4, h/8));
     CCMenu* pMenu = CCMenu::create(startMenuItem, rankMenuItem, NULL);
     pMenu->setPosition(ccp(0,0));
     this->addChild(pMenu);
@@ -71,14 +71,13 @@ bool RankingScene::init() {
 }
 
 void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
-    CCSize size = CCDirector::sharedDirector()->getWinSize();
     CCHttpResponse *response = (CCHttpResponse*)data;
     
     if (!response)
     {
         return;
     }
-    // You can get original request type from: response->request->reqType
+
     if (0 != strlen(response->getHttpRequest()->getTag()))
     {
 //        CCLog("%s completed", response->getHttpRequest()->getTag());
@@ -88,14 +87,14 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
     char statusString[64] = {};
     sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode,
             response->getHttpRequest()->getTag());
-//    CCLog("response code: %d", statusCode);
+    CCLog("response code: %d", statusCode);
     
     if (!response->isSucceed())
     {
         CCLabelTTF *notConnectLabel =
-        CCLabelTTF::create("PLEASE CHECK YOUR INTERNET CONNECTION", "Time new roman",
-                           30);
-        notConnectLabel->setPosition(ccp(size.width / 2, size.height / 2));
+        CCLabelTTF::create("PLEASE CHECK YOUR INTERNET CONNECTION",
+                           "Time new roman", 30);
+        notConnectLabel->setPosition(ccp(w/2, h/2));
         this->addChild(notConnectLabel);
         return;
     }
@@ -112,7 +111,7 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
     }
     data2[d + 1] = '\0';
     //-----------------------
-    int dem = 0;
+    int count = 0;
     rapidjson::Document document;
     if(data2 != NULL && !document.Parse<0>(data2).HasParseError())
     {   
@@ -121,16 +120,16 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
             CCLabelTTF *nameLabel = CCLabelTTF::create(document[i]["name"].GetString(),
                                                            "Time New Roman", 50);
             nameLabel->setAnchorPoint(ccp(0, 0)) ;
-            nameLabel->setPosition(ccp(size.width / 6,
-                                       size.height * (12 - dem) / 15));
+            nameLabel->setPosition(ccp(w / 6,
+                                       h * (12 - count) / 15));
             this->addChild(nameLabel);
             char strP [20] = {0};
             sprintf(strP,"%i", document[i]["point"].GetInt());
             CCLabelTTF *pointLabel = CCLabelTTF::create(strP,
                                                             "Time New Roman", 50);
             pointLabel->setAnchorPoint(ccp(1, 0));
-            pointLabel->setPosition(ccp(4 * size.width / 5,
-                                        size.height * (12 - dem) / 15));
+            pointLabel->setPosition(ccp(4 * w / 5,
+                                        h * (12 - count) / 15));
             this->addChild(pointLabel);
             int reward = document[i]["reward"].GetInt();
             int rewardLocal = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
@@ -142,11 +141,11 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
                 CCMenuItemImage *bt_send_email = CCMenuItemImage::create("CloseNormal.png",
                    "CloseNormal.png", this, menu_selector(RankingScene::clickBtSendEmail));
                 CCMenu * menu = CCMenu::create(bt_send_email, NULL);
-                menu->setPosition(ccp(4.5f * size.width / 5,
-                                      size.height * (12 - dem) / 14.5));
+                menu->setPosition(ccp(4.5f * w / 5,
+                                      h * (12 - count) / 14.5));
                 this->addChild(menu);
             }
-            dem++;
+            count++;
             }
         }
         else
@@ -170,5 +169,5 @@ void RankingScene::menuMenu(CCObject* pSender) {
 }
 
 void RankingScene::menuPlay(CCObject* pSender) {
-    CCDirector::sharedDirector()->replaceScene(PlayerName::scene());
+    CCDirector::sharedDirector()->replaceScene(Difficulty::scene());
 }

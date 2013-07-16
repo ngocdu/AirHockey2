@@ -15,6 +15,8 @@ class RankingScene : public CCLayer
 {
 private:
     CCSize size = CCDirector::sharedDirector()->getWinSize();
+    float w = size.width;
+    float h = size.height;
 public:
     virtual bool init();
     static CCScene* scene();

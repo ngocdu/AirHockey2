@@ -319,14 +319,6 @@
 		0FA8EC681794FD5900003938 /* hitPuck.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0FA8EC651794FD5900003938 /* hitPuck.wav */; };
 		0FA8EC691794FD5900003938 /* score.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0FA8EC661794FD5900003938 /* score.wav */; };
 		0FAD22C5178E9CB6005276CC /* MyContactListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FAD22C3178E9CB6005276CC /* MyContactListener.cpp */; };
-		DC8278151794EDA9008E3541 /* bgm.png in Resources */ = {isa = PBXBuildFile; fileRef = DC82780D1794EDA9008E3541 /* bgm.png */; };
-		DC8278161794EDA9008E3541 /* btn_Continue.png in Resources */ = {isa = PBXBuildFile; fileRef = DC82780E1794EDA9008E3541 /* btn_Continue.png */; };
-		DC8278171794EDA9008E3541 /* btn_menu.png in Resources */ = {isa = PBXBuildFile; fileRef = DC82780F1794EDA9008E3541 /* btn_menu.png */; };
-		DC8278181794EDA9008E3541 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8278101794EDA9008E3541 /* Default@2x.png */; };
-		DC8278191794EDA9008E3541 /* green_edit.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8278111794EDA9008E3541 /* green_edit.png */; };
-		DC82781A1794EDA9008E3541 /* menu.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8278121794EDA9008E3541 /* menu.png */; };
-		DC82781B1794EDA9008E3541 /* rank.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8278131794EDA9008E3541 /* rank.png */; };
-		DC82781C1794EDA9008E3541 /* start.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8278141794EDA9008E3541 /* start.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2705,7 +2697,7 @@
 				GCC_PREFIX_HEADER = AirHockey/Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = AirHockey/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/AirHockey/libs/cocos2dx/platform/third_party/ios/libraries\"",
@@ -2735,7 +2727,7 @@
 				GCC_PREFIX_HEADER = AirHockey/Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = AirHockey/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/AirHockey/libs/cocos2dx/platform/third_party/ios/libraries\"",
