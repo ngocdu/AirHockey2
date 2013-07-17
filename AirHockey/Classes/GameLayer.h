@@ -16,7 +16,7 @@
 #include "HttpClient.h"
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
-#include "Menu.h"
+#include "RankingScene.h"
 #include "GetPresent.h"
 
 USING_NS_CC;

@@ -47,25 +47,27 @@ bool RankingScene::init() {
     request->release();
     
     //create startMenuItem
-    CCMenuItemImage *startMenuItem = CCMenuItemImage::create(
-                                                             "btn_Continue.png",
-                                                             "btn_Continue.png",
+    CCMenuItemImage *playItem = CCMenuItemImage::create(
+                                                             "start_button.png",
+                                                             "start_button.png",
                                                              this,
-                                                             menu_selector(RankingScene::menuPlay));
-    startMenuItem->setScale(4);
-    startMenuItem->setPosition(ccp(w/4, h/8));
-    
-    //create rankMenuItem
-    CCMenuItemImage *rankMenuItem = CCMenuItemImage::create(
-                                                            "btn_menu.png",
-                                                            "btn_menu.png",
+                                                             menu_selector(RankingScene::play));
+    playItem->setPosition(ccp(w/2, h/6));
+    playItem->setScale(0.7f);
+    //create bgmItem
+    CCMenuItemImage *bgmItem = CCMenuItemImage::create(
+                                                            "bgm_on.png",
+                                                            "bgm_on.png",
                                                             this,
-                                                            menu_selector(RankingScene::menuMenu));
-    rankMenuItem->setScale(4);
-    rankMenuItem->setPosition(ccp(w * 3/4, h/8));
-    CCMenu* pMenu = CCMenu::create(startMenuItem, rankMenuItem, NULL);
+                                                            menu_selector(RankingScene::bgm));
+    bgmItem->setPosition(ccp(w*4/5, h/6));
+    CCMenu* pMenu = CCMenu::create(playItem, bgmItem, NULL);
     pMenu->setPosition(ccp(0,0));
     this->addChild(pMenu);
+    bgm_off = CCSprite::create("bgm_off.png");
+    bgm_off->setPosition(bgmItem->getPosition());
+    bgm_off->setVisible(false);
+    this->addChild(bgm_off);
     
     return true;
 }
@@ -158,16 +160,19 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
 void RankingScene::clickBtSendEmail(cocos2d::CCObject *pSender) {
     CCDirector::sharedDirector()->replaceScene(GetPresent::scene());
 }
-void RankingScene::menuMenu(CCObject* pSender) {
+void RankingScene::bgm(CCObject* pSender) {
+    
     GameManager *game = GameManager::sharedGameManager();
     if (game->getBgm()) {
         game->setBgm(false);
+        bgm_off->setVisible(true);
     } else {
         game->setBgm(true);
+        bgm_off->setVisible(false);
     }
 
 }
 
-void RankingScene::menuPlay(CCObject* pSender) {
+void RankingScene::play(CCObject* pSender) {
     CCDirector::sharedDirector()->replaceScene(Difficulty::scene());
 }

@@ -21,9 +21,11 @@ CCScene* GameLayer::scene() {
 GameLayer::GameLayer() {
     setTouchEnabled(true);
     setAccelerometerEnabled(true);
+    SimpleAudioEngine::sharedEngine()->preloadEffect("hitPuck.wav");
     CCSprite *backGroundImg = CCSprite::create("court.png");
     backGroundImg->setPosition(ccp(w/2, h/2));
     this->addChild(backGroundImg);
+    
     // Score Counter
     _scoreLabel1 = CCLabelTTF::create("0", "Arial", 40);
     _scoreLabel2 = CCLabelTTF::create("0", "Arial", 40);
@@ -33,7 +35,7 @@ GameLayer::GameLayer() {
     _scoreLabel2->setRotation(90);
     this->addChild(_scoreLabel1);
     this->addChild(_scoreLabel2);
-    
+
     // End Game
     _endLayerBg = CCSprite::create("EndGameBG.png");
     _endLayerBg->setPosition(ccp(w/2, h/2));
@@ -185,34 +187,32 @@ void GameLayer::update(float dt) {
     }
 
     // Apply impluse when the puck is near the edges
-    if (_puck->getPositionX() <= 15 + _puck->getRadius()) {
+    if (_puck->getPositionX() <= 15 + _puck->getRadius())
         _puck->getBody()->ApplyLinearImpulse(b2Vec2(10, 0),
-                             _puck->getBody()->GetWorldCenter());
-    }
+                                             _puck->getBody()->GetWorldCenter());
 
-    if (_puck->getPositionX() >= w - 15 - _puck->getRadius()) {
+    if (_puck->getPositionX() >= w - 15 - _puck->getRadius())
         _puck->getBody()->ApplyLinearImpulse(b2Vec2(-10, 0),
-                             _puck->getBody()->GetWorldCenter());
-    }
+                                             _puck->getBody()->GetWorldCenter());
     
     if (_puck->getPositionX() <= 260 || _puck->getPositionX() >= w - 260) {
-        if (_puck->getPositionY() >= h - 15 - _puck->getRadius()) {
+        if (_puck->getPositionY() >= h - 15 - _puck->getRadius())
             _puck->getBody()->ApplyLinearImpulse(b2Vec2(0, -10),
-                                _puck->getBody()->GetWorldCenter());
-        }
-        if (_puck->getPositionY() <= 15 + _puck->getRadius()) {
+                                             _puck->getBody()->GetWorldCenter());
+        if (_puck->getPositionY() <= 15 + _puck->getRadius())
             _puck->getBody()->ApplyLinearImpulse(b2Vec2(0, 10),
-                                 _puck->getBody()->GetWorldCenter());
-        }
+                                             _puck->getBody()->GetWorldCenter());
     }
     
     // Gloal !!!
     if (_puck->getPositionY() > h + _puck->getRadius()) {
+        SimpleAudioEngine::sharedEngine()->playEffect("score.wav");
         this->scoreCounter(1);
         this->newTurn();
     }
     
     if (_puck->getPositionY() < -_puck->getRadius()) {
+        SimpleAudioEngine::sharedEngine()->playEffect("score.wav");
         this->scoreCounter(2);
         this->newTurn();
     }
@@ -344,7 +344,7 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
         CCRect quitRect    = CCRectMake(p2.x - qw/2, p2.y - qh/2, qw, qh);
                                         
         if (quitRect.containsPoint(tap)) {
-            CCDirector::sharedDirector()->replaceScene(Menu::scene());
+            CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
         }
         if (rematchRect.containsPoint(tap)) {
             _playing = true;

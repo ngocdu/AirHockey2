@@ -17,14 +17,16 @@ private:
     CCSize size = CCDirector::sharedDirector()->getWinSize();
     float w = size.width;
     float h = size.height;
+    
+    CCSprite *bgm_off;
 public:
     virtual bool init();
     static CCScene* scene();
     void onHttpRequestCompleted(CCNode *sender, void *data);
     CREATE_FUNC(RankingScene);
     
-    void menuPlay(CCObject* pSender);
-    void menuMenu(CCObject* pSender);
+    void play(CCObject* pSender);
+    void bgm(CCObject* pSender);
     void clickBtSendEmail(CCObject* pSender);
 };
 #endif /* defined(__AirHockey__RankingScene__) */
