@@ -323,6 +323,7 @@
 		FBBDCDFA17963CDF00D63C5F /* bgm_on.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBDCDF617963CDF00D63C5F /* bgm_on.png */; };
 		FBBDCDFB17963CDF00D63C5F /* bgm_on2.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBDCDF717963CDF00D63C5F /* bgm_on2.png */; };
 		FBBDCDFD1796549100D63C5F /* start_button.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBDCDFC1796549100D63C5F /* start_button.png */; };
+		FBBDCDFF1797ABE000D63C5F /* ranking_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBDCDFE1797ABE000D63C5F /* ranking_bg.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -979,6 +980,7 @@
 		FBBDCDF617963CDF00D63C5F /* bgm_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bgm_on.png; path = Resources/bgm_on.png; sourceTree = "<group>"; };
 		FBBDCDF717963CDF00D63C5F /* bgm_on2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bgm_on2.png; path = Resources/bgm_on2.png; sourceTree = "<group>"; };
 		FBBDCDFC1796549100D63C5F /* start_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = start_button.png; path = Resources/start_button.png; sourceTree = "<group>"; };
+		FBBDCDFE1797ABE000D63C5F /* ranking_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ranking_bg.png; path = Resources/ranking_bg.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1066,6 +1068,7 @@
 				0F47DA2D178C0CE60098FE42 /* Default.png */,
 				0F47DA2F178C0CE60098FE42 /* HelloWorld.png */,
 				0F463BC81793D966003F54B2 /* EndGameBG.png */,
+				FBBDCDFE1797ABE000D63C5F /* ranking_bg.png */,
 				0F47DA31178C0CE60098FE42 /* Icon-72.png */,
 				0F463BBE1793D881003F54B2 /* quit.png */,
 				0FA8EC511794F8F400003938 /* bgm.png */,
@@ -2358,6 +2361,7 @@
 				FBBDCDFA17963CDF00D63C5F /* bgm_on.png in Resources */,
 				FBBDCDFB17963CDF00D63C5F /* bgm_on2.png in Resources */,
 				FBBDCDFD1796549100D63C5F /* start_button.png in Resources */,
+				FBBDCDFF1797ABE000D63C5F /* ranking_bg.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

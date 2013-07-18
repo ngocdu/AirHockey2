@@ -38,12 +38,11 @@ string GameManager::getName()
 }
 void GameManager::setName(string name)
 {
-    this->name = name;
+    CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName", name);
 }
-
 string GameManager::getEmail()
 {
-    return this->email;
+    return CCUserDefault::sharedUserDefault()->getStringForKey("PlayerName");
 }
 void GameManager::setEmail(string email)
 {

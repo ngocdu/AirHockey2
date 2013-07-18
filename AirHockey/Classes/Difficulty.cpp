@@ -38,7 +38,7 @@ bool Difficulty::init() {
                                  visibleOrigin.y + visibleSize.height*5/8));
     m_pEditName->setFontSize(40);
     m_pEditName->setFontColor(ccRED);
-    string p = CCUserDefault::sharedUserDefault()->getStringForKey("Difficulty");
+    string p = GameManager::sharedGameManager()->getName();
     if (p == "") m_pEditName->setPlaceHolder("Player");
     else m_pEditName->setPlaceHolder(p.c_str());
     m_pEditName->setPlaceholderFontColor(ccWHITE);
@@ -94,8 +94,7 @@ void Difficulty::editBoxReturn(cocos2d::extension::CCEditBox* editBox) {
 }
 
 void Difficulty::menuHard(CCObject *pSender) {
-    CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName",
-                                                        m_pEditName->getText());
+    GameManager::sharedGameManager()->setName(m_pEditName->getText());
     CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Hard");
     CCUserDefault::sharedUserDefault()->flush();
     GameManager::sharedGameManager()->setLevel(3);
@@ -104,8 +103,7 @@ void Difficulty::menuHard(CCObject *pSender) {
 }
 
 void Difficulty::menuMedium(CCObject *pSender) {
-    CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName",
-                                                        m_pEditName->getText());
+    GameManager::sharedGameManager()->setName(m_pEditName->getText());
     CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Medium");
     CCUserDefault::sharedUserDefault()->flush();
     GameManager::sharedGameManager()->setLevel(2);
@@ -113,14 +111,8 @@ void Difficulty::menuMedium(CCObject *pSender) {
     CCDirector::sharedDirector()->replaceScene(game);
 }
 
-
-void Difficulty::clickBtBack(cocos2d::CCObject *pScene) {
-    CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
-}
-
 void Difficulty::menuEasy(CCObject *pSender) {
-    CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName",
-                                                        m_pEditName->getText());
+    GameManager::sharedGameManager()->setName(m_pEditName->getText());
     CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Easy");
     CCUserDefault::sharedUserDefault()->flush();
     GameManager::sharedGameManager()->setLevel(1);
@@ -128,3 +120,6 @@ void Difficulty::menuEasy(CCObject *pSender) {
     CCDirector::sharedDirector()->replaceScene(game);
 }
 
+void Difficulty::clickBtBack(cocos2d::CCObject *pScene) {
+    CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
+}

@@ -117,7 +117,6 @@ static AccelerometerSimulation *sharedAccelerometer = NULL;
                                    X:[[components objectAtIndex:2] doubleValue] 
                                    Y:[[components objectAtIndex:3] doubleValue]
                                    Z:[[components objectAtIndex:4] doubleValue]];
-        [accelDelegate accelerometer:self didAccelerate:(UIAcceleration*)accObject];
     }
 }
 

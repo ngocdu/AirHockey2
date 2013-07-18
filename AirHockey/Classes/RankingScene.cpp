@@ -35,31 +35,27 @@ bool RankingScene::init() {
     background->setPosition(ccp(w/2, h/2));
     this->addChild(background);
     
-    CCLabelTTF *ranking = CCLabelTTF::create("RANKING", "Time new roman", 60);
-    ranking->setPosition(ccp(w/2, h*5/8));
-    this->addChild(ranking);
+    CCSprite *ranking_bg = CCSprite::create("ranking_bg.png");
+    ranking_bg->setPosition(ccp(w/2, h/2));
+    this->addChild(ranking_bg);
 
     CCHttpRequest* request = new CCHttpRequest();
-    request->setUrl("http://192.168.1.104:3000/users.json");
+    request->setUrl("http://192.168.1.59:3000/users.json");
     request->setRequestType(CCHttpRequest::kHttpGet);
     request->setResponseCallback(this, callfuncND_selector(RankingScene::onHttpRequestCompleted));
     CCHttpClient::getInstance()->send(request);
     request->release();
     
     //create startMenuItem
-    CCMenuItemImage *playItem = CCMenuItemImage::create(
-                                                             "start_button.png",
-                                                             "start_button.png",
-                                                             this,
-                                                             menu_selector(RankingScene::play));
+    CCMenuItemImage *playItem =
+        CCMenuItemImage::create("start_button.png", "start_button.png",
+                                this, menu_selector(RankingScene::play));
     playItem->setPosition(ccp(w/2, h/6));
     playItem->setScale(0.7f);
     //create bgmItem
-    CCMenuItemImage *bgmItem = CCMenuItemImage::create(
-                                                            "bgm_on.png",
-                                                            "bgm_on.png",
-                                                            this,
-                                                            menu_selector(RankingScene::bgm));
+    CCMenuItemImage *bgmItem =
+        CCMenuItemImage::create("bgm_on.png", "bgm_on.png",
+                                this, menu_selector(RankingScene::bgm));
     bgmItem->setPosition(ccp(w*4/5, h/6));
     CCMenu* pMenu = CCMenu::create(playItem, bgmItem, NULL);
     pMenu->setPosition(ccp(0,0));
@@ -68,7 +64,6 @@ bool RankingScene::init() {
     bgm_off->setPosition(bgmItem->getPosition());
     bgm_off->setVisible(CCUserDefault::sharedUserDefault()->getBoolForKey("BGM"));
     this->addChild(bgm_off);
-    
     return true;
 }
 
@@ -82,20 +77,18 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
 
     if (0 != strlen(response->getHttpRequest()->getTag()))
     {
-//        CCLog("%s completed", response->getHttpRequest()->getTag());
+        CCLog("%s completed", response->getHttpRequest()->getTag());
     }
     
     int statusCode = response->getResponseCode();
-    char statusString[64] = {};
+    char statusString[64] = {0};
     sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode,
             response->getHttpRequest()->getTag());
-    CCLog("response code: %d", statusCode);
     
     if (!response->isSucceed())
     {
         CCLabelTTF *notConnectLabel =
-        CCLabelTTF::create("PLEASE CHECK YOUR INTERNET CONNECTION",
-                           "Time new roman", 30);
+        CCLabelTTF::create("Can't load Data", "Time new roman", 20);
         notConnectLabel->setPosition(ccp(w/2, h/2));
         this->addChild(notConnectLabel);
         return;
@@ -145,7 +138,7 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
                 CCMenu * menu = CCMenu::create(bt_send_email, NULL);
                 menu->setPosition(ccp(4.5f * w / 5,
                                       h * (12 - count) / 14.5));
-                this->addChild(menu);
+                this->addChild(menu, 20);
             }
             count++;
             }

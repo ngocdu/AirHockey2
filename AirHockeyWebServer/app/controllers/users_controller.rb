@@ -93,7 +93,7 @@ class UsersController < ApplicationController
         end 
       end
     else
-      @user = User.new(name: params[:name], point: params[:point], email: params[:email])
+      @user = User.new(name: params[:name], point: params[:point], email: params[:email], reward: params[:reward])
         respond_to do |format|
           if @user.save
             format.html { redirect_to @users, notice: 'User was successfully created.' }
