@@ -94,7 +94,7 @@ void Difficulty::editBoxReturn(cocos2d::extension::CCEditBox* editBox) {
 }
 
 void Difficulty::menuHard(CCObject *pSender) {
-    CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty",
+    CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName",
                                                         m_pEditName->getText());
     CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Hard");
     CCUserDefault::sharedUserDefault()->flush();
@@ -104,7 +104,7 @@ void Difficulty::menuHard(CCObject *pSender) {
 }
 
 void Difficulty::menuMedium(CCObject *pSender) {
-    CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty",
+    CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName",
                                                         m_pEditName->getText());
     CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Medium");
     CCUserDefault::sharedUserDefault()->flush();
@@ -119,7 +119,7 @@ void Difficulty::clickBtBack(cocos2d::CCObject *pScene) {
 }
 
 void Difficulty::menuEasy(CCObject *pSender) {
-    CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty",
+    CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName",
                                                         m_pEditName->getText());
     CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Easy");
     CCUserDefault::sharedUserDefault()->flush();
