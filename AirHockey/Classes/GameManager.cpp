@@ -26,11 +26,11 @@ GameManager* GameManager::sharedGameManager()
 }
 void GameManager::setBgm(bool bgm)
 {
-    this->bgm = bgm;
+    CCUserDefault::sharedUserDefault()->setBoolForKey("BGM", bgm);
 }
 bool GameManager::getBgm()
 {
-    return this->bgm;
+    return CCUserDefault::sharedUserDefault()->getBoolForKey("BGM");
 }
 string GameManager::getName()
 {

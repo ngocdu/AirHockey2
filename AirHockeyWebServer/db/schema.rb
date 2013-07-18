@@ -13,6 +13,11 @@
 
 ActiveRecord::Schema.define(:version => 20130703082127) do
 
+  create_table "user2s", :force => true do |t|
+    t.string  "name"
+    t.integer "point"
+  end
+
   create_table "user_takasus", :force => true do |t|
     t.string   "name"
     t.integer  "point"

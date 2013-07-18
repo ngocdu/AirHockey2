@@ -66,7 +66,7 @@ bool RankingScene::init() {
     this->addChild(pMenu);
     bgm_off = CCSprite::create("bgm_off.png");
     bgm_off->setPosition(bgmItem->getPosition());
-    bgm_off->setVisible(false);
+    bgm_off->setVisible(CCUserDefault::sharedUserDefault()->getBoolForKey("BGM"));
     this->addChild(bgm_off);
     
     return true;
@@ -161,16 +161,14 @@ void RankingScene::clickBtSendEmail(cocos2d::CCObject *pSender) {
     CCDirector::sharedDirector()->replaceScene(GetPresent::scene());
 }
 void RankingScene::bgm(CCObject* pSender) {
-    
     GameManager *game = GameManager::sharedGameManager();
+    bgm_off->setVisible(!game->getBgm());
+    game->setBgm(!game->getBgm());
     if (game->getBgm()) {
-        game->setBgm(false);
-        bgm_off->setVisible(true);
+        SimpleAudioEngine::sharedEngine()->setEffectsVolume(0.0f);
     } else {
-        game->setBgm(true);
-        bgm_off->setVisible(false);
+        SimpleAudioEngine::sharedEngine()->setEffectsVolume(1.0f);
     }
-
 }
 
 void RankingScene::play(CCObject* pSender) {
