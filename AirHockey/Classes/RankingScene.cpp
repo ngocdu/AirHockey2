@@ -62,7 +62,12 @@ bool RankingScene::init() {
     this->addChild(pMenu);
     bgm_off = CCSprite::create("BgmOff.png");
     bgm_off->setPosition(bgmItem->getPosition());
-    bgm_off->setVisible(CCUserDefault::sharedUserDefault()->getBoolForKey("BGM"));
+    bgm_off->setVisible(GameManager::sharedGameManager()->getBgm());
+    if (GameManager::sharedGameManager()->getBgm()) {
+        SimpleAudioEngine::sharedEngine()->setEffectsVolume(0.0f);
+    } else {
+        SimpleAudioEngine::sharedEngine()->setEffectsVolume(1.0f);
+    }
     this->addChild(bgm_off);
     return true;
 }

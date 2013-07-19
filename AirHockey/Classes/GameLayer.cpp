@@ -71,7 +71,7 @@ GameLayer::GameLayer() {
     _time->setColor(ccBLACK);
 	_time->setPosition(ccp(70, h/2));
     _time->setRotation(90);
-	this->addChild(_time, 1);
+	this->addChild(_time);
     
     // Physics
     this->initPhysics();
