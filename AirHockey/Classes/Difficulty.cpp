@@ -21,7 +21,7 @@ CCScene* Difficulty::scene() {
 }
 
 bool Difficulty::init() {
-    CCSprite *background = CCSprite::create("menu.png");
+    CCSprite *background = CCSprite::create("Menu.png");
     background->setPosition(ccp(w/2, h/2));
     this->addChild(background);
     
@@ -33,14 +33,14 @@ bool Difficulty::init() {
     // top
     m_pEditName =
     extension::CCEditBox::create(editBoxSize,
-                                 extension::CCScale9Sprite::create("green_edit.png"));
+                                 extension::CCScale9Sprite::create("GreenBox.png"));
     m_pEditName->setPosition(ccp(visibleOrigin.x + visibleSize.width/2,
                                  visibleOrigin.y + visibleSize.height*5/8));
     m_pEditName->setFontSize(40);
     m_pEditName->setFontColor(ccRED);
     string p = GameManager::sharedGameManager()->getName();
-    if (p == "") m_pEditName->setPlaceHolder("Player");
-    else m_pEditName->setPlaceHolder(p.c_str());
+    if (p == "") m_pEditName->setText("Player");
+    else m_pEditName->setText(p.c_str());
     m_pEditName->setPlaceholderFontColor(ccWHITE);
     m_pEditName->setMaxLength(15);
     m_pEditName->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
@@ -93,33 +93,29 @@ void Difficulty::editBoxReturn(cocos2d::extension::CCEditBox* editBox) {
     GameManager::sharedGameManager()->setName(m_pEditName->getText());
 }
 
+
+// Game Level Easy=1, Medium=2, Hard=3
 void Difficulty::menuHard(CCObject *pSender) {
     GameManager::sharedGameManager()->setName(m_pEditName->getText());
-    CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Hard");
-    CCUserDefault::sharedUserDefault()->flush();
     GameManager::sharedGameManager()->setLevel(3);
     CCScene *game = GameLayer::scene();
-    CCDirector::sharedDirector()->replaceScene(game);
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, game));
 }
 
 void Difficulty::menuMedium(CCObject *pSender) {
     GameManager::sharedGameManager()->setName(m_pEditName->getText());
-    CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Medium");
-    CCUserDefault::sharedUserDefault()->flush();
     GameManager::sharedGameManager()->setLevel(2);
     CCScene *game = GameLayer::scene();
-    CCDirector::sharedDirector()->replaceScene(game);
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, game));
 }
 
 void Difficulty::menuEasy(CCObject *pSender) {
     GameManager::sharedGameManager()->setName(m_pEditName->getText());
-    CCUserDefault::sharedUserDefault()->setStringForKey("Difficulty", "Easy");
-    CCUserDefault::sharedUserDefault()->flush();
     GameManager::sharedGameManager()->setLevel(1);
     CCScene *game = GameLayer::scene();
-    CCDirector::sharedDirector()->replaceScene(game);
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, game));
 }
 
 void Difficulty::clickBtBack(cocos2d::CCObject *pScene) {
-    CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
 }

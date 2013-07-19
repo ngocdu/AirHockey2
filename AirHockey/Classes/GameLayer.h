@@ -35,6 +35,8 @@ public:
     void initPhysics();
     void createEdge(float x1, float y1, float x2, float y2, int groupIndex);
     
+    void gameStart();
+    
     virtual void draw();
     void update(float dt);
     
@@ -58,6 +60,7 @@ public:
     void onHttpRequestCompleted(CCNode *sender, void *data);
     
     void endGame();
+    void addEffect(CCPoint point);
     
     b2Vec2 ptm(CCPoint point) {
         return b2Vec2(point.x / PTM_RATIO, point.y / PTM_RATIO);
@@ -91,6 +94,8 @@ private:
     int _score2  = 0;
     int lastHit = 0;
     int _minutes, _seconds;
+    // Game Level Easy = 1, Medium = 2, Hard = 3
+    int _level;
     
     bool _playing;
     

@@ -22,13 +22,18 @@ GameLayer::GameLayer() {
     setTouchEnabled(true);
     setAccelerometerEnabled(true);
     SimpleAudioEngine::sharedEngine()->preloadEffect("hitPuck.wav");
-    CCSprite *backGroundImg = CCSprite::create("court.png");
+    _level = GameManager::sharedGameManager()->getLevel();
+    
+    CCSprite *backGroundImg = CCSprite::create("Court.png");
     backGroundImg->setPosition(ccp(w/2, h/2));
     this->addChild(backGroundImg);
     
+    
     // Score Counter
-    _scoreLabel1 = CCLabelTTF::create("0", "Arial", 40);
-    _scoreLabel2 = CCLabelTTF::create("0", "Arial", 40);
+    _scoreLabel1 = CCLabelTTF::create("0", "Arial", 48);
+    _scoreLabel1->setColor(ccBLACK);
+    _scoreLabel2 = CCLabelTTF::create("0", "Arial", 48);
+    _scoreLabel2->setColor(ccBLACK);
     _scoreLabel1->setPosition(ccp(w - 50, h/2 - 50));
     _scoreLabel1->setRotation(90);
     _scoreLabel2->setPosition(ccp(w - 50, h/2 + 50));
@@ -42,33 +47,44 @@ GameLayer::GameLayer() {
     this->addChild(_endLayerBg, 5);
     ew = _endLayerBg->getContentSize().width;
     eh = _endLayerBg->getContentSize().height;
-    _rematchButton = CCSprite::create("rematch.png");
+    _rematchButton = CCSprite::create("Rematch.png");
     _rematchButton->setPosition(ccp(ew/2, eh/2));
     _endLayerBg->addChild(_rematchButton);
     
-    _quitButton = CCSprite::create("quit.png");
+    _quitButton = CCSprite::create("Quit.png");
     _quitButton->setPosition(ccp(ew/2, eh/4));
     _endLayerBg->addChild(_quitButton);
     
     resultLabel = CCLabelTTF::create("DRAW", "Arial", 64);
-    resultLabel->setPosition(ccp(ew/2, eh*3/4));
+    resultLabel->setPosition(ccp(ew/2, eh*5/6));
     _endLayerBg->addChild(resultLabel);
     _endLayerBg->setVisible(false);
     
     // Timer
     _minutes = 2;
     _seconds = 60;
-    _playing = true;
+    _playing = false;
     char timeBuf[20] = {0};
 	sprintf(timeBuf, "0%i:%i", _minutes, _seconds);
 
-    _time = CCLabelTTF::create(timeBuf, "Times New Roman", 34);
+    _time = CCLabelTTF::create(timeBuf, "Times New Roman", 48);
+    _time->setColor(ccBLACK);
 	_time->setPosition(ccp(40, h/2));
-    _time->setRotation(-90);
+    _time->setRotation(90);
 	this->addChild(_time, 1);
     
     // Physics
     this->initPhysics();
+    
+    CCSprite *startGame = CCSprite::create("StartGame.png");
+    startGame->setPosition(ccp(-w/2, h/2));
+    this->addChild(startGame, 9, 1);
+    
+    CCFiniteTimeAction *move1  = CCMoveTo::create(2, ccp(w/2, h/2));
+    CCFiniteTimeAction *move2  = CCMoveTo::create(2, ccp(w*3/2, h/2));
+    CCFiniteTimeAction *delay = CCDelayTime::create(0.2);
+    CCFiniteTimeAction *start = CCCallFuncN::create(this, callfuncN_selector(GameLayer::gameStart));
+    startGame->runAction(CCSequence::create(move1, delay, move2, start, NULL));
     
     // Scheduler
     scheduleUpdate();
@@ -162,6 +178,11 @@ void GameLayer::createEdge(float x1, float y1,
     _groundBody->CreateFixture(&groundEdgeDef);
 }
 
+void GameLayer::gameStart() {
+    _playing = true;
+    this->removeChildByTag(1);
+}
+
 #pragma mark DRAW
 void GameLayer::draw() {
     CCLayer::draw();
@@ -236,7 +257,7 @@ void GameLayer::update(float dt) {
             this->defenseCenter();
         }
     }
-    if (lastHit >= 450) {
+    if (lastHit >= 1200/_level) {
         this->defenseCenter();
     }
 }
@@ -259,7 +280,7 @@ void GameLayer::handleProcess() {
     lastHit+= 25;
     this->getStateInfo();
         
-    if (lastHit >= 450) {
+    if (lastHit >= 1200/_level) {
         if ((y >= h/2 - pr && y <= 3*h/4) ||
             (y > 3*h/4 && x > w/2 && x < 3*w/4)) {
             this->attack();
@@ -272,21 +293,21 @@ void GameLayer::handleProcess() {
 void GameLayer::defenseLeft() {
     this->getStateInfo();
     _player2->getBody()->ApplyLinearImpulse(
-        this->ptm2(50*(w*3/8 - px), 50*(h - pr - 10 - py)),
+        this->ptm2(15*_level*(w*3/8 - px), 15*_level*(h - pr - 10 - py)),
         _player2->getBody()->GetWorldCenter());
 }
 
 void GameLayer::defenseRight() {
     this->getStateInfo();
     _player2->getBody()->ApplyLinearImpulse(
-        this->ptm2(50*(w*5/8 - px), 50*(h - pr - 10 - py)),
+        this->ptm2(15*_level*(w*5/8 - px), 15*_level*(h - pr - 10 - py)),
         _player2->getBody()->GetWorldCenter());
 }
 
 void GameLayer::defenseCenter() {
     this->getStateInfo();
     _player2->getBody()->ApplyLinearImpulse(
-        this->ptm2(50*(w/2 - px), 50*(h - pr - 10 - py)),
+        this->ptm2(15*_level*(w/2 - px), 15*_level*(h - pr - 10 - py)),
         _player2->getBody()->GetWorldCenter());
 }
 
@@ -294,7 +315,7 @@ void GameLayer::attack() {
     float cx = (h - 10 - pr - y)*vx/vy + x;
     if ((cx > w/4 && cx < w*3/4) || (vx < 10 && vy < 10))
         _player2->getBody()->ApplyLinearImpulse(
-            b2Vec2(15*(x - px), 15*(10 + y - py)),
+            b2Vec2(5*_level*(x - px), 5*_level*(10 + y - py)),
             _player2->getBody()->GetWorldCenter());
     else _player2->getBody()->SetLinearVelocity(b2Vec2((x/2 + w/4 - px)/5, 0));
 
@@ -304,7 +325,7 @@ void GameLayer::attack() {
 #pragma mark TOUCHES HANDLE
 void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
     if (_playing) {
-        CCLOG("%s", CCUserDefault::sharedUserDefault()->getStringForKey("Difficulty").c_str());
+        CCLOG("%d", GameManager::sharedGameManager()->getLevel());
         if (_mouseJoint != NULL) return;
         CCTouch *touch = (CCTouch *)touches->anyObject();
         CCPoint tap = touch->getLocation();
@@ -344,7 +365,7 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
         CCRect quitRect    = CCRectMake(p2.x - qw/2, p2.y - qh/2, qw, qh);
                                         
         if (quitRect.containsPoint(tap)) {
-            CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
+            CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
         }
         if (rematchRect.containsPoint(tap)) {
             _playing = true;
@@ -506,7 +527,7 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
                 int rewark = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
                 CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", rewark + 1);
                 CCUserDefault::sharedUserDefault()->setIntegerForKey("pointMax", point);
-                CCDirector::sharedDirector()->replaceScene(GetPresent::scene());
+                CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
                 break;
             }
         }
@@ -521,11 +542,18 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
 
 void GameLayer::endGame() {
     if (_score1 > _score2) {
-        resultLabel->setString("YOU WIN");
-        //---------send request to server ------------
-        CCHttpRequest* request = new CCHttpRequest();
         int p = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
                 (GameManager::sharedGameManager()->getLevel() * 2000);
+        resultLabel->setString("YOU WIN");
+        resultLabel->runAction(CCBlink::create(2.0f, 5.0f));
+        CCPoint effectPoint =
+            _endLayerBg->convertToWorldSpace(resultLabel->getPosition());
+        this->addEffect(ccp(effectPoint.x - 100, effectPoint.y));
+        this->addEffect(ccp(effectPoint.x + 100, effectPoint.y));
+        
+        //---------send request to server ------------
+        CCHttpRequest* request = new CCHttpRequest();
+        
         GameManager::sharedGameManager()->setPoint(p);
         string name = GameManager::sharedGameManager()->getName();
         char strP[20] = {0};
@@ -541,4 +569,40 @@ void GameLayer::endGame() {
     else resultLabel->setString("YOU LOSE");
     
     _endLayerBg->setVisible(true);
+}
+
+
+void GameLayer::addEffect(CCPoint point) {
+    CCParticleSystemQuad *pop = new CCParticleSystemQuad;
+    pop = CCParticleGalaxy::create();
+    pop->setTexture(CCTextureCache::sharedTextureCache()->addImage("Star.png"));
+    pop->setPosition(point);
+    pop->setGravity(CCPointZero);
+    
+    pop->setAngle(140);
+    pop->setAngleVar(360);
+    
+    pop->setSpeed(80);
+    //pop->setSpeedVar(360);
+    
+    pop->setLife(2.0f);
+    pop->setStartSize(40);
+    
+    pop->setPositionType(kCCPositionTypeRelative);
+    
+    pop->setRadialAccel(-50);
+    //pop->setRadialAccelVar(-100);
+    
+    //pop->setTangentialAccel(-50);
+    pop->setTotalParticles(9);
+    //pop->setRotatePerSecond(0);
+    pop->setAutoRemoveOnFinish(true);
+    pop->setAtlasIndex(0);
+    pop->setBlendAdditive(false);
+    //pop->setOrderOfArrival(0);
+    pop->setOpacityModifyRGB(false);
+    pop->setDuration(0.5);
+    pop->setEmissionRate(200);
+    //pop->setEndRadius(50);
+    this->addChild(pop, 100, 777);
 }

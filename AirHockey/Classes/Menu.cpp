@@ -22,16 +22,16 @@ CCScene* Menu::scene() {
 
 bool Menu::init() {
     
-    _start = CCMenuItemImage::create("start.png", "start.png",
+    _start = CCMenuItemImage::create("Start.png", "Start.png",
                                      this, menu_selector(Menu::startGame));
     
     _start->setPosition(ccp(w/2.10989011, h/1.5147929));
 
-    _ranking = CCMenuItemImage::create("rank.png", "rank.png",
+    _ranking = CCMenuItemImage::create("Rank.png", "Rank.png",
                                         this, menu_selector(Menu::ranking));
     _ranking->setPosition(ccp(w/2.10989011, h/1.90689013));
 
-    _bgm = CCMenuItemImage::create("bgm.png", "bgm.png",
+    _bgm = CCMenuItemImage::create("Bgm.png", "Bgm.png",
                                     this, menu_selector(Menu::bgm));
     _bgm->setPosition(ccp(w/2.10989011, h/2.63239075));
 
@@ -39,7 +39,7 @@ bool Menu::init() {
     CCMenu* pMenu = CCMenu::create(_start, _ranking, _bgm, NULL);
     pMenu->setPosition(CCPointZero);
     this->addChild(pMenu, 1);
-    CCSprite* pSprite = CCSprite::create("menu.png");
+    CCSprite* pSprite = CCSprite::create("Menu.png");
 
     // position the sprite on the center of the screen
     pSprite->setPosition(ccp(size.width / 2, size.height / 2));

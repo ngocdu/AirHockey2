@@ -39,12 +39,12 @@ bool GetPresent::init()
     // top
     m_pEditName =
     extension::CCEditBox::create(editBoxSize,
-                                 extension::CCScale9Sprite::create("green_edit.png"));
+                                 extension::CCScale9Sprite::create("GreenBox.png"));
     m_pEditName->setPosition(ccp(visibleOrigin.x + visibleSize.width / 2,
                                  visibleOrigin.y + visibleSize.height * 3 / 4));
     m_pEditName->setFontSize(40);
     m_pEditName->setFontColor(ccRED);
-    m_pEditName->setPlaceHolder("input your Email to give reward:");
+    m_pEditName->setPlaceHolder("input your Email to receive reward:");
     m_pEditName->setPlaceholderFontColor(ccWHITE);
     m_pEditName->setMaxLength(55);
     m_pEditName->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);

@@ -31,11 +31,11 @@ CCScene* RankingScene::scene() {
 }
 
 bool RankingScene::init() {
-    CCSprite *background = CCSprite::create("menu.png");
+    CCSprite *background = CCSprite::create("Menu.png");
     background->setPosition(ccp(w/2, h/2));
     this->addChild(background);
     
-    CCSprite *ranking_bg = CCSprite::create("ranking_bg.png");
+    CCSprite *ranking_bg = CCSprite::create("RankingBG.png");
     ranking_bg->setPosition(ccp(w/2, h/2));
     this->addChild(ranking_bg);
 
@@ -48,19 +48,19 @@ bool RankingScene::init() {
     
     //create startMenuItem
     CCMenuItemImage *playItem =
-        CCMenuItemImage::create("start_button.png", "start_button.png",
+        CCMenuItemImage::create("StartButton.png", "StartButton.png",
                                 this, menu_selector(RankingScene::play));
     playItem->setPosition(ccp(w/2, h/6));
     playItem->setScale(0.7f);
     //create bgmItem
     CCMenuItemImage *bgmItem =
-        CCMenuItemImage::create("bgm_on.png", "bgm_on.png",
+        CCMenuItemImage::create("BgmOn.png", "BgmOn.png",
                                 this, menu_selector(RankingScene::bgm));
     bgmItem->setPosition(ccp(w*4/5, h/6));
     CCMenu* pMenu = CCMenu::create(playItem, bgmItem, NULL);
     pMenu->setPosition(ccp(0,0));
     this->addChild(pMenu);
-    bgm_off = CCSprite::create("bgm_off.png");
+    bgm_off = CCSprite::create("BgmOff.png");
     bgm_off->setPosition(bgmItem->getPosition());
     bgm_off->setVisible(CCUserDefault::sharedUserDefault()->getBoolForKey("BGM"));
     this->addChild(bgm_off);
@@ -133,8 +133,8 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
             int point = document[i]["point"].GetInt();
             int pointMax = CCUserDefault::sharedUserDefault()->getIntegerForKey("pointMax");
             if (reward != 0 &&  rewardLocal != 0 && name == nameLocal && point == pointMax) {
-                CCMenuItemImage *bt_send_email = CCMenuItemImage::create("CloseNormal.png",
-                   "CloseNormal.png", this, menu_selector(RankingScene::clickBtSendEmail));
+                CCMenuItemImage *bt_send_email = CCMenuItemImage::create("SubmitButton.png",
+                   "SubmitButton.png", this, menu_selector(RankingScene::clickBtSendEmail));
                 CCMenu * menu = CCMenu::create(bt_send_email, NULL);
                 menu->setPosition(ccp(4.5f * w / 5,
                                       h * (12 - count) / 14.5));
@@ -165,5 +165,6 @@ void RankingScene::bgm(CCObject* pSender) {
 }
 
 void RankingScene::play(CCObject* pSender) {
-    CCDirector::sharedDirector()->replaceScene(Difficulty::scene());
+    
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.7f, Difficulty::scene()));
 }

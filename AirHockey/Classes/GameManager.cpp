@@ -27,6 +27,7 @@ GameManager* GameManager::sharedGameManager()
 void GameManager::setBgm(bool bgm)
 {
     CCUserDefault::sharedUserDefault()->setBoolForKey("BGM", bgm);
+    CCUserDefault::sharedUserDefault()->flush();
 }
 bool GameManager::getBgm()
 {
@@ -39,6 +40,7 @@ string GameManager::getName()
 void GameManager::setName(string name)
 {
     CCUserDefault::sharedUserDefault()->setStringForKey("PlayerName", name);
+    CCUserDefault::sharedUserDefault()->flush();
 }
 string GameManager::getEmail()
 {
