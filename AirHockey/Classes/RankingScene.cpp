@@ -106,49 +106,28 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
     }
     data2[d + 1] = '\0';
     //-----------------------
-    int count = 0;
+
     rapidjson::Document document;
     if(data2 != NULL && !document.Parse<0>(data2).HasParseError())
     {   
         for (rapidjson::SizeType  i = 0; i < document.Size(); i++)
         {
-            CCLabelTTF *nameLabel = CCLabelTTF::create(document[i]["name"].GetString(),
-                                                           "Time New Roman", 50);
-            nameLabel->setAnchorPoint(ccp(0, 0)) ;
-            nameLabel->setPosition(ccp(w / 6,
-                                       h * (12 - count) / 15));
-            this->addChild(nameLabel);
-            char strP [20] = {0};
-            sprintf(strP,"%i", document[i]["point"].GetInt());
-            CCLabelTTF *pointLabel = CCLabelTTF::create(strP,
-                                                            "Time New Roman", 50);
-            pointLabel->setAnchorPoint(ccp(1, 0));
-            pointLabel->setPosition(ccp(4 * w / 5,
-                                        h * (12 - count) / 15));
-            this->addChild(pointLabel);
-            int reward = document[i]["reward"].GetInt();
-            int rewardLocal = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
-            string nameLocal = GameManager::sharedGameManager()->getName();
-            string name = document[i]["name"].GetString();
-            int point = document[i]["point"].GetInt();
-            int pointMax = CCUserDefault::sharedUserDefault()->getIntegerForKey("pointMax");
-            if (reward != 0 &&  rewardLocal != 0 && name == nameLocal && point == pointMax) {
-                CCMenuItemImage *bt_send_email = CCMenuItemImage::create("SubmitButton.png",
-                   "SubmitButton.png", this, menu_selector(RankingScene::clickBtSendEmail));
-                CCMenu * menu = CCMenu::create(bt_send_email, NULL);
-                menu->setPosition(ccp(4.5f * w / 5,
-                                      h * (12 - count) / 14.5));
-                this->addChild(menu, 20);
-            }
-            count++;
-            }
+            Player *player = new Player(document[i]["name"].GetString(),
+                                        document[i]["point"].GetInt());
+            players->addObject(player);
         }
-        else
-        {
-            CCLog(document.GetParseError());
-        }
-        d = -1;
-        delete []data2;
+    } else {
+        CCLog(document.GetParseError());
+    }
+    d = -1;
+    CCTableView *tableView=CCTableView::create(this, CCSizeMake(700, 350));
+    tableView->setDirection(kCCScrollViewDirectionVertical);
+    tableView->setAnchorPoint(ccp(0, 0));
+    tableView->setPosition(ccp(size.width/8, 300));
+    tableView->setDelegate(this);
+    tableView->setVerticalFillOrder(kCCTableViewFillTopDown);
+    this->addChild(tableView, 21);
+    tableView->reloadData();
 }
 void RankingScene::clickBtSendEmail(cocos2d::CCObject *pSender) {
     CCDirector::sharedDirector()->replaceScene(GetPresent::scene());
@@ -168,3 +147,61 @@ void RankingScene::play(CCObject* pSender) {
     
     CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.7f, Difficulty::scene()));
 }
+
+void RankingScene::tableCellTouched(CCTableView* table, CCTableViewCell* cell)
+{
+    CCLOG("cell touched at index: %i", cell->getIdx());
+}
+
+CCSize RankingScene::tableCellSizeForIndex(CCTableView *table, unsigned int idx)
+{
+    return CCSizeMake(600, 80);
+}
+
+CCTableViewCell* RankingScene::tableCellAtIndex(CCTableView *table, unsigned int idx)
+{
+    CCTableViewCell *cell = table->dequeueCell();
+    cell = new CCTableViewCell();
+    cell->autorelease();
+    //
+    Player * p = (Player*)players->objectAtIndex(idx);
+    CCString *string = CCString::createWithFormat("%d",p->getPoint());
+    CCLabelTTF *Pointlabel = CCLabelTTF::create(string->getCString(), "Helvetica", 50.0);
+    Pointlabel->setAnchorPoint(ccp(1, 0));
+    Pointlabel->setPosition(ccp(500,0));
+    Pointlabel->setTag(123);
+    cell->addChild(Pointlabel);
+    
+    std::string name = p->getName();
+    CCLabelTTF *Namelabel = CCLabelTTF::create(p->getName().c_str(), "Helvetica", 50.0);
+    Namelabel->setAnchorPoint(CCPointZero);
+    Namelabel->setPosition(CCPointZero);
+    cell->addChild(Namelabel);
+    
+    if (idx == 0) {
+        int rewardLocal = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+        std::string nameLocal = GameManager::sharedGameManager()->getName();
+        int pointMax = CCUserDefault::sharedUserDefault()->getIntegerForKey("pointMax");
+        if (p->getReward() != 0 && rewardLocal != 0 &&
+            p->getName() == nameLocal && p->getPoint() == pointMax) {
+            CCMenuItemImage *bt_send_email = CCMenuItemImage::create("Present.png",
+                                                                     "Present.png", this, menu_selector(RankingScene::clickBtSendEmail));
+            CCMenu * menu = CCMenu::create(bt_send_email, NULL);
+            menu->setPosition(ccp(550, 20));
+            cell->addChild(menu);
+        }
+        
+    }
+    return cell;
+}
+
+unsigned int RankingScene::numberOfCellsInTableView(CCTableView *table)
+{
+    return players->count();
+}
+Player::Player(string name, int point)
+{
+    this->_point = point;
+    this->_name = name;
+}
+Player::~Player(){}

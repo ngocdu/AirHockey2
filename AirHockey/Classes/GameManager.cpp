@@ -35,7 +35,7 @@ bool GameManager::getBgm()
 }
 string GameManager::getName()
 {
-    return this->name;
+    return CCUserDefault::sharedUserDefault()->getStringForKey("PlayerName");
 }
 void GameManager::setName(string name)
 {
@@ -44,7 +44,7 @@ void GameManager::setName(string name)
 }
 string GameManager::getEmail()
 {
-    return CCUserDefault::sharedUserDefault()->getStringForKey("PlayerName");
+    return this->email;
 }
 void GameManager::setEmail(string email)
 {

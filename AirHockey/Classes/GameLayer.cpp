@@ -23,8 +23,8 @@ GameLayer::GameLayer() {
     setAccelerometerEnabled(true);
     SimpleAudioEngine::sharedEngine()->preloadEffect("hitPuck.wav");
     _level = GameManager::sharedGameManager()->getLevel();
-    
-    CCSprite *backGroundImg = CCSprite::create("Court.png");
+    CCLOG("gamelayer name: %s", GameManager::sharedGameManager()->getName().c_str());
+    CCSprite *backGroundImg = CCSprite::create("Court2.png");
     backGroundImg->setPosition(ccp(w/2, h/2));
     this->addChild(backGroundImg);
     
@@ -34,9 +34,9 @@ GameLayer::GameLayer() {
     _scoreLabel1->setColor(ccBLACK);
     _scoreLabel2 = CCLabelTTF::create("0", "Arial", 48);
     _scoreLabel2->setColor(ccBLACK);
-    _scoreLabel1->setPosition(ccp(w - 50, h/2 - 50));
+    _scoreLabel1->setPosition(ccp(w - 70, h/2 - 100));
     _scoreLabel1->setRotation(90);
-    _scoreLabel2->setPosition(ccp(w - 50, h/2 + 50));
+    _scoreLabel2->setPosition(ccp(w - 70, h/2 + 100));
     _scoreLabel2->setRotation(90);
     this->addChild(_scoreLabel1);
     this->addChild(_scoreLabel2);
@@ -61,15 +61,15 @@ GameLayer::GameLayer() {
     _endLayerBg->setVisible(false);
     
     // Timer
-    _minutes = 2;
-    _seconds = 60;
+    _minutes = 3;
+    _seconds = 00;
     _playing = false;
     char timeBuf[20] = {0};
 	sprintf(timeBuf, "0%i:%i", _minutes, _seconds);
 
     _time = CCLabelTTF::create(timeBuf, "Times New Roman", 48);
     _time->setColor(ccBLACK);
-	_time->setPosition(ccp(40, h/2));
+	_time->setPosition(ccp(70, h/2));
     _time->setRotation(90);
 	this->addChild(_time, 1);
     
@@ -80,8 +80,8 @@ GameLayer::GameLayer() {
     startGame->setPosition(ccp(-w/2, h/2));
     this->addChild(startGame, 9, 1);
     
-    CCFiniteTimeAction *move1  = CCMoveTo::create(2, ccp(w/2, h/2));
-    CCFiniteTimeAction *move2  = CCMoveTo::create(2, ccp(w*3/2, h/2));
+    CCFiniteTimeAction *move1  = CCMoveTo::create(1, ccp(w/2, h/2));
+    CCFiniteTimeAction *move2  = CCMoveTo::create(1, ccp(w*3/2, h/2));
     CCFiniteTimeAction *delay = CCDelayTime::create(0.2);
     CCFiniteTimeAction *start = CCCallFuncN::create(this, callfuncN_selector(GameLayer::gameStart));
     startGame->runAction(CCSequence::create(move1, delay, move2, start, NULL));
@@ -152,15 +152,15 @@ void GameLayer::initPhysics() {
     this->createEdge(0, h/2, w, h/2, -10);
     
     // Create 2 Player and Puck
-    _player1 = Ball::create(this, humanPlayer, "mallet1.png");
+    _player1 = Ball::create(this, humanPlayer, "Mallet1_2.png");
     _player1->setStartPos(ccp(w/2, _player1->getRadius()*2));
     _player1->setSpritePosition(_player1->getStartPos());
     this->addChild(_player1);
-    _player2 = Ball::create(this, aiPlayer, "mallet2.png");
+    _player2 = Ball::create(this, aiPlayer, "Mallet2_2.png");
     _player2->setStartPos(ccp(w/2, h - _player2->getRadius()*2));
     _player2->setSpritePosition(_player2->getStartPos());
     this->addChild(_player2);
-    _puck = Ball::create(this, puck, "puck.png");
+    _puck = Ball::create(this, puck, "Puck.png");
     _puck->setStartPos(ccp(w/2, h/2));
     _puck->setSpritePosition(_puck->getStartPos());
     this->addChild(_puck);
@@ -201,7 +201,7 @@ void GameLayer::update(float dt) {
         _puck->update(dt);
     }
     
-    if ((_minutes == 0 && _seconds == 0) || _score1 == 1 || _score2 == 1) {
+    if ((_minutes == 0 && _seconds == 0) || _score1 == 3 || _score2 == 3) {
         _playing = false ;
         this->pauseSchedulerAndActions();
         this->endGame();
@@ -230,12 +230,14 @@ void GameLayer::update(float dt) {
         SimpleAudioEngine::sharedEngine()->playEffect("score.wav");
         this->scoreCounter(1);
         this->newTurn();
+        _puck->setPosition(ccp(w/2, h/2 + 3 * _puck->getRadius()));
     }
     
     if (_puck->getPositionY() < -_puck->getRadius()) {
         SimpleAudioEngine::sharedEngine()->playEffect("score.wav");
         this->scoreCounter(2);
         this->newTurn();
+        _puck->setPosition(ccp(w/2, h/2 - 3 * _puck->getRadius()));
     }
     
     // Collision Detection
@@ -415,8 +417,8 @@ void GameLayer::gameReset() {
     _player2->reset();
     _puck->reset();
     _score1 = _score2 = 0;
-    _minutes = 2;
-    _seconds = 60;
+    _minutes = 3;
+    _seconds = 0;
     
     _scoreLabel1->setString("0");
     _scoreLabel2->setString("0");
@@ -461,7 +463,7 @@ void GameLayer::Timer() {
 		else {
 			if(_minutes > 0) _minutes--;
 			else  _minutes = 0;
-			_seconds = 60;
+			_seconds = 59;
 		}
 	}
     

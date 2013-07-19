@@ -312,6 +312,10 @@
 		FB6FB7C51798DFA9001D5E0F /* 9.png in Resources */ = {isa = PBXBuildFile; fileRef = FB6FB7B01798DFA9001D5E0F /* 9.png */; };
 		FB6FB7C61798DFA9001D5E0F /* Start.png in Resources */ = {isa = PBXBuildFile; fileRef = FB6FB7B11798DFA9001D5E0F /* Start.png */; };
 		FB6FB7C71798DFA9001D5E0F /* StartGame.png in Resources */ = {isa = PBXBuildFile; fileRef = FB6FB7B21798DFA9001D5E0F /* StartGame.png */; };
+		FB6FB7C91799273F001D5E0F /* Present.png in Resources */ = {isa = PBXBuildFile; fileRef = FB6FB7C81799273F001D5E0F /* Present.png */; };
+		FB6FB7CB17994898001D5E0F /* Court2.png in Resources */ = {isa = PBXBuildFile; fileRef = FB6FB7CA17994897001D5E0F /* Court2.png */; };
+		FB6FB7CE17994A2A001D5E0F /* Mallet1_2.png in Resources */ = {isa = PBXBuildFile; fileRef = FB6FB7CC17994A29001D5E0F /* Mallet1_2.png */; };
+		FB6FB7CF17994A2A001D5E0F /* Mallet2_2.png in Resources */ = {isa = PBXBuildFile; fileRef = FB6FB7CD17994A29001D5E0F /* Mallet2_2.png */; };
 		FBBDCE011797EB7D00D63C5F /* Star.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBDCE001797EB7D00D63C5F /* Star.png */; };
 		FBBDDE081798DB7800D63C5F /* BgmOff.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBDDE041798DB7500D63C5F /* BgmOff.png */; };
 		FBBDDE091798DB7800D63C5F /* BgmOn.png in Resources */ = {isa = PBXBuildFile; fileRef = FBBDDE051798DB7600D63C5F /* BgmOn.png */; };
@@ -961,6 +965,10 @@
 		FB6FB7B01798DFA9001D5E0F /* 9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 9.png; sourceTree = "<group>"; };
 		FB6FB7B11798DFA9001D5E0F /* Start.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Start.png; path = Resources/Start.png; sourceTree = "<group>"; };
 		FB6FB7B21798DFA9001D5E0F /* StartGame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StartGame.png; path = Resources/StartGame.png; sourceTree = "<group>"; };
+		FB6FB7C81799273F001D5E0F /* Present.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Present.png; path = Resources/Present.png; sourceTree = "<group>"; };
+		FB6FB7CA17994897001D5E0F /* Court2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Court2.png; path = Resources/Court2.png; sourceTree = "<group>"; };
+		FB6FB7CC17994A29001D5E0F /* Mallet1_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Mallet1_2.png; path = Resources/Mallet1_2.png; sourceTree = "<group>"; };
+		FB6FB7CD17994A29001D5E0F /* Mallet2_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Mallet2_2.png; path = Resources/Mallet2_2.png; sourceTree = "<group>"; };
 		FBBDCE001797EB7D00D63C5F /* Star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Star.png; path = Resources/Star.png; sourceTree = "<group>"; };
 		FBBDDE041798DB7500D63C5F /* BgmOff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BgmOff.png; path = Resources/BgmOff.png; sourceTree = "<group>"; };
 		FBBDDE051798DB7600D63C5F /* BgmOn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = BgmOn.png; path = Resources/BgmOn.png; sourceTree = "<group>"; };
@@ -1058,8 +1066,12 @@
 				DC8278101794EDA9008E3541 /* Default@2x.png */,
 				FBBDDE101798DD8000D63C5F /* iTunesArtwork */,
 				0F463BC81793D966003F54B2 /* EndGameBG.png */,
+				FB6FB7CC17994A29001D5E0F /* Mallet1_2.png */,
+				FB6FB7CD17994A29001D5E0F /* Mallet2_2.png */,
+				FB6FB7C81799273F001D5E0F /* Present.png */,
 				0F47DA31178C0CE60098FE42 /* Icon-72.png */,
 				0F47DA33178C0CE60098FE42 /* Icon-Small-50.png */,
+				FB6FB7CA17994897001D5E0F /* Court2.png */,
 				0F47DA35178C0CE60098FE42 /* Icon-Small.png */,
 				0F47DA37178C0CE60098FE42 /* Icon-Small@2x.png */,
 				FBBDDE121798DE7D00D63C5F /* CloseNormal.png */,
@@ -2344,6 +2356,10 @@
 				FB6FB7C51798DFA9001D5E0F /* 9.png in Resources */,
 				FB6FB7C61798DFA9001D5E0F /* Start.png in Resources */,
 				FB6FB7C71798DFA9001D5E0F /* StartGame.png in Resources */,
+				FB6FB7C91799273F001D5E0F /* Present.png in Resources */,
+				FB6FB7CB17994898001D5E0F /* Court2.png in Resources */,
+				FB6FB7CE17994A2A001D5E0F /* Mallet1_2.png in Resources */,
+				FB6FB7CF17994A2A001D5E0F /* Mallet2_2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

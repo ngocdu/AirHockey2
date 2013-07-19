@@ -37,7 +37,7 @@ void Ball::initBall(const char *pszFileName) {
     if (_type == humanPlayer || _type == aiPlayer) {
         bodyDef.linearDamping = 5.0;
     }
-    
+
     _body = _game->getWorld()->CreateBody(&bodyDef);
     _body->SetSleepingAllowed(true);
     _body->SetBullet(true);
