@@ -13,6 +13,7 @@ private:
     int level;
     string email;
     int point;
+    string ipAddr;
     //Constructor
     GameManager();
 
@@ -32,6 +33,8 @@ public:
     void setLevel(int level);
     int getPoint();
     void setPoint(int point);
+    string getIpAddr();
+    void setIpAddr(string ipAddr);
 };
 
 #endif

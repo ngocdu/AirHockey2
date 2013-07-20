@@ -102,8 +102,9 @@ void GetPresent::menuSendEmail(CCObject *pSender)
         int p = GameManager::sharedGameManager()->getPoint();
         char strP[20] = {0};
         sprintf(strP, "%i", p);
-        string email = GameManager::sharedGameManager()->getEmail();
-        string url = "http://192.168.1.59:3000/users?name="+name+"&point="+strP+"&email="+email;
+        string email  = GameManager::sharedGameManager()->getEmail();
+        string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+        string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
         request->setUrl(url.c_str());
         request->setRequestType(CCHttpRequest::kHttpPost);
         CCHttpClient::getInstance()->send(request);

@@ -22,6 +22,7 @@
 USING_NS_CC;
 using namespace cocos2d::extension;
 using namespace CocosDenshion;
+using namespace std;
 
 class GameLayer : public CCLayer {
 public:

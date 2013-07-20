@@ -479,7 +479,8 @@ void GameLayer::Timer() {
 #pragma mark Check High Score
 void GameLayer::checkHighScore() {
     CCHttpRequest* request = new CCHttpRequest();
-    request->setUrl("http://192.168.1.59:3000/users.json");
+    string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+    request->setUrl((ipAddr + ":3000/users.json").c_str());
     request->setRequestType(CCHttpRequest::kHttpGet);
     request->setResponseCallback(this, callfuncND_selector(GameLayer::onHttpRequestCompleted));
     CCHttpClient::getInstance()->send(request);
@@ -560,7 +561,8 @@ void GameLayer::endGame() {
         string name = GameManager::sharedGameManager()->getName();
         char strP[20] = {0};
         sprintf(strP, "%i", p);
-        string url = "http://192.168.1.59:3000/users?name="+name+"&point="+strP+"&email=ngocduk54a2@gmail.com"+"&reward=0";
+        string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+        string url = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email=ngocduk54a2@gmail.com"+"&reward=0";
         request->setUrl(url.c_str());
         request->setRequestType(CCHttpRequest::kHttpPost);
         CCHttpClient::getInstance()->send(request);

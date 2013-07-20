@@ -40,7 +40,8 @@ bool RankingScene::init() {
     this->addChild(ranking_bg);
 
     CCHttpRequest* request = new CCHttpRequest();
-    request->setUrl("http://192.168.1.59:3000/users.json");
+    string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+    request->setUrl((ipAddr+":3000/users.json").c_str());
     request->setRequestType(CCHttpRequest::kHttpGet);
     request->setResponseCallback(this, callfuncND_selector(RankingScene::onHttpRequestCompleted));
     CCHttpClient::getInstance()->send(request);
@@ -189,8 +190,9 @@ CCTableViewCell* RankingScene::tableCellAtIndex(CCTableView *table, unsigned int
         int pointMax = CCUserDefault::sharedUserDefault()->getIntegerForKey("pointMax");
         if (p->getReward() != 0 && rewardLocal != 0 &&
             p->getName() == nameLocal && p->getPoint() == pointMax) {
-            CCMenuItemImage *bt_send_email = CCMenuItemImage::create("Present.png",
-                                                                     "Present.png", this, menu_selector(RankingScene::clickBtSendEmail));
+            CCMenuItemImage *bt_send_email =
+                CCMenuItemImage::create("Present.png","Present.png",
+                                        this, menu_selector(RankingScene::clickBtSendEmail));
             CCMenu * menu = CCMenu::create(bt_send_email, NULL);
             menu->setPosition(ccp(550, 20));
             cell->addChild(menu);
