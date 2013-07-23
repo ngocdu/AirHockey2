@@ -41,13 +41,18 @@ GameLayer::GameLayer() {
     this->addChild(_scoreLabel1);
     this->addChild(_scoreLabel2);
 
+    // Pause Button
+    _pauseButton = CCSprite::create("PauseButton.png");
+    _pauseButton->setPosition(ccp(w - 70, h/2));
+    this->addChild(_pauseButton);
+    
     // End Game
     _endLayerBg = CCSprite::create("EndGameBG.png");
     _endLayerBg->setPosition(ccp(w/2, h/2));
     this->addChild(_endLayerBg, 5);
     ew = _endLayerBg->getContentSize().width;
     eh = _endLayerBg->getContentSize().height;
-    _rematchButton = CCSprite::create("Rematch.png");
+    _rematchButton = CCSprite::create("Continue.png");
     _rematchButton->setPosition(ccp(ew/2, eh/2));
     _endLayerBg->addChild(_rematchButton);
     
@@ -65,11 +70,11 @@ GameLayer::GameLayer() {
     _seconds = 00;
     _playing = false;
     char timeBuf[20] = {0};
-	sprintf(timeBuf, "0%i:%i", _minutes, _seconds);
+	sprintf(timeBuf, "0%i:0%i", _minutes, _seconds);
 
-    _time = CCLabelTTF::create(timeBuf, "Times New Roman", 48);
+    _time = CCLabelTTF::create(timeBuf, "Times New Roman", 40);
     _time->setColor(ccBLACK);
-	_time->setPosition(ccp(70, h/2));
+	_time->setPosition(ccp(60, h/2));
     _time->setRotation(90);
 	this->addChild(_time);
     
@@ -83,7 +88,7 @@ GameLayer::GameLayer() {
     CCFiniteTimeAction *move1  = CCMoveTo::create(1, ccp(w/2, h/2));
     CCFiniteTimeAction *move2  = CCMoveTo::create(1, ccp(w*3/2, h/2));
     CCFiniteTimeAction *delay = CCDelayTime::create(0.2);
-    CCFiniteTimeAction *start = CCCallFuncN::create(this, callfuncN_selector(GameLayer::gameStart));
+    CCFiniteTimeAction *start = CCCallFuncN::create(this, callfuncN_selector(GameLayer::onStart));
     startGame->runAction(CCSequence::create(move1, delay, move2, start, NULL));
     
     // Scheduler
@@ -178,7 +183,7 @@ void GameLayer::createEdge(float x1, float y1,
     _groundBody->CreateFixture(&groundEdgeDef);
 }
 
-void GameLayer::gameStart() {
+void GameLayer::onStart() {
     _playing = true;
     this->removeChildByTag(1);
 }
@@ -203,6 +208,7 @@ void GameLayer::update(float dt) {
     
     if ((_minutes == 0 && _seconds == 0) || _score1 == 3 || _score2 == 3) {
         _playing = false ;
+        _isEnd = true;
         this->pauseSchedulerAndActions();
         this->endGame();
     }
@@ -332,23 +338,28 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
         CCTouch *touch = (CCTouch *)touches->anyObject();
         CCPoint tap = touch->getLocation();
         b2Vec2 target = this->ptm(tap);
-
-        if (tap.y < h/2 - _player1->getRadius() &&
-            tap.y > 10 + _player1->getRadius()  &&
-            tap.x > 10 + _player1->getRadius()  &&
-            tap.x < w - _player1->getRadius()) {
-            b2MouseJointDef md;
-            md.bodyA =  _groundBody;
-            md.bodyB = _player1->getBody();
-            md.target = target;
-            md.collideConnected = true;
-            md.maxForce = 100000.0f * _player1->getBody()->GetMass();
-            md.dampingRatio = 0;
-            md.frequencyHz = 1000;
-            
-            _player1->setSpritePosition(tap);
-            _mouseJoint = (b2MouseJoint *)_world->CreateJoint(&md);
-            _player1->getBody()->SetAwake(true);
+        CCRect pauseRect = _pauseButton->boundingBox();
+        
+        if (pauseRect.containsPoint(tap)) {
+            _isPauseClicked = true;
+        } else {
+            if (tap.y < h/2 - _player1->getRadius() &&
+                tap.y > 10 + _player1->getRadius()  &&
+                tap.x > 10 + _player1->getRadius()  &&
+                tap.x < w - _player1->getRadius()) {
+                b2MouseJointDef md;
+                md.bodyA =  _groundBody;
+                md.bodyB = _player1->getBody();
+                md.target = target;
+                md.collideConnected = true;
+                md.maxForce = 100000.0f * _player1->getBody()->GetMass();
+                md.dampingRatio = 0;
+                md.frequencyHz = 1000;
+                
+                _player1->setSpritePosition(tap);
+                _mouseJoint = (b2MouseJoint *)_world->CreateJoint(&md);
+                _player1->getBody()->SetAwake(true);
+            }
         }
     } else {
         CCTouch *touch = (CCTouch *)touches->anyObject();
@@ -373,7 +384,7 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
             _playing = true;
             this->resumeSchedulerAndActions();
             _endLayerBg->setVisible(false);
-            this->gameReset();
+            if (_isEnd) this->gameReset();
         }
     }
 }
@@ -393,9 +404,22 @@ void GameLayer::ccTouchesMoved(CCSet* touches, CCEvent* event) {
 }
 
 void GameLayer::ccTouchesEnded(CCSet* touches, CCEvent* event) {
-    if (_mouseJoint != NULL) {
-        _world->DestroyJoint(_mouseJoint);
-        _mouseJoint = NULL;
+    if (_isPauseClicked) {
+        CCTouch *touch = (CCTouch *)touches->anyObject();
+        CCPoint tap = touch->getLocation();
+        CCRect pauseRect = _pauseButton->boundingBox();
+        
+        if (pauseRect.containsPoint(tap)) {
+            _endLayerBg->setVisible(true);
+            this->pauseSchedulerAndActions();
+            _playing = false;
+            resultLabel->setVisible(false);
+        }
+    } else {
+        if (_mouseJoint != NULL) {
+            _world->DestroyJoint(_mouseJoint);
+            _mouseJoint = NULL;
+        }
     }
 }
 
@@ -416,6 +440,8 @@ void GameLayer::gameReset() {
     _player1->reset();
     _player2->reset();
     _puck->reset();
+    
+    _isEnd = false;
     _score1 = _score2 = 0;
     _minutes = 3;
     _seconds = 0;
@@ -573,6 +599,7 @@ void GameLayer::endGame() {
     else resultLabel->setString("YOU LOSE");
     
     _endLayerBg->setVisible(true);
+    resultLabel->setVisible(true);  
 }
 
 

@@ -36,7 +36,7 @@ public:
     void initPhysics();
     void createEdge(float x1, float y1, float x2, float y2, int groupIndex);
     
-    void gameStart();
+    void onStart();
     
     virtual void draw();
     void update(float dt);
@@ -72,13 +72,14 @@ public:
 private:
     
     CCSize s = CCDirector::sharedDirector()->getWinSize();
-    float w = s.width;
-    float h = s.height;
+    float w  = s.width;
+    float h  = s.height;
     
     b2Body *_groundBody;
     
     CCSprite *_p1;
     CCSprite *_p2;
+    CCSprite *_pauseButton;
     CCSprite *_endLayerBg;
     CCSprite *_rematchButton;
     CCSprite *_quitButton;
@@ -93,12 +94,15 @@ private:
     
     int _score1  = 0;
     int _score2  = 0;
-    int lastHit = 0;
+    int lastHit  = 0;
     int _minutes, _seconds;
+    
     // Game Level Easy = 1, Medium = 2, Hard = 3
     int _level;
     
-    bool _playing;
+    bool _playing           = false;
+    bool _isPauseClicked    = false;
+    bool _isEnd             = false;
     
     float x, y, px, py;
     float vx, vy, vpx, vpy;
