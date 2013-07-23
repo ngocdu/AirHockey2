@@ -36,29 +36,45 @@ bool GetPresent::init()
     
     CCSize editBoxSize = CCSizeMake(visibleSize.width - 100, 60);
     
-    // top
-    m_pEditName =
+    // email
+    m_pUserEmail =
     extension::CCEditBox::create(editBoxSize,
                                  extension::CCScale9Sprite::create("GreenBox.png"));
-    m_pEditName->setPosition(ccp(visibleOrigin.x + visibleSize.width / 2,
+    m_pUserEmail->setPosition(ccp(visibleOrigin.x + visibleSize.width / 2,
                                  visibleOrigin.y + visibleSize.height * 3 / 4));
-    m_pEditName->setFontSize(40);
-    m_pEditName->setFontColor(ccRED);
-    m_pEditName->setPlaceHolder("input your Email to receive reward:");
-    m_pEditName->setPlaceholderFontColor(ccWHITE);
-    m_pEditName->setMaxLength(55);
-    m_pEditName->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
-    m_pEditName->setDelegate(this);
-    this->addChild(m_pEditName);
+    m_pUserEmail->setFontSize(40);
+    m_pUserEmail->setFontColor(ccRED);
+    m_pUserEmail->setPlaceHolder("input your Email to receive reward:");
+    m_pUserEmail->setPlaceholderFontColor(ccWHITE);
+    m_pUserEmail->setMaxLength(55);
+    m_pUserEmail->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
+    m_pUserEmail->setDelegate(this);
+    this->addChild(m_pUserEmail);
+    
+    // name
+    m_pUserName =
+    extension::CCEditBox::create(editBoxSize,
+                                 extension::CCScale9Sprite::create("GreenBox.png"));
+    m_pUserName->setPosition(ccp(visibleOrigin.x + visibleSize.width / 2,
+                                 visibleOrigin.y + visibleSize.height * 2 / 4));
+    m_pUserName->setFontSize(40);
+    m_pUserName->setFontColor(ccRED);
+    m_pUserName->setPlaceHolder("input your username");
+    m_pUserName->setPlaceholderFontColor(ccWHITE);
+    m_pUserName->setMaxLength(55);
+    m_pUserName->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
+    m_pUserName->setDelegate(this);
+    this->addChild(m_pUserName);
+    
     CCMenuItemFont *sendMenuItem =
         CCMenuItemFont::create("SendEmail", this, menu_selector(GetPresent::menuSendEmail));
-    sendMenuItem->setPosition(ccp(size.width / 2, size.height * 0.5));
+    sendMenuItem->setPosition(ccp(size.width / 2, size.height * 0.25));
     sendMenuItem->setFontSizeObj(70);
     sendMenuItem->setFontSize(70);
     
     CCMenuItemFont *backMenuItem =
     CCMenuItemFont::create("Back", this, menu_selector(GetPresent::menuBack));
-    backMenuItem->setPosition(ccp(size.width / 2, size.height * 0.3));
+    backMenuItem->setPosition(ccp(size.width / 2, size.height * 0.15));
     backMenuItem->setFontSizeObj(70);
     backMenuItem->setFontSize(70);
     
@@ -87,7 +103,7 @@ void GetPresent::editBoxTextChanged(cocos2d::extension::CCEditBox* editBox,
 void GetPresent::editBoxReturn(cocos2d::extension::CCEditBox* editBox)
 {
     //CCLog("editBox %p was returned !");
-    GameManager::sharedGameManager()->setEmail(m_pEditName->getText());
+    GameManager::sharedGameManager()->setEmail(m_pUserEmail->getText());
 }
 bool GetPresent::is_email(std::string const& address) {
     size_t at_index = address.find_first_of('@', 0);
@@ -96,7 +112,79 @@ bool GetPresent::is_email(std::string const& address) {
 }
 void GetPresent::menuSendEmail(CCObject *pSender)
 {
-    if (strcmp(m_pEditName->getText(), "") != 0 && this->is_email(m_pEditName->getText())) {
+    if (strcmp(m_pUserName->getText(), "") != 0) {
+        //--------------
+        GameManager::sharedGameManager()->setName(m_pUserName->getText());
+        CCHttpRequest* request = new CCHttpRequest();
+        string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+        request->setUrl((ipAddr+":3000/users.json").c_str());
+        request->setRequestType(CCHttpRequest::kHttpGet);
+        request->setResponseCallback(this, callfuncND_selector(GetPresent::onHttpRequestCompleted));
+        CCHttpClient::getInstance()->send(request);
+        request->release();
+    }
+}
+void GetPresent::menuBack(cocos2d::CCObject *pSender) {
+    CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
+}
+void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
+    CCSize w = CCDirector::sharedDirector()->getWinSize();
+    CCHttpResponse *response = (CCHttpResponse*)data;
+    if (!response)
+    {
+        return;
+    }
+    if (0 != strlen(response->getHttpRequest()->getTag()))
+    {
+        CCLog("%s completed", response->getHttpRequest()->getTag());
+    }
+    
+    int statusCode = response->getResponseCode();
+    char statusString[64] = {0};
+    sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode,
+            response->getHttpRequest()->getTag());
+    
+    if (!response->isSucceed())
+    {
+        CCLabelTTF *notConnectLabel =
+        CCLabelTTF::create("Can't load Data", "Time new roman", 20);
+        notConnectLabel->setPosition(ccp(w.width/2, w.height/2));
+        this->addChild(notConnectLabel);
+        return;
+    }
+    
+    // dump data
+    std::vector<char> *buffer = response->getResponseData();
+    char * data2 = (char*)(malloc(buffer->size() *  sizeof(char)));
+    int d = -1;
+    printf("Http Test, dump data: ");
+    for (unsigned int i = 0; i < buffer->size(); i++)
+    {
+        d++ ;
+        data2[d] = (*buffer)[i];
+    }
+    data2[d + 1] = '\0';
+    //-----------------------
+    
+    rapidjson::Document document;
+    if(data2 != NULL && !document.Parse<0>(data2).HasParseError())
+    {
+        for (rapidjson::SizeType  i = 0; i < document.Size(); i++)
+        {
+            string name = document[i]["name"].GetString();
+            CCLOG("%s", name.c_str());
+            CCLOG("%s", m_pUserName->getText());
+            if (strcmp(m_pUserName->getText(), name.c_str()) == 0) {
+                CCLOG("co ten trung nhau");
+                m_pUserName->setText("co ten trung nhau");
+                return;
+            }
+        }
+    } else {
+        CCLog(document.GetParseError());
+    }
+    
+    if (strcmp(m_pUserEmail->getText(), "") != 0 && this->is_email(m_pUserEmail->getText())) {
         CCHttpRequest * request = new CCHttpRequest();
         string name = GameManager::sharedGameManager()->getName();
         int p = GameManager::sharedGameManager()->getPoint();
@@ -109,12 +197,9 @@ void GetPresent::menuSendEmail(CCObject *pSender)
         request->setRequestType(CCHttpRequest::kHttpPost);
         CCHttpClient::getInstance()->send(request);
         request->release();
-        m_pEditName->setText("email send succses");
-        CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", 0);
+        m_pUserEmail->setText("email send succses");
     }else {
-        m_pEditName->setText("email fail");
+        m_pUserEmail->setText("email fail");
     }
-}
-void GetPresent::menuBack(cocos2d::CCObject *pSender) {
-    CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
+    d-=1;
 }

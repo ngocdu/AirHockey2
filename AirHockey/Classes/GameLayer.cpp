@@ -550,12 +550,7 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
         (GameManager::sharedGameManager()->getLevel() * 2000);
         for (rapidjson::SizeType  i = 0; i < document.Size(); i++)
         {
-            if (document[i]["name"].GetString() == name &&
-                point == document[i]["point"].GetInt() &&
-                document[i]["reward"].GetInt() != 0) {
-                int rewark = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
-                CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", rewark + 1);
-                CCUserDefault::sharedUserDefault()->setIntegerForKey("pointMax", point);
+            if (point > document[i]["point"].GetInt()) {
                 CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
                 break;
             }
@@ -580,19 +575,7 @@ void GameLayer::endGame() {
         this->addEffect(ccp(effectPoint.x - 100, effectPoint.y));
         this->addEffect(ccp(effectPoint.x + 100, effectPoint.y));
         
-        //---------send request to server ------------
-        CCHttpRequest* request = new CCHttpRequest();
-        
         GameManager::sharedGameManager()->setPoint(p);
-        string name = GameManager::sharedGameManager()->getName();
-        char strP[20] = {0};
-        sprintf(strP, "%i", p);
-        string ipAddr = GameManager::sharedGameManager()->getIpAddr();
-        string url = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email=ngocduk54a2@gmail.com"+"&reward=0";
-        request->setUrl(url.c_str());
-        request->setRequestType(CCHttpRequest::kHttpPost);
-        CCHttpClient::getInstance()->send(request);
-        request->release();
         this->checkHighScore();
     }
     else if (_score1 == _score2) resultLabel->setString("DRAW");

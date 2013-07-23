@@ -38,59 +38,37 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    user_first = User.where(name: params[:name], point: params[:point].to_i)
-    if user_first.first != nil
-      respond_to do |format|
-        user_first.first.email = params[:email]
-        if user_first.first.save
-          if user_first.first.reward != 0
-            UserMailer.welcome_email(user_first.first).deliver
-            user_first.first.reward = 0
-            user_first.first.save
-          end
-          format.html { redirect_to @user, notice: 'User was successfully updated.' }
-          format.json { head :no_content }
-        else
-          format.html { render action: "edit" }
-          format.json { render json: @user.errors, status: :unprocessable_entity }
-        end
-      end
-    else
-      point_new = params[:point]
+    point_new = params[:point]
     if User.all.count >= 10
-      point = User.first.point
+      point_min = User.last.point
       point_max = User.first.point
-      user = User.first
+      user_min = User.last
       user_max = User.first
-      User.all.each do |u|
-        if u.point < point
-          user = u
-          point = u.point
-        elsif u.point > point_max
-          user_max = u
-          point_max = u.point
-        end
-      end
-
-      if user.point < point_new.to_i
-        user.destroy
+      
+      if point_max < point_new.to_i
+        bingding.pry
+        user_min.destroy
         @user = nil
-        if point_new.to_i > user_max.point
           @user = User.new(name: params[:name], point: params[:point],
-            email: params[:email], reward: 1)
-        else
-          @user = User.new(name: params[:name], point: params[:point],
-            email: params[:email], reward: params[:reward])
-        end
+            email: params[:email], reward: 0)
         respond_to do |format|
           if @user.save
+            bingding.pry
+              UserMailer.welcome_email(@user).deliver
             format.html { redirect_to @users, notice: 'User was successfully created.' }
             format.json { render json: @users, status: :created, location: @user }
           else
             format.html { render action: "new" }
             format.json { render json: @user.errors, status: :unprocessable_entity }
           end
-        end 
+        end
+      else
+        bingding.pry
+          user_min.destroy
+          @user = nil
+          @user = User.new(name: params[:name], point: params[:point],
+                           email: params[:email], reward: 0)
+          @user.save
       end
     else
       @user = User.new(name: params[:name], point: params[:point], email: params[:email], reward: params[:reward])
@@ -103,8 +81,7 @@ class UsersController < ApplicationController
             format.json { render json: @user.errors, status: :unprocessable_entity }
           end
         end
-    end
-    end 
+     end
   end
   
   def updateEmail
