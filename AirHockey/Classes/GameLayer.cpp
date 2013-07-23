@@ -206,7 +206,7 @@ void GameLayer::update(float dt) {
         _puck->update(dt);
     }
     
-    if ((_minutes == 0 && _seconds == 0) || _score1 == 3 || _score2 == 3) {
+    if ((_minutes == 0 && _seconds == 0) || _score1 == 1 || _score2 == 1) {
         _playing = false ;
         _isEnd = true;
         this->pauseSchedulerAndActions();

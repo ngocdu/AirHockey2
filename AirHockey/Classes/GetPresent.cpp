@@ -108,8 +108,49 @@ void GetPresent::editBoxReturn(cocos2d::extension::CCEditBox* editBox)
 bool GetPresent::is_email(std::string const& address) {
     size_t at_index = address.find_first_of('@', 0);
     return at_index != std::string::npos
-    && address.find_first_of('.', at_index) != std::string::npos;
+      && address.find_first_of('.', at_index) != std::string::npos;
+    
 }
+int GetPresent::spc_email_isvalid(const char *address) {
+    int        count = 0;
+    const char *c, *domain;
+    static char *rfc822_specials = "()<>@,;:\\\"[]!#$&%|*+}{?\'";
+    
+    /* first we validate the name portion (name@domain) */
+    for (c = address;  *c;  c++) {
+        if (*c == '\"' && (c == address || *(c - 1) == '.' || *(c - 1) ==
+                           '\"')) {
+            while (*++c) {
+                if (*c == '\"') break;
+                if (*c == '\\' && (*++c == ' ')) continue;
+                if (*c == '&' || *c == '%' || *c == '$' || *c == '#' || *c == '!'
+                    || *c <= ' ' || *c >= 127) return 0;
+            }
+            if (!*c++) return 0;
+            if (*c == '@') break;
+            if (*c != '.') return 0;
+            continue;
+        }
+        if (*c == '@') break;
+        if (*c <= ' ' || *c >= 127) return 0;
+        if (strchr(rfc822_specials, *c)) return 0;
+    }
+    if (c == address || *(c - 1) == '.') return 0;
+    
+    /* next we validate the domain portion (name@domain) */
+    if (!*(domain = ++c)) return 0;
+    do {
+        if (*c == '.') {
+            if (c == domain || *(c - 1) == '.') return 0;
+            count++;
+        }
+        if (*c <= ' ' || *c >= 127) return 0;
+        if (strchr(rfc822_specials, *c)) return 0;
+    } while (*++c);
+    
+    return (count >= 1);
+}
+
 void GetPresent::menuSendEmail(CCObject *pSender)
 {
     if (strcmp(m_pUserName->getText(), "") != 0) {
@@ -176,15 +217,15 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
             CCLOG("%s", m_pUserName->getText());
             if (strcmp(m_pUserName->getText(), name.c_str()) == 0) {
                 CCLOG("co ten trung nhau");
-                m_pUserName->setText("co ten trung nhau");
+                m_pUserName->setText("that name was existed");
                 return;
             }
         }
     } else {
         CCLog(document.GetParseError());
     }
-    
-    if (strcmp(m_pUserEmail->getText(), "") != 0 && this->is_email(m_pUserEmail->getText())) {
+    if (strcmp(m_pUserEmail->getText(), "") != 0 && this->is_email(m_pUserEmail->getText()) &&
+        this->spc_email_isvalid(m_pUserEmail->getText())) {
         CCHttpRequest * request = new CCHttpRequest();
         string name = GameManager::sharedGameManager()->getName();
         int p = GameManager::sharedGameManager()->getPoint();
@@ -198,6 +239,7 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
         CCHttpClient::getInstance()->send(request);
         request->release();
         m_pUserEmail->setText("email send succses");
+        CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
     }else {
         m_pUserEmail->setText("email fail");
     }
