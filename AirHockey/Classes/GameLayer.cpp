@@ -30,9 +30,9 @@ GameLayer::GameLayer() {
     
     
     // Score Counter
-    _scoreLabel1 = CCLabelTTF::create("0", "Arial", 48);
+    _scoreLabel1 = CCLabelTTF::create("0", "BankGothic Md BT", 48);
     _scoreLabel1->setColor(ccBLACK);
-    _scoreLabel2 = CCLabelTTF::create("0", "Arial", 48);
+    _scoreLabel2 = CCLabelTTF::create("0", "BankGothic Md BT", 48);
     _scoreLabel2->setColor(ccBLACK);
     _scoreLabel1->setPosition(ccp(w - 70, h/2 - 100));
     _scoreLabel1->setRotation(90);
@@ -60,7 +60,7 @@ GameLayer::GameLayer() {
     _quitButton->setPosition(ccp(ew/2, eh/4));
     _endLayerBg->addChild(_quitButton);
     
-    resultLabel = CCLabelTTF::create("DRAW", "Arial", 64);
+    resultLabel = CCLabelTTF::create("DRAW", "BankGothic Md BT", 64);
     resultLabel->setPosition(ccp(ew/2, eh*5/6));
     _endLayerBg->addChild(resultLabel);
     _endLayerBg->setVisible(false);
@@ -72,7 +72,7 @@ GameLayer::GameLayer() {
     char timeBuf[20] = {0};
 	sprintf(timeBuf, "0%i:0%i", _minutes, _seconds);
 
-    _time = CCLabelTTF::create(timeBuf, "Times New Roman", 40);
+    _time = CCLabelTTF::create(timeBuf, "BankGothic Md BT", 40);
     _time->setColor(ccBLACK);
 	_time->setPosition(ccp(60, h/2));
     _time->setRotation(90);
@@ -81,7 +81,7 @@ GameLayer::GameLayer() {
     // Physics
     this->initPhysics();
     
-    CCSprite *startGame = CCSprite::create("StartGame.png");
+    CCSprite *startGame = CCSprite::create("OnStart.png");
     startGame->setPosition(ccp(-w/2, h/2));
     this->addChild(startGame, 9, 1);
     

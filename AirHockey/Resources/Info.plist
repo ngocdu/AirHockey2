@@ -27,6 +27,10 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>BankGothic Md BT.ttf</string>
+	</array>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>

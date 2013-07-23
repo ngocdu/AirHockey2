@@ -31,13 +31,13 @@ CCScene* RankingScene::scene() {
 }
 
 bool RankingScene::init() {
-    CCSprite *background = CCSprite::create("Menu.png");
+    CCSprite *background = CCSprite::create("BackGround2.png");
     background->setPosition(ccp(w/2, h/2));
     this->addChild(background);
     
-    CCSprite *ranking_bg = CCSprite::create("RankingBG.png");
-    ranking_bg->setPosition(ccp(w/2, h/2));
-    this->addChild(ranking_bg);
+//    CCSprite *ranking_bg = CCSprite::create("RankingBG.png");
+//    ranking_bg->setPosition(ccp(w/2, h/2));
+//    this->addChild(ranking_bg);
 
     CCHttpRequest* request = new CCHttpRequest();
     string ipAddr = GameManager::sharedGameManager()->getIpAddr();
@@ -51,13 +51,13 @@ bool RankingScene::init() {
     CCMenuItemImage *playItem =
         CCMenuItemImage::create("StartButton.png", "StartButton.png",
                                 this, menu_selector(RankingScene::play));
-    playItem->setPosition(ccp(w/2, h/6));
+    playItem->setPosition(ccp(w/2, h/8));
     playItem->setScale(0.7f);
     //create bgmItem
     CCMenuItemImage *bgmItem =
         CCMenuItemImage::create("BgmOn.png", "BgmOn.png",
                                 this, menu_selector(RankingScene::bgm));
-    bgmItem->setPosition(ccp(w*4/5, h/6));
+    bgmItem->setPosition(ccp(w*4/5, h/8));
     CCMenu* pMenu = CCMenu::create(playItem, bgmItem, NULL);
     pMenu->setPosition(ccp(0,0));
     this->addChild(pMenu);
@@ -94,7 +94,7 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
     if (!response->isSucceed())
     {
         CCLabelTTF *notConnectLabel =
-        CCLabelTTF::create("Can't load Data", "Time new roman", 20);
+        CCLabelTTF::create("Can't load Data", "BankGothic Md BT", 20);
         notConnectLabel->setPosition(ccp(w/2, h/2));
         this->addChild(notConnectLabel);
         return;
@@ -129,7 +129,7 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
     CCTableView *tableView=CCTableView::create(this, CCSizeMake(700, 350));
     tableView->setDirection(kCCScrollViewDirectionVertical);
     tableView->setAnchorPoint(ccp(0, 0));
-    tableView->setPosition(ccp(size.width/8, 300));
+    tableView->setPosition(ccp(size.width/8, 280));
     tableView->setDelegate(this);
     tableView->setVerticalFillOrder(kCCTableViewFillTopDown);
     this->addChild(tableView, 21);

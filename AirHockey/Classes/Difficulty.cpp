@@ -21,7 +21,7 @@ CCScene* Difficulty::scene() {
 }
 
 bool Difficulty::init() {
-    CCSprite *background = CCSprite::create("Menu.png");
+    CCSprite *background = CCSprite::create("BackGround3.png");
     background->setPosition(ccp(w/2, h/2));
     this->addChild(background);
     
@@ -50,21 +50,22 @@ bool Difficulty::init() {
 
     CCMenuItemFont *easyMenuItem =
     CCMenuItemFont::create("EASY", this, menu_selector(Difficulty::menuEasy));
-    easyMenuItem->setPosition(ccp(w/2, h*5/8));
+    easyMenuItem->setPosition(ccp(w/2, h/2));
     easyMenuItem->setFontSizeObj(70);
     easyMenuItem->setFontSize(70);
-    
+
     CCMenuItemFont *mediumMenuItem =
     CCMenuItemFont::create("MEDIUM", this, menu_selector(Difficulty::menuMedium));
-    mediumMenuItem->setPosition(ccp(w/2, h/2));
+    mediumMenuItem->setPosition(ccp(w/2, h*2/5));
     
     CCMenuItemFont *hardMenuItem =
     CCMenuItemFont::create("HARD", this, menu_selector(Difficulty::menuHard));
-    hardMenuItem->setPosition(ccp(w/2, h*3/8));
-    
-    CCMenuItemFont *back =
-    CCMenuItemFont::create("BACK", this, menu_selector(Difficulty::clickBtBack));
-    back->setColor(ccc3(235, 154, 39));
+    hardMenuItem->setPosition(ccp(w/2, h*3/10      ));
+
+    CCMenuItemImage *back =
+    CCMenuItemImage::create("BackButton.png", "BackButton.png",
+                            this, menu_selector(Difficulty::clickBtBack));
+//    back->setColor(ccc3(235, 154, 39));
     back->setPosition(ccp(w/2, h/8));
     
     pMenu = CCMenu::create(easyMenuItem, mediumMenuItem, hardMenuItem, back, NULL);
