@@ -12,6 +12,9 @@
 using namespace cocos2d;
 class GetPresent : public CCLayer, public extension::CCEditBoxDelegate{
 private:
+    CCSize size = CCDirector::sharedDirector()->getWinSize();
+    float w = size.width;
+    float h = size.height;
     extension::CCEditBox* m_pUserEmail;
     extension::CCEditBox* m_pUserName;
     CCLabelTTF* m_pTTFShowEditReturn;
@@ -31,6 +34,7 @@ public:
     void menuSendEmail(CCObject *pSender);
     void menuBack(CCObject *pSender);
     bool is_email(std::string const& address);
+    int spc_email_isvalid(const char *address);
     void onHttpRequestCompleted(CCNode *sender, void *data);
     // a selector callback
     CREATE_FUNC(GetPresent);

@@ -35,10 +35,6 @@ bool RankingScene::init() {
     background->setPosition(ccp(w/2, h/2));
     this->addChild(background);
     
-//    CCSprite *ranking_bg = CCSprite::create("RankingBG.png");
-//    ranking_bg->setPosition(ccp(w/2, h/2));
-//    this->addChild(ranking_bg);
-
     CCHttpRequest* request = new CCHttpRequest();
     string ipAddr = GameManager::sharedGameManager()->getIpAddr();
     request->setUrl((ipAddr+":3000/users.json").c_str());
@@ -129,7 +125,7 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
     CCTableView *tableView=CCTableView::create(this, CCSizeMake(700, 350));
     tableView->setDirection(kCCScrollViewDirectionVertical);
     tableView->setAnchorPoint(ccp(0, 0));
-    tableView->setPosition(ccp(size.width/8, 280));
+    tableView->setPosition(ccp(size.width/8, 250));
     tableView->setDelegate(this);
     tableView->setVerticalFillOrder(kCCTableViewFillTopDown);
     this->addChild(tableView, 21);
@@ -169,20 +165,29 @@ CCTableViewCell* RankingScene::tableCellAtIndex(CCTableView *table, unsigned int
     CCTableViewCell *cell = table->dequeueCell();
     cell = new CCTableViewCell();
     cell->autorelease();
-    //
+    
+    // Player Point
     Player * p = (Player*)players->objectAtIndex(idx);
     CCString *string = CCString::createWithFormat("%d",p->getPoint());
-    CCLabelTTF *Pointlabel = CCLabelTTF::create(string->getCString(), "Helvetica", 50.0);
+    CCLabelTTF *Pointlabel = CCLabelTTF::create(string->getCString(), "Helvetica", 48);
     Pointlabel->setAnchorPoint(ccp(1, 0));
     Pointlabel->setPosition(ccp(500,0));
     Pointlabel->setTag(123);
     cell->addChild(Pointlabel);
-    
+    // Player Name
     std::string name = p->getName();
-    CCLabelTTF *Namelabel = CCLabelTTF::create(p->getName().c_str(), "Helvetica", 50.0);
+    CCLabelTTF *Namelabel = CCLabelTTF::create(p->getName().c_str(), "Helvetica", 48);
     Namelabel->setAnchorPoint(CCPointZero);
-    Namelabel->setPosition(CCPointZero);
+    Namelabel->setPosition(ccp(100, 0));
     cell->addChild(Namelabel);
+    
+    // Player Rank
+    char rankBuf[3];
+    sprintf(rankBuf, "%i.png", idx+1);
+    CCSprite *rank = CCSprite::create(rankBuf);
+    rank->setAnchorPoint(CCPointZero);
+    rank->setPosition(CCPointZero);
+    cell->addChild(rank);
     
     if (idx == 0) {
         int rewardLocal = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
@@ -194,7 +199,7 @@ CCTableViewCell* RankingScene::tableCellAtIndex(CCTableView *table, unsigned int
                 CCMenuItemImage::create("Present.png","Present.png",
                                         this, menu_selector(RankingScene::clickBtSendEmail));
             CCMenu * menu = CCMenu::create(bt_send_email, NULL);
-            menu->setPosition(ccp(550, 20));
+            menu->setPosition(ccp(550, 30));
             cell->addChild(menu);
         }
         

@@ -24,10 +24,14 @@ GameLayer::GameLayer() {
     SimpleAudioEngine::sharedEngine()->preloadEffect("hitPuck.wav");
     _level = GameManager::sharedGameManager()->getLevel();
     CCLOG("gamelayer name: %s", GameManager::sharedGameManager()->getName().c_str());
-    CCSprite *backGroundImg = CCSprite::create("Court2.png");
+
+    float x=0, y=0, z=0;
+    this->getCamera()->getCenterXYZ(&x, &y, &z);
+    this->getCamera()->setCenterXYZ(x, y+0.0000001, z);
+    this->getCamera()->setEyeXYZ(x, y, 70);
+    CCSprite *backGroundImg = CCSprite::create("Court3.png");
     backGroundImg->setPosition(ccp(w/2, h/2));
     this->addChild(backGroundImg);
-    
     
     // Score Counter
     _scoreLabel1 = CCLabelTTF::create("0", "BankGothic Md BT", 48);
@@ -206,7 +210,7 @@ void GameLayer::update(float dt) {
         _puck->update(dt);
     }
     
-    if ((_minutes == 0 && _seconds == 0) || _score1 == 3 || _score2 == 3) {
+    if ((_minutes == 0 && _seconds == 0) || _score1 == 1 || _score2 == 1) {
         _playing = false ;
         _isEnd = true;
         this->pauseSchedulerAndActions();
@@ -333,7 +337,6 @@ void GameLayer::attack() {
 #pragma mark TOUCHES HANDLE
 void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
     if (_playing) {
-        CCLOG("%d", GameManager::sharedGameManager()->getLevel());
         if (_mouseJoint != NULL) return;
         CCTouch *touch = (CCTouch *)touches->anyObject();
         CCPoint tap = touch->getLocation();
@@ -376,7 +379,8 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
         
         CCRect rematchRect = CCRectMake(p1.x - rmw/2, p1.y - rmh/2, rmw, rmh);
         CCRect quitRect    = CCRectMake(p2.x - qw/2, p2.y - qh/2, qw, qh);
-                                        
+        CCRect p1Rect = _player1->boundingBox();
+        
         if (quitRect.containsPoint(tap)) {
             CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
         }
@@ -386,21 +390,34 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
             _endLayerBg->setVisible(false);
             if (_isEnd) this->gameReset();
         }
+        if (p1Rect.containsPoint(tap)) {
+            b2MouseJointDef md;
+            md.bodyA =  _groundBody;
+            md.bodyB = _player1->getBody();
+            md.target = this->ptm(tap);
+            md.collideConnected = true;
+            md.maxForce = 100000.0f * _player1->getBody()->GetMass();
+            md.dampingRatio = 0;
+            md.frequencyHz = 1000;
+            
+            _mouseJoint = (b2MouseJoint *)_world->CreateJoint(&md);
+            _player1->getBody()->SetAwake(true);
+        }
     }
 }
 
 void GameLayer::ccTouchesMoved(CCSet* touches, CCEvent* event) {
     if (_mouseJoint == NULL) return;
-    CCTouch *touch = (CCTouch *)touches->anyObject();
-    CCPoint tap = touch->getLocation();
-    if (tap.y > h/2 || tap.y < 10 ||
-        tap.x > w - 10 || tap.x < 10) {
-//        _world->DestroyJoint(_mouseJoint);
-//        _mouseJoint = NULL;
-        return;
+    if (_playing) {
+        CCTouch *touch = (CCTouch *)touches->anyObject();
+        CCPoint tap = touch->getLocation();
+        if (tap.y > h/2 || tap.y < 10 ||
+            tap.x > w - 10 || tap.x < 10) {
+            return;
+        }
+        b2Vec2 target = this->ptm(tap);
+        _mouseJoint->SetTarget(target);
     }
-    b2Vec2 target = this->ptm(tap);
-    _mouseJoint->SetTarget(target);
 }
 
 void GameLayer::ccTouchesEnded(CCSet* touches, CCEvent* event) {
