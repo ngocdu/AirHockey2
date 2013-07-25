@@ -81,7 +81,8 @@ private:
     CCSprite *_p2;
     CCSprite *_pauseButton;
     CCSprite *_endLayerBg;
-    CCSprite *_rematchButton;
+    CCSprite *_continueButton;
+    CCSprite *_restartButton;
     CCSprite *_quitButton;
     
     GLESDebugDraw *m_debugDraw;

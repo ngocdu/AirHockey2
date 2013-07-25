@@ -8,7 +8,6 @@
 #include "cocos2d.h"
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
-#include "Menu.h"
 #include "GameLayer.h"
 #include "Difficulty.h"
 #include "GameManager.h"

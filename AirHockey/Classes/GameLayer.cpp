@@ -25,10 +25,10 @@ GameLayer::GameLayer() {
     _level = GameManager::sharedGameManager()->getLevel();
     CCLOG("gamelayer name: %s", GameManager::sharedGameManager()->getName().c_str());
 
-    float x=0, y=0, z=0;
-    this->getCamera()->getCenterXYZ(&x, &y, &z);
-    this->getCamera()->setCenterXYZ(x, y+0.0000001, z);
-    this->getCamera()->setEyeXYZ(x, y, 70);
+//    float x=0, y=0, z=0;
+//    this->getCamera()->getCenterXYZ(&x, &y, &z);
+//    this->getCamera()->setCenterXYZ(x, y+0.0000001, z);
+//    this->getCamera()->setEyeXYZ(x, y, 70);
     CCSprite *backGroundImg = CCSprite::create("Court3.png");
     backGroundImg->setPosition(ccp(w/2, h/2));
     this->addChild(backGroundImg);
@@ -56,16 +56,19 @@ GameLayer::GameLayer() {
     this->addChild(_endLayerBg, 5);
     ew = _endLayerBg->getContentSize().width;
     eh = _endLayerBg->getContentSize().height;
-    _rematchButton = CCSprite::create("Continue.png");
-    _rematchButton->setPosition(ccp(ew/2, eh/2));
-    _endLayerBg->addChild(_rematchButton);
-    
-    _quitButton = CCSprite::create("Quit.png");
+    _quitButton     = CCSprite::create("Quit.png");
+    _restartButton  = CCSprite::create("Restart.png");
+    _continueButton = CCSprite::create("Continue.png");
+    resultLabel     = CCLabelTTF::create("DRAW", "BankGothic Md BT", 64);
+
     _quitButton->setPosition(ccp(ew/2, eh/4));
-    _endLayerBg->addChild(_quitButton);
+    _restartButton->setPosition(ccp(ew/2, eh/2));
+    _continueButton->setPosition(ccp(ew/2, eh*3/4));
+    resultLabel->setPosition(ccp(ew/2, eh*3/4));
     
-    resultLabel = CCLabelTTF::create("DRAW", "BankGothic Md BT", 64);
-    resultLabel->setPosition(ccp(ew/2, eh*5/6));
+    _endLayerBg->addChild(_quitButton);
+    _endLayerBg->addChild(_restartButton);
+    _endLayerBg->addChild(_continueButton);
     _endLayerBg->addChild(resultLabel);
     _endLayerBg->setVisible(false);
     
@@ -345,6 +348,7 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
         
         if (pauseRect.containsPoint(tap)) {
             _isPauseClicked = true;
+            _continueButton->setVisible(true);
         } else {
             if (tap.y < h/2 - _player1->getRadius() &&
                 tap.y > 10 + _player1->getRadius()  &&
@@ -368,27 +372,39 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
         CCTouch *touch = (CCTouch *)touches->anyObject();
         CCPoint tap = touch->getLocation();
         
-        CCPoint p1 = _endLayerBg->convertToWorldSpace(_rematchButton->getPosition());
+        CCPoint p1 = _endLayerBg->convertToWorldSpace(_restartButton->getPosition());
         CCPoint p2 = _endLayerBg->convertToWorldSpace(_quitButton->getPosition());
+        CCPoint p3 = _endLayerBg->convertToWorldSpace(_continueButton->getPosition());
         
-        float rmw = _rematchButton->getContentSize().width;
-        float rmh = _rematchButton->getContentSize().height;
+        float rmw = _restartButton->getContentSize().width;
+        float rmh = _restartButton->getContentSize().height;
         
         float qw  = _quitButton->getContentSize().width;
         float qh  = _quitButton->getContentSize().height;
         
-        CCRect rematchRect = CCRectMake(p1.x - rmw/2, p1.y - rmh/2, rmw, rmh);
-        CCRect quitRect    = CCRectMake(p2.x - qw/2, p2.y - qh/2, qw, qh);
+        float cw = _continueButton->getContentSize().width;
+        float ch = _continueButton->getContentSize().height;
+        
+        CCRect restartRect  = CCRectMake(p1.x - rmw/2, p1.y - rmh/2, rmw, rmh);
+        CCRect quitRect     = CCRectMake(p2.x - qw/2, p2.y - qh/2, qw, qh);
+        CCRect continueRect = CCRectMake(p3.x - cw/2, p3.y - ch/2, cw, ch);
+        
         CCRect p1Rect = _player1->boundingBox();
+        
+        if (continueRect.containsPoint(tap)) {
+            _playing = true;
+            this->resumeSchedulerAndActions();
+            _endLayerBg->setVisible(false);
+        }
         
         if (quitRect.containsPoint(tap)) {
             CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
         }
-        if (rematchRect.containsPoint(tap)) {
+        if (restartRect.containsPoint(tap)) {
             _playing = true;
             this->resumeSchedulerAndActions();
             _endLayerBg->setVisible(false);
-            if (_isEnd) this->gameReset();
+            this->gameReset();
         }
         if (p1Rect.containsPoint(tap)) {
             b2MouseJointDef md;
@@ -430,7 +446,7 @@ void GameLayer::ccTouchesEnded(CCSet* touches, CCEvent* event) {
             _endLayerBg->setVisible(true);
             this->pauseSchedulerAndActions();
             _playing = false;
-            resultLabel->setVisible(false);
+            if (!_isEnd)    resultLabel->setVisible(false);
         }
     } else {
         if (_mouseJoint != NULL) {
@@ -599,7 +615,8 @@ void GameLayer::endGame() {
     else resultLabel->setString("YOU LOSE");
     
     _endLayerBg->setVisible(true);
-    resultLabel->setVisible(true);  
+    resultLabel->setVisible(true);
+    _continueButton->setVisible(false);
 }
 
 

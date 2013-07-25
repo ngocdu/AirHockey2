@@ -14,22 +14,14 @@
 #include "HttpClient.h"
 using namespace cocos2d::extension;
 using namespace cocos2d;
-CCScene* GetPresent::scene()
-{
-    // 'scene' is an autorelease object
+CCScene* GetPresent::scene() {
     CCScene *scene = CCScene::create();
-    
-    // 'layer' is an autorelease object
     GetPresent *layer = GetPresent::create();
-    
-    // add layer as a child to scene
     scene->addChild(layer);
-    
-    // return the scene
     return scene;
 }
-bool GetPresent::init()
-{
+
+bool GetPresent::init() {
     CCSize editBoxSize = CCSizeMake(w - 100, 60);
     
     // Congrats 
@@ -53,7 +45,8 @@ bool GetPresent::init()
     m_pUserEmail->setFontSize(40);
     m_pUserEmail->setFontColor(ccWHITE);
     m_pUserEmail->setMaxLength(55);
-    m_pUserEmail->setReturnType(cocos2d::extension::kKeyboardReturnTypeDefault);
+    m_pUserEmail->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
+    m_pUserEmail->setInputMode(kEditBoxInputModeEmailAddr);
     m_pUserEmail->setDelegate(this);
     this->addChild(m_pUserEmail);
     
@@ -69,6 +62,7 @@ bool GetPresent::init()
     m_pUserName->setPlaceholderFontColor(ccWHITE);
     m_pUserName->setMaxLength(55);
     m_pUserName->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
+    m_pUserName->setInputMode(kEditBoxInputModeAny);
     m_pUserName->setDelegate(this);
     this->addChild(m_pUserName);
     
@@ -107,25 +101,14 @@ void GetPresent::editBoxReturn(cocos2d::extension::CCEditBox* editBox)
     //CCLog("editBox %p was returned !");
     GameManager::sharedGameManager()->setEmail(m_pUserEmail->getText());
 }
+
+#pragma mark valid Email
 bool GetPresent::is_email(std::string const& address) {
     size_t at_index = address.find_first_of('@', 0);
     return at_index != std::string::npos
     && address.find_first_of('.', at_index) != std::string::npos;
 }
-void GetPresent::menuSendEmail(CCObject *pSender)
-{
-    if (strcmp(m_pUserName->getText(), "") != 0) {
-        //--------------
-        GameManager::sharedGameManager()->setName(m_pUserName->getText());
-        CCHttpRequest* request = new CCHttpRequest();
-        string ipAddr = GameManager::sharedGameManager()->getIpAddr();
-        request->setUrl((ipAddr+":3000/users.json").c_str());
-        request->setRequestType(CCHttpRequest::kHttpGet);
-        request->setResponseCallback(this, callfuncND_selector(GetPresent::onHttpRequestCompleted));
-        CCHttpClient::getInstance()->send(request);
-        request->release();
-    }
-}
+
 int GetPresent::spc_email_isvalid(const char *address) {
     int        count = 0;
     const char *c, *domain;
@@ -166,18 +149,14 @@ int GetPresent::spc_email_isvalid(const char *address) {
     return (count >= 1);
 }
 
-void GetPresent::menuBack(cocos2d::CCObject *pSender) {
-    CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
-}
+#pragma mark onHttpRequestCompleted
 void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
     CCSize w = CCDirector::sharedDirector()->getWinSize();
     CCHttpResponse *response = (CCHttpResponse*)data;
-    if (!response)
-    {
+    if (!response) {
         return;
     }
-    if (0 != strlen(response->getHttpRequest()->getTag()))
-    {
+    if (0 != strlen(response->getHttpRequest()->getTag())) {
         CCLog("%s completed", response->getHttpRequest()->getTag());
     }
     
@@ -186,8 +165,7 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
     sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode,
             response->getHttpRequest()->getTag());
     
-    if (!response->isSucceed())
-    {
+    if (!response->isSucceed()) {
         CCLabelTTF *notConnectLabel =
         CCLabelTTF::create("Can't load Data", "Time new roman", 20);
         notConnectLabel->setPosition(ccp(w.width/2, w.height/2));
@@ -200,19 +178,15 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
     char * data2 = (char*)(malloc(buffer->size() *  sizeof(char)));
     int d = -1;
     printf("Http Test, dump data: ");
-    for (unsigned int i = 0; i < buffer->size(); i++)
-    {
+    for (unsigned int i = 0; i < buffer->size(); i++) {
         d++ ;
         data2[d] = (*buffer)[i];
     }
     data2[d + 1] = '\0';
-    //-----------------------
     
     rapidjson::Document document;
-    if(data2 != NULL && !document.Parse<0>(data2).HasParseError())
-    {
-        for (rapidjson::SizeType  i = 0; i < document.Size(); i++)
-        {
+    if(data2 != NULL && !document.Parse<0>(data2).HasParseError()) {
+        for (rapidjson::SizeType  i = 0; i < document.Size(); i++) {
             string name = document[i]["name"].GetString();
             CCLOG("%s", name.c_str());
             CCLOG("%s", m_pUserName->getText());
@@ -248,3 +222,24 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
     }
     d-=1;
 }
+
+#pragma mark Send Email callback
+void GetPresent::menuSendEmail(CCObject *pSender)
+{
+    if (strcmp(m_pUserName->getText(), "") != 0) {
+        //--------------
+        GameManager::sharedGameManager()->setName(m_pUserName->getText());
+        CCHttpRequest* request = new CCHttpRequest();
+        string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+        request->setUrl((ipAddr+":3000/users.json").c_str());
+        request->setRequestType(CCHttpRequest::kHttpGet);
+        request->setResponseCallback(this, callfuncND_selector(GetPresent::onHttpRequestCompleted));
+        CCHttpClient::getInstance()->send(request);
+        request->release();
+    }
+}
+#pragma mark Back callback
+void GetPresent::menuBack(cocos2d::CCObject *pSender) {
+    CCDirector::sharedDirector()->end();
+}
+
