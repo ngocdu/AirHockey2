@@ -35,6 +35,9 @@ public:
     void menuBack(CCObject *pSender);
     bool is_email(std::string const& address);
     int spc_email_isvalid(const char *address);
+    void insertChar(char *xau,int index);
+    void standardizeName(char *xau);
+    void removeSpace(char *xau);
     void onHttpRequestCompleted(CCNode *sender, void *data);
     // a selector callback
     CREATE_FUNC(GetPresent);

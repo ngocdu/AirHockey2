@@ -160,6 +160,7 @@ void RewardScene::clickBtSendEmail(cocos2d::CCObject *pSender) {
     request->setRequestType(CCHttpRequest::kHttpPost);
     CCHttpClient::getInstance()->send(request);
     request->release();
+    p->setReward(0);
     int r = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
     CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", r - 1);
     bt_send_email->removeFromParentAndCleanup(true);
@@ -200,7 +201,7 @@ CCTableViewCell* RewardScene::tableCellAtIndex(CCTableView *table, unsigned int 
     // Player Point
     Player1 * p = (Player1*)players->objectAtIndex(idx);
     CCString *string = CCString::createWithFormat("%d",p->getPoint());
-    CCLabelTTF *Pointlabel = CCLabelTTF::create(string->getCString(), "Helvetica", 48);
+    CCLabelTTF *Pointlabel = CCLabelTTF::create(string->getCString(), "Helvetica", 28);
     Pointlabel->setAnchorPoint(ccp(1, 0));
     Pointlabel->setPosition(ccp(500,0));
     Pointlabel->setTag(123);
@@ -208,14 +209,14 @@ CCTableViewCell* RewardScene::tableCellAtIndex(CCTableView *table, unsigned int 
     //time
     CCLabelTTF *timeLabel = CCLabelTTF::create(p->getTime().c_str(), "Helvetica", 13);
     timeLabel->setAnchorPoint(ccp(1, 0));
-    timeLabel->setPosition(ccp(330,20));
+    timeLabel->setPosition(ccp(100,-20));
     cell->addChild(timeLabel);
 
     // Player Name
     std::string name = p->getName();
-    CCLabelTTF *Namelabel = CCLabelTTF::create(p->getName().c_str(), "Helvetica", 48);
+    CCLabelTTF *Namelabel = CCLabelTTF::create(p->getName().c_str(), "Helvetica", 28);
     Namelabel->setAnchorPoint(CCPointZero);
-    Namelabel->setPosition(ccp(100, 0));
+    Namelabel->setPosition(ccp(100, 10));
     cell->addChild(Namelabel);
     
     // Player Rank

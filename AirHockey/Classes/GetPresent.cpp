@@ -52,7 +52,7 @@ bool GetPresent::init()
     m_pUserEmail->setPosition(ccp(w/2, emailLabel2->getPositionY() - 60));
     m_pUserEmail->setFontSize(40);
     m_pUserEmail->setFontColor(ccWHITE);
-    m_pUserEmail->setMaxLength(55);
+    m_pUserEmail->setMaxLength(75);
     m_pUserEmail->setReturnType(cocos2d::extension::kKeyboardReturnTypeDefault);
     m_pUserEmail->setDelegate(this);
     this->addChild(m_pUserEmail);
@@ -67,7 +67,7 @@ bool GetPresent::init()
     m_pUserName->setPosition(ccp(w / 2, nameLabel->getPositionY() - 60));
     m_pUserName->setFontSize(40);
     m_pUserName->setPlaceholderFontColor(ccWHITE);
-    m_pUserName->setMaxLength(55);
+    m_pUserName->setMaxLength(25);
     m_pUserName->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
     m_pUserName->setDelegate(this);
     this->addChild(m_pUserName);
@@ -157,7 +157,10 @@ void GetPresent::menuSendEmail(CCObject *pSender)
 {
     if (strcmp(m_pUserName->getText(), "") != 0) {
         //--------------
-        GameManager::sharedGameManager()->setName(m_pUserName->getText());
+        char * n =(char*) m_pUserName->getText();
+        standardizeName(n);
+        removeSpace(n);
+        GameManager::sharedGameManager()->setName(n);
         CCHttpRequest* request = new CCHttpRequest();
         string ipAddr = GameManager::sharedGameManager()->getIpAddr();
         request->setUrl((ipAddr+":3000/users.json").c_str());
@@ -169,6 +172,42 @@ void GetPresent::menuSendEmail(CCObject *pSender)
 }
 void GetPresent::menuBack(cocos2d::CCObject *pSender) {
     CCDirector::sharedDirector()->replaceScene(RankingScene::scene());
+}
+void GetPresent::insertChar(char *xau,int index)
+{
+    for(int i=strlen(xau)+1;i>index&&i>0;i--) xau[i]=xau[i-1];
+    xau[index]=' ';
+}
+void GetPresent::standardizeName(char *xau)
+{
+    int i,j=0;
+    for(i=0;i<strlen(xau);i++)
+    {
+        if (j==0&&strchr(",.\!;:?",xau[i])) continue;
+        else if (i&&j&&strchr(",.\!;:?",xau[i-1])&&xau[i]!=' ') insertChar(xau,i);
+        
+        if (j&&strchr(",.\!;:?",xau[i])&&xau[j-1]==' ')  xau[j-1]=xau[i],xau[j]=' ';
+        else if ((j==0&&xau[i]!=' ')||(j&&xau[j-1]==' '&&xau[i]!=' ')) xau[j++]=toupper(xau[i]);
+        else if ((j&&xau[i]!=' ')||(j&&xau[i-1]!=' '&&xau[i]==' ')) xau[j++]=xau[i];
+    }
+    xau[j-1*(j&&xau[j-1]==' ')]=NULL;
+}
+void GetPresent::removeSpace(char *xau) {
+    char * s;
+    int d = -1;
+    int len = 0;
+    int i = 0, j;
+    len=strlen(xau);
+    for(i=0;i<len;i++)
+    {
+        if(xau[i] != ' ')
+        {
+            d++;
+            s[d] = xau[i];
+        }
+    }
+    s[d+1] = '\0';
+    xau = s;
 }
 void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
     CCSize w = CCDirector::sharedDirector()->getWinSize();
@@ -208,7 +247,6 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
     }
     data2[d + 1] = '\0';
     //-----------------------
-    
     rapidjson::Document document;
     if(data2 != NULL && !document.Parse<0>(data2).HasParseError())
     {
@@ -218,7 +256,11 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
             string email_server = document[i]["email"].GetString();
             CCLOG("%s", name.c_str());
             CCLOG("%s", m_pUserName->getText());
-            if (strcmp(m_pUserName->getText(), name.c_str()) == 0) {
+            char * n =(char*) m_pUserName->getText();
+            standardizeName(n);
+            removeSpace(n);
+            CCLOG("text name : %s", n);
+            if (strcmp(n, name.c_str()) == 0) {
                if(strcmp(m_pUserEmail->getText(), "") != 0 && strcmp(m_pUserEmail->getText(), email_server.c_str()) == 0 ){
                    CCLOG("co ten trung nhau");
                    m_pUserName->setText("the name was existed");
@@ -246,14 +288,16 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
         }else {
             url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
         }
-        
         request->setUrl(url.c_str());
         request->setRequestType(CCHttpRequest::kHttpPost);
         CCHttpClient::getInstance()->send(request);
         request->release();
         CCUserDefault::sharedUserDefault()->setStringForKey("email", m_pUserEmail->getText());
         m_pUserEmail->setText("email send succses");
-        CCUserDefault::sharedUserDefault()->setStringForKey("username", m_pUserName->getText());
+        char * n =(char*) m_pUserName->getText();
+        standardizeName(n);
+        removeSpace(n);
+        CCUserDefault::sharedUserDefault()->setStringForKey("username", n);
         CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
     } else {
         m_pUserEmail->setText("email fail");
