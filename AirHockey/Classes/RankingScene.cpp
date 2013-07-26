@@ -184,6 +184,7 @@ CCTableViewCell* RankingScene::tableCellAtIndex(CCTableView *table, unsigned int
     // Player Point
     Player * p = (Player*)players->objectAtIndex(idx);
     CCString *string = CCString::createWithFormat("%d",p->getPoint());
+
     CCLabelTTF *Pointlabel = CCLabelTTF::create(string->getCString(), "Helvetica", 40);
     Pointlabel->setAnchorPoint(ccp(1, 0));
     Pointlabel->setPosition(ccp(600,0));
@@ -192,6 +193,7 @@ CCTableViewCell* RankingScene::tableCellAtIndex(CCTableView *table, unsigned int
     
     // Player Name
     std::string name = p->getName();
+
     CCLabelTTF *Namelabel = CCLabelTTF::create(p->getName().c_str(), "Helvetica", 40);
     Namelabel->setAnchorPoint(CCPointZero);
     Namelabel->setPosition(ccp(60, 0));
