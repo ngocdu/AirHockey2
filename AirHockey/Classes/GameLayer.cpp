@@ -5,7 +5,7 @@
 //  Created by Trung Kien Do on 13/07/09.
 //  Copyright __FRAMGIA__ 2013年. All rights reserved.
 //
-
+#import <string>
 #include "GameLayer.h"
 
 #pragma mark SCENE
@@ -24,10 +24,14 @@ GameLayer::GameLayer() {
     SimpleAudioEngine::sharedEngine()->preloadEffect("hitPuck.wav");
     _level = GameManager::sharedGameManager()->getLevel();
     CCLOG("gamelayer name: %s", GameManager::sharedGameManager()->getName().c_str());
-    CCSprite *backGroundImg = CCSprite::create("Court2.png");
+
+    float x=0, y=0, z=0;
+    this->getCamera()->getCenterXYZ(&x, &y, &z);
+    this->getCamera()->setCenterXYZ(x, y+0.0000001, z);
+    this->getCamera()->setEyeXYZ(x, y, 70);
+    CCSprite *backGroundImg = CCSprite::create("Court3.png");
     backGroundImg->setPosition(ccp(w/2, h/2));
     this->addChild(backGroundImg);
-    
     
     // Score Counter
     _scoreLabel1 = CCLabelTTF::create("0", "BankGothic Md BT", 48);
@@ -102,7 +106,7 @@ GameLayer::~GameLayer() {
     delete _world;
     _world = NULL;
     
-    delete m_debugDraw;
+    //delete m_debugDraw;
 }
 
 #pragma mark INIT PHYSICS
@@ -118,8 +122,8 @@ void GameLayer::initPhysics() {
     _contactListener = new MyContactListener();
     _world->SetContactListener(_contactListener);
     
-    m_debugDraw = new GLESDebugDraw( PTM_RATIO );
-    _world->SetDebugDraw(m_debugDraw);
+   // m_debugDraw = new GLESDebugDraw( PTM_RATIO );
+    //_world->SetDebugDraw(m_debugDraw);
 
     uint32 flags = 0;
     flags += b2Draw::e_shapeBit;
@@ -127,7 +131,7 @@ void GameLayer::initPhysics() {
 //    flags += b2Draw::e_aabbBit;
 //    flags += b2Draw::e_pairBit;
 //    flags += b2Draw::e_centerOfMassBit;
-    m_debugDraw->SetFlags(flags);
+    //m_debugDraw->SetFlags(flags);
 
 
     // Create Play Ground
@@ -333,7 +337,6 @@ void GameLayer::attack() {
 #pragma mark TOUCHES HANDLE
 void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
     if (_playing) {
-        CCLOG("%d", GameManager::sharedGameManager()->getLevel());
         if (_mouseJoint != NULL) return;
         CCTouch *touch = (CCTouch *)touches->anyObject();
         CCPoint tap = touch->getLocation();
@@ -376,7 +379,8 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
         
         CCRect rematchRect = CCRectMake(p1.x - rmw/2, p1.y - rmh/2, rmw, rmh);
         CCRect quitRect    = CCRectMake(p2.x - qw/2, p2.y - qh/2, qw, qh);
-                                        
+        CCRect p1Rect = _player1->boundingBox();
+        
         if (quitRect.containsPoint(tap)) {
             CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
         }
@@ -386,21 +390,34 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
             _endLayerBg->setVisible(false);
             if (_isEnd) this->gameReset();
         }
+        if (p1Rect.containsPoint(tap)) {
+            b2MouseJointDef md;
+            md.bodyA =  _groundBody;
+            md.bodyB = _player1->getBody();
+            md.target = this->ptm(tap);
+            md.collideConnected = true;
+            md.maxForce = 100000.0f * _player1->getBody()->GetMass();
+            md.dampingRatio = 0;
+            md.frequencyHz = 1000;
+            
+            _mouseJoint = (b2MouseJoint *)_world->CreateJoint(&md);
+            _player1->getBody()->SetAwake(true);
+        }
     }
 }
 
 void GameLayer::ccTouchesMoved(CCSet* touches, CCEvent* event) {
     if (_mouseJoint == NULL) return;
-    CCTouch *touch = (CCTouch *)touches->anyObject();
-    CCPoint tap = touch->getLocation();
-    if (tap.y > h/2 || tap.y < 10 ||
-        tap.x > w - 10 || tap.x < 10) {
-//        _world->DestroyJoint(_mouseJoint);
-//        _mouseJoint = NULL;
-        return;
+    if (_playing) {
+        CCTouch *touch = (CCTouch *)touches->anyObject();
+        CCPoint tap = touch->getLocation();
+        if (tap.y > h/2 || tap.y < 10 ||
+            tap.x > w - 10 || tap.x < 10) {
+            return;
+        }
+        b2Vec2 target = this->ptm(tap);
+        _mouseJoint->SetTarget(target);
     }
-    b2Vec2 target = this->ptm(tap);
-    _mouseJoint->SetTarget(target);
 }
 
 void GameLayer::ccTouchesEnded(CCSet* touches, CCEvent* event) {
@@ -513,6 +530,7 @@ void GameLayer::checkHighScore() {
     request->release();
 }
 
+#pragma mark HTTP REQUEST
 void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
     CCHttpResponse *response = (CCHttpResponse*)data;
     if (!response)
@@ -545,14 +563,53 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
     rapidjson::Document document;
     if(data2 != NULL && !document.Parse<0>(data2).HasParseError())
     {
-        string name = GameManager::sharedGameManager()->getName();
+        string name = CCUserDefault::sharedUserDefault()->getStringForKey("username");
         int point = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
         (GameManager::sharedGameManager()->getLevel() * 2000);
         for (rapidjson::SizeType  i = 0; i < document.Size(); i++)
         {
             if (point > document[i]["point"].GetInt()) {
-                CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
-                break;
+                if (i == 0) {
+                    int r = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+                    CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", r + 1);
+                    int r2 = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+                    if (name == "") {
+                        CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
+                        break;
+                    }else {
+                        CCHttpRequest * request = new CCHttpRequest();
+                        string name = CCUserDefault::sharedUserDefault()->getStringForKey("username");
+                        char strP[20] = {0};
+                        sprintf(strP, "%i", point);
+                        string email  = CCUserDefault::sharedUserDefault()->getStringForKey("email");
+                        string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+                        string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
+                        request->setUrl(url.c_str());
+                        request->setRequestType(CCHttpRequest::kHttpPost);
+                        CCHttpClient::getInstance()->send(request);
+                        request->release();
+                        CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
+                        break;
+                    }
+                }
+                if (name == "") {
+                    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
+                    break;
+                }else {
+                    CCHttpRequest * request = new CCHttpRequest();
+                    string name = CCUserDefault::sharedUserDefault()->getStringForKey("username");
+                    char strP[20] = {0};
+                    sprintf(strP, "%i", point);
+                    string email  = CCUserDefault::sharedUserDefault()->getStringForKey("email");
+                    string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+                    string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
+                    request->setUrl(url.c_str());
+                    request->setRequestType(CCHttpRequest::kHttpPost);
+                    CCHttpClient::getInstance()->send(request);
+                    request->release();
+                    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
+                    break;
+                }
             }
         }
     }

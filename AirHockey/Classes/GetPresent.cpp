@@ -30,55 +30,57 @@ CCScene* GetPresent::scene()
 }
 bool GetPresent::init()
 {
-    CCSize size = CCDirector::sharedDirector()->getWinSize();
-    CCPoint visibleOrigin = CCEGLView::sharedOpenGLView()->getVisibleOrigin();
-    CCSize visibleSize = CCEGLView::sharedOpenGLView()->getVisibleSize();
+    CCSize editBoxSize = CCSizeMake(w - 100, 60);
     
-    CCSize editBoxSize = CCSizeMake(visibleSize.width - 100, 60);
+    // Congrats 
+    CCLabelTTF *congrats = CCLabelTTF::create("BEST SCORE !!!", "BankGothic Md BT", 60);
+    congrats->setPosition(ccp(w/2, h * 6/8));
+    this->addChild(congrats);
+    
     
     // email
+    CCLabelTTF *emailLabel1 = CCLabelTTF::create("Please enter your Email", "BankGothic Md BT", 40);
+    emailLabel1->setPosition(ccp(w/2, h * 5/8));
+    this->addChild(emailLabel1);
+    CCLabelTTF *emailLabel2 = CCLabelTTF::create("to get Presents:", "BankGothic Md BT", 40);
+    emailLabel2->setPosition(ccp(w/2, emailLabel1->getPositionY() - 45));
+    this->addChild(emailLabel2);
+    
     m_pUserEmail =
     extension::CCEditBox::create(editBoxSize,
                                  extension::CCScale9Sprite::create("GreenBox.png"));
-    m_pUserEmail->setPosition(ccp(visibleOrigin.x + visibleSize.width / 2,
-                                 visibleOrigin.y + visibleSize.height * 3 / 4));
+    m_pUserEmail->setPosition(ccp(w/2, emailLabel2->getPositionY() - 60));
     m_pUserEmail->setFontSize(40);
-    m_pUserEmail->setFontColor(ccRED);
-    m_pUserEmail->setPlaceHolder("input your Email to receive reward:");
-    m_pUserEmail->setPlaceholderFontColor(ccWHITE);
+    m_pUserEmail->setFontColor(ccWHITE);
     m_pUserEmail->setMaxLength(55);
-    m_pUserEmail->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
+    m_pUserEmail->setReturnType(cocos2d::extension::kKeyboardReturnTypeDefault);
     m_pUserEmail->setDelegate(this);
     this->addChild(m_pUserEmail);
     
     // name
+    CCLabelTTF *nameLabel = CCLabelTTF::create("Please choose an username:","BankGothic Md BT", 40);
+    nameLabel->setPosition(ccp(w / 2, h * 3/8));
+    this->addChild(nameLabel);
     m_pUserName =
     extension::CCEditBox::create(editBoxSize,
                                  extension::CCScale9Sprite::create("GreenBox.png"));
-    m_pUserName->setPosition(ccp(visibleOrigin.x + visibleSize.width / 2,
-                                 visibleOrigin.y + visibleSize.height * 2 / 4));
+    m_pUserName->setPosition(ccp(w / 2, nameLabel->getPositionY() - 60));
     m_pUserName->setFontSize(40);
-    m_pUserName->setFontColor(ccRED);
-    m_pUserName->setPlaceHolder("input your username");
     m_pUserName->setPlaceholderFontColor(ccWHITE);
     m_pUserName->setMaxLength(55);
     m_pUserName->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
     m_pUserName->setDelegate(this);
     this->addChild(m_pUserName);
     
-    CCMenuItemFont *sendMenuItem =
-        CCMenuItemFont::create("SendEmail", this, menu_selector(GetPresent::menuSendEmail));
-    sendMenuItem->setPosition(ccp(size.width / 2, size.height * 0.25));
-    sendMenuItem->setFontSizeObj(70);
-    sendMenuItem->setFontSize(70);
     
-    CCMenuItemFont *backMenuItem =
-    CCMenuItemFont::create("Back", this, menu_selector(GetPresent::menuBack));
-    backMenuItem->setPosition(ccp(size.width / 2, size.height * 0.15));
-    backMenuItem->setFontSizeObj(70);
-    backMenuItem->setFontSize(70);
+    CCMenuItemImage *sendMenuItem = CCMenuItemImage::create("GetPresent.png", "GetPresent.png", this, menu_selector(GetPresent::menuSendEmail));
+    sendMenuItem->setPosition(ccp(w * 3/4, 100));
     
-    pMenu = CCMenu::create(sendMenuItem, backMenuItem, NULL);
+//    CCMenuItemImage *backMenuItem =
+//    CCMenuItemImage::create("BackButton.png", "BackButton.png", this, menu_selector(GetPresent::menuBack));
+//    backMenuItem->setPosition(ccp(w/4, 100));
+    
+    pMenu = CCMenu::create(sendMenuItem, NULL);
     pMenu->setPosition(CCPointZero);
     this->addChild(pMenu, 1);
     
@@ -213,17 +215,21 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
         for (rapidjson::SizeType  i = 0; i < document.Size(); i++)
         {
             string name = document[i]["name"].GetString();
+            string email_server = document[i]["email"].GetString();
             CCLOG("%s", name.c_str());
             CCLOG("%s", m_pUserName->getText());
             if (strcmp(m_pUserName->getText(), name.c_str()) == 0) {
-                CCLOG("co ten trung nhau");
-                m_pUserName->setText("that name was existed");
-                return;
+               if(strcmp(m_pUserEmail->getText(), "") != 0 && strcmp(m_pUserEmail->getText(), email_server.c_str()) == 0 ){
+                   CCLOG("co ten trung nhau");
+                   m_pUserName->setText("the name was existed");
+                   return;
+               } 
             }
         }
     } else {
         CCLog(document.GetParseError());
     }
+    
     if (strcmp(m_pUserEmail->getText(), "") != 0 && this->is_email(m_pUserEmail->getText()) &&
         this->spc_email_isvalid(m_pUserEmail->getText())) {
         CCHttpRequest * request = new CCHttpRequest();
@@ -233,14 +239,23 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
         sprintf(strP, "%i", p);
         string email  = GameManager::sharedGameManager()->getEmail();
         string ipAddr = GameManager::sharedGameManager()->getIpAddr();
-        string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
+        int reward = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+        string url;
+        if (reward != 0) {
+            url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
+        }else {
+            url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
+        }
+        
         request->setUrl(url.c_str());
         request->setRequestType(CCHttpRequest::kHttpPost);
         CCHttpClient::getInstance()->send(request);
         request->release();
+        CCUserDefault::sharedUserDefault()->setStringForKey("email", m_pUserEmail->getText());
         m_pUserEmail->setText("email send succses");
+        CCUserDefault::sharedUserDefault()->setStringForKey("username", m_pUserName->getText());
         CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
-    }else {
+    } else {
         m_pUserEmail->setText("email fail");
     }
     d-=1;
