@@ -5,7 +5,7 @@
 //  Created by Trung Kien Do on 13/07/09.
 //  Copyright __FRAMGIA__ 2013年. All rights reserved.
 //
-
+#import <string>
 #include "GameLayer.h"
 
 #pragma mark SCENE
@@ -106,7 +106,7 @@ GameLayer::~GameLayer() {
     delete _world;
     _world = NULL;
     
-    delete m_debugDraw;
+    //delete m_debugDraw;
 }
 
 #pragma mark INIT PHYSICS
@@ -122,8 +122,8 @@ void GameLayer::initPhysics() {
     _contactListener = new MyContactListener();
     _world->SetContactListener(_contactListener);
     
-    m_debugDraw = new GLESDebugDraw( PTM_RATIO );
-    _world->SetDebugDraw(m_debugDraw);
+   // m_debugDraw = new GLESDebugDraw( PTM_RATIO );
+    //_world->SetDebugDraw(m_debugDraw);
 
     uint32 flags = 0;
     flags += b2Draw::e_shapeBit;
@@ -131,7 +131,7 @@ void GameLayer::initPhysics() {
 //    flags += b2Draw::e_aabbBit;
 //    flags += b2Draw::e_pairBit;
 //    flags += b2Draw::e_centerOfMassBit;
-    m_debugDraw->SetFlags(flags);
+    //m_debugDraw->SetFlags(flags);
 
 
     // Create Play Ground
@@ -530,6 +530,7 @@ void GameLayer::checkHighScore() {
     request->release();
 }
 
+#pragma mark HTTP REQUEST
 void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
     CCHttpResponse *response = (CCHttpResponse*)data;
     if (!response)
@@ -562,14 +563,53 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
     rapidjson::Document document;
     if(data2 != NULL && !document.Parse<0>(data2).HasParseError())
     {
-        string name = GameManager::sharedGameManager()->getName();
+        string name = CCUserDefault::sharedUserDefault()->getStringForKey("username");
         int point = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
         (GameManager::sharedGameManager()->getLevel() * 2000);
         for (rapidjson::SizeType  i = 0; i < document.Size(); i++)
         {
             if (point > document[i]["point"].GetInt()) {
-                CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
-                break;
+                if (i == 0) {
+                    int r = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+                    CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", r + 1);
+                    int r2 = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+                    if (name == "") {
+                        CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
+                        break;
+                    }else {
+                        CCHttpRequest * request = new CCHttpRequest();
+                        string name = CCUserDefault::sharedUserDefault()->getStringForKey("username");
+                        char strP[20] = {0};
+                        sprintf(strP, "%i", point);
+                        string email  = CCUserDefault::sharedUserDefault()->getStringForKey("email");
+                        string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+                        string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
+                        request->setUrl(url.c_str());
+                        request->setRequestType(CCHttpRequest::kHttpPost);
+                        CCHttpClient::getInstance()->send(request);
+                        request->release();
+                        CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
+                        break;
+                    }
+                }
+                if (name == "") {
+                    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
+                    break;
+                }else {
+                    CCHttpRequest * request = new CCHttpRequest();
+                    string name = CCUserDefault::sharedUserDefault()->getStringForKey("username");
+                    char strP[20] = {0};
+                    sprintf(strP, "%i", point);
+                    string email  = CCUserDefault::sharedUserDefault()->getStringForKey("email");
+                    string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+                    string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
+                    request->setUrl(url.c_str());
+                    request->setRequestType(CCHttpRequest::kHttpPost);
+                    CCHttpClient::getInstance()->send(request);
+                    request->release();
+                    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
+                    break;
+                }
             }
         }
     }

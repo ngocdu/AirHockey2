@@ -9,7 +9,6 @@
 #define __GAME_LAYER_H__
 
 #include "Ball.h"
-#include "GLES-Render.h"
 #include "MyContactListener.h"
 #include "SimpleAudioEngine.h"
 #include "GameManager.h"
@@ -84,7 +83,7 @@ private:
     CCSprite *_rematchButton;
     CCSprite *_quitButton;
     
-    GLESDebugDraw *m_debugDraw;
+    //GLESDebugDraw *m_debugDraw;
     
     Ball *_player1;
     Ball *_player2;
