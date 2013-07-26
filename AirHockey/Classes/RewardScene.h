@@ -18,8 +18,9 @@
 using namespace cocos2d;
 using namespace cocos2d::extension;
 using namespace std;
-class Player1 : public CCObject
-{
+
+
+class Player1 : public CCObject {
 private:
     CC_SYNTHESIZE(string, _name, Name);
     CC_SYNTHESIZE(int, _point, Point);
@@ -30,14 +31,14 @@ public:
     Player1(string name , int mark, string email, string time, int reward);
     ~Player1();
 };
-class RewardScene : public CCLayer, public CCTableViewDelegate, CCTableViewDataSource
-{
+
+
+class RewardScene : public CCLayer, public CCTableViewDelegate, CCTableViewDataSource {
 private:
     CCSize size = CCDirector::sharedDirector()->getWinSize();
     float w = size.width;
     float h = size.height;
     CCMenu * menu;
-    CCSprite *bgm_off;
     
     CCArray *players = new CCArray();
     int celltouch;
@@ -46,8 +47,7 @@ public:
     static CCScene* scene();
     void onHttpRequestCompleted(CCNode *sender, void *data);
     
-    void play(CCObject* pSender);
-    void bgm(CCObject* pSender);
+    void back(CCObject* pSender);
     void clickBtSendEmail(CCObject* pSender);
     CREATE_FUNC(RewardScene);
     virtual void scrollViewDidScroll(CCScrollView* view){};

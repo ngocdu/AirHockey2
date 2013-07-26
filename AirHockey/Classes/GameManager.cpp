@@ -9,7 +9,7 @@ GameManager* GameManager::m_mySingleton = NULL;
 
 GameManager::GameManager()
 {    
-    this->setIpAddr("192.168.1.122");
+    this->setIpAddr("192.168.1.115");
 }
 
 GameManager* GameManager::sharedGameManager()
@@ -44,11 +44,12 @@ void GameManager::setName(string name)
 }
 string GameManager::getEmail()
 {
-    return this->email;
+    return CCUserDefault::sharedUserDefault()->getStringForKey("Email");
 }
 void GameManager::setEmail(string email)
 {
-    this->email = email;
+    CCUserDefault::sharedUserDefault()->setStringForKey("Email", email);
+    CCUserDefault::sharedUserDefault()->flush();
 }
 
 int GameManager::getLevel()

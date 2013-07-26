@@ -63,7 +63,7 @@ bool Difficulty::init() {
     hardMenuItem->setPosition(ccp(w/2, h*3/10      ));
 
     CCMenuItemImage *back =
-    CCMenuItemImage::create("BackButton.png", "BackButton.png",
+    CCMenuItemImage::create("BackButton.png", "BackButtonOnClicked.png",
                             this, menu_selector(Difficulty::clickBtBack));
 //    back->setColor(ccc3(235, 154, 39));
     back->setPosition(ccp(w/2, h/8));

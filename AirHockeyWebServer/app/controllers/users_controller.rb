@@ -48,7 +48,7 @@ class UsersController < ApplicationController
                     r = user.reward - 1
                     user.destroy
                     @user = User.new(name: params[:name], point: params[:point],
-                                     email: params[:email], reward: r)
+                                     email: params[:email], reward: 0)
                     @user.save
                     UserMailer.welcome_email(@user).deliver
                     return
@@ -82,7 +82,7 @@ class UsersController < ApplicationController
                 @user.save
             end
             else
-            @user = User.new(name: params[:name], point: params[:point], email: params[:email], reward: params[:reward])
+            @user = User.new(name: params[:name], point: params[:point], email: params[:email], reward: 0)
             respond_to do |format|
                 if @user.save
                     format.html { redirect_to @users, notice: 'User was successfully created.' }

@@ -18,8 +18,9 @@
 using namespace cocos2d;
 using namespace cocos2d::extension;
 using namespace std;
-class Player : public CCObject
-{
+
+
+class Player : public CCObject {
 private:
     CC_SYNTHESIZE(string, _name, Name);
     CC_SYNTHESIZE(int, _point, Point);
@@ -29,8 +30,9 @@ public:
     Player(string name , int mark);
     ~Player();
 };
-class RankingScene : public CCLayer, public CCTableViewDelegate, CCTableViewDataSource
-{
+
+
+class RankingScene : public CCLayer, public CCTableViewDelegate, CCTableViewDataSource {
 private:
     CCSize size = CCDirector::sharedDirector()->getWinSize();
     float w = size.width;
@@ -38,6 +40,7 @@ private:
     
     CCSprite *bgm_off;
     
+    CCTableView *tableView;
     CCArray *players = new CCArray();
 public:
     virtual bool init();
@@ -46,7 +49,8 @@ public:
     
     void play(CCObject* pSender);
     void bgm(CCObject* pSender);
-    void clickBtSendEmail(CCObject* pSender);
+    void reward(CCObject* pSender);
+    
     CREATE_FUNC(RankingScene);
     virtual void scrollViewDidScroll(CCScrollView* view){};
     virtual void scrollViewDidZoom(CCScrollView* view){}

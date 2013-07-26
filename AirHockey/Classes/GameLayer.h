@@ -84,7 +84,7 @@ private:
     CCSprite *_restartButton;
     CCSprite *_quitButton;
     
-    //GLESDebugDraw *m_debugDraw;
+//    GLESDebugDraw *m_debugDraw;
     
     Ball *_player1;
     Ball *_player2;
