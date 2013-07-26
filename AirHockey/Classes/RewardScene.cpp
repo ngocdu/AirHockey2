@@ -175,12 +175,14 @@ CCTableViewCell* RewardScene::tableCellAtIndex(CCTableView *table, unsigned int 
     // Player Point
     Player1 * p = (Player1*)players->objectAtIndex(idx);
     CCString *string = CCString::createWithFormat("%d",p->getPoint());
+
     CCLabelTTF *Pointlabel = CCLabelTTF::create(string->getCString(), "Helvetica", 36);
     Pointlabel->setAnchorPoint(ccp(1, 0));
     Pointlabel->setPosition(ccp(500, 20));
     Pointlabel->setTag(123);
     cell->addChild(Pointlabel);
     //time
+
     CCLabelTTF *timeLabel = CCLabelTTF::create(p->getTime().c_str(), "Helvetica", 16);
     timeLabel->setAnchorPoint(CCPointZero);
     timeLabel->setOpacity(70);
@@ -189,6 +191,7 @@ CCTableViewCell* RewardScene::tableCellAtIndex(CCTableView *table, unsigned int 
 
     // Player Name
     std::string name = p->getName();
+
     CCLabelTTF *Namelabel = CCLabelTTF::create(p->getName().c_str(), "Helvetica", 36);
     Namelabel->setAnchorPoint(CCPointZero);
     Namelabel->setPosition(ccp(100, 20));
