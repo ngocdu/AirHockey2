@@ -14,33 +14,25 @@
 #include "HttpClient.h"
 using namespace cocos2d::extension;
 using namespace cocos2d;
-CCScene* GetPresent::scene()
-{
-    // 'scene' is an autorelease object
+CCScene* GetPresent::scene() {
     CCScene *scene = CCScene::create();
-    
-    // 'layer' is an autorelease object
     GetPresent *layer = GetPresent::create();
-    
-    // add layer as a child to scene
     scene->addChild(layer);
-    
-    // return the scene
     return scene;
 }
-bool GetPresent::init()
-{
+
+bool GetPresent::init() {
     CCSize editBoxSize = CCSizeMake(w - 100, 60);
     
     // Congrats 
     CCLabelTTF *congrats = CCLabelTTF::create("BEST SCORE !!!", "BankGothic Md BT", 60);
-    congrats->setPosition(ccp(w/2, h * 6/8));
+    congrats->setPosition(ccp(w/2, h*6/8));
     this->addChild(congrats);
     
     
     // email
     CCLabelTTF *emailLabel1 = CCLabelTTF::create("Please enter your Email", "BankGothic Md BT", 40);
-    emailLabel1->setPosition(ccp(w/2, h * 5/8));
+    emailLabel1->setPosition(ccp(w/2, h*5/8));
     this->addChild(emailLabel1);
     CCLabelTTF *emailLabel2 = CCLabelTTF::create("to get Presents:", "BankGothic Md BT", 40);
     emailLabel2->setPosition(ccp(w/2, emailLabel1->getPositionY() - 45));
@@ -52,29 +44,32 @@ bool GetPresent::init()
     m_pUserEmail->setPosition(ccp(w/2, emailLabel2->getPositionY() - 60));
     m_pUserEmail->setFontSize(40);
     m_pUserEmail->setFontColor(ccWHITE);
-    m_pUserEmail->setMaxLength(75);
-    m_pUserEmail->setReturnType(cocos2d::extension::kKeyboardReturnTypeDefault);
+
+    m_pUserEmail->setMaxLength(55);
+    m_pUserEmail->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
+    m_pUserEmail->setInputMode(kEditBoxInputModeEmailAddr);
     m_pUserEmail->setDelegate(this);
     this->addChild(m_pUserEmail);
     
     // name
     CCLabelTTF *nameLabel = CCLabelTTF::create("Please choose an username:","BankGothic Md BT", 40);
-    nameLabel->setPosition(ccp(w / 2, h * 3/8));
+    nameLabel->setPosition(ccp(w/2, h*3/8));
     this->addChild(nameLabel);
     m_pUserName =
     extension::CCEditBox::create(editBoxSize,
                                  extension::CCScale9Sprite::create("GreenBox.png"));
-    m_pUserName->setPosition(ccp(w / 2, nameLabel->getPositionY() - 60));
+    m_pUserName->setPosition(ccp(w/2, nameLabel->getPositionY() - 60));
     m_pUserName->setFontSize(40);
     m_pUserName->setPlaceholderFontColor(ccWHITE);
     m_pUserName->setMaxLength(25);
     m_pUserName->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
+    m_pUserName->setInputMode(kEditBoxInputModeAny);
     m_pUserName->setDelegate(this);
     this->addChild(m_pUserName);
     
     
-    CCMenuItemImage *sendMenuItem = CCMenuItemImage::create("GetPresent.png", "GetPresent.png", this, menu_selector(GetPresent::menuSendEmail));
-    sendMenuItem->setPosition(ccp(w * 3/4, 100));
+    CCMenuItemImage *sendMenuItem = CCMenuItemImage::create("GetPresent.png", "GetPresentOnClicked.png", this, menu_selector(GetPresent::menuSendEmail));
+    sendMenuItem->setPosition(ccp(w/2, 100));
     
 //    CCMenuItemImage *backMenuItem =
 //    CCMenuItemImage::create("BackButton.png", "BackButton.png", this, menu_selector(GetPresent::menuBack));
@@ -107,9 +102,12 @@ void GetPresent::editBoxReturn(cocos2d::extension::CCEditBox* editBox)
     //CCLog("editBox %p was returned !");
     GameManager::sharedGameManager()->setEmail(m_pUserEmail->getText());
 }
+
+#pragma mark valid Email
 bool GetPresent::is_email(std::string const& address) {
     size_t at_index = address.find_first_of('@', 0);
     return at_index != std::string::npos
+
       && address.find_first_of('.', at_index) != std::string::npos;
     
 }
@@ -209,15 +207,14 @@ void GetPresent::removeSpace(char *xau) {
     s[d+1] = '\0';
     xau = s;
 }
+
 void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
     CCSize w = CCDirector::sharedDirector()->getWinSize();
     CCHttpResponse *response = (CCHttpResponse*)data;
-    if (!response)
-    {
+    if (!response) {
         return;
     }
-    if (0 != strlen(response->getHttpRequest()->getTag()))
-    {
+    if (0 != strlen(response->getHttpRequest()->getTag())) {
         CCLog("%s completed", response->getHttpRequest()->getTag());
     }
     
@@ -226,8 +223,7 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
     sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode,
             response->getHttpRequest()->getTag());
     
-    if (!response->isSucceed())
-    {
+    if (!response->isSucceed()) {
         CCLabelTTF *notConnectLabel =
         CCLabelTTF::create("Can't load Data", "Time new roman", 20);
         notConnectLabel->setPosition(ccp(w.width/2, w.height/2));
@@ -240,18 +236,15 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
     char * data2 = (char*)(malloc(buffer->size() *  sizeof(char)));
     int d = -1;
     printf("Http Test, dump data: ");
-    for (unsigned int i = 0; i < buffer->size(); i++)
-    {
+    for (unsigned int i = 0; i < buffer->size(); i++) {
         d++ ;
         data2[d] = (*buffer)[i];
     }
     data2[d + 1] = '\0';
-    //-----------------------
+
     rapidjson::Document document;
-    if(data2 != NULL && !document.Parse<0>(data2).HasParseError())
-    {
-        for (rapidjson::SizeType  i = 0; i < document.Size(); i++)
-        {
+    if(data2 != NULL && !document.Parse<0>(data2).HasParseError()) {
+        for (rapidjson::SizeType  i = 0; i < document.Size(); i++) {
             string name = document[i]["name"].GetString();
             string email_server = document[i]["email"].GetString();
             CCLOG("%s", name.c_str());
@@ -262,7 +255,6 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
             CCLOG("text name : %s", n);
             if (strcmp(n, name.c_str()) == 0) {
                if(strcmp(m_pUserEmail->getText(), "") != 0 && strcmp(m_pUserEmail->getText(), email_server.c_str()) == 0 ){
-                   CCLOG("co ten trung nhau");
                    m_pUserName->setText("the name was existed");
                    return;
                } 
@@ -292,15 +284,19 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
         request->setRequestType(CCHttpRequest::kHttpPost);
         CCHttpClient::getInstance()->send(request);
         request->release();
-        CCUserDefault::sharedUserDefault()->setStringForKey("email", m_pUserEmail->getText());
+        GameManager::sharedGameManager()->setEmail(m_pUserEmail->getText());
         m_pUserEmail->setText("email send succses");
+        
         char * n =(char*) m_pUserName->getText();
         standardizeName(n);
         removeSpace(n);
-        CCUserDefault::sharedUserDefault()->setStringForKey("username", n);
+       
+        GameManager::sharedGameManager()->setName(m_pUserName->getText());
         CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
     } else {
         m_pUserEmail->setText("email fail");
     }
     d-=1;
 }
+
+

@@ -25,10 +25,10 @@ GameLayer::GameLayer() {
     _level = GameManager::sharedGameManager()->getLevel();
     CCLOG("gamelayer name: %s", GameManager::sharedGameManager()->getName().c_str());
 
-    float x=0, y=0, z=0;
-    this->getCamera()->getCenterXYZ(&x, &y, &z);
-    this->getCamera()->setCenterXYZ(x, y+0.0000001, z);
-    this->getCamera()->setEyeXYZ(x, y, 70);
+//    float x=0, y=0, z=0;
+//    this->getCamera()->getCenterXYZ(&x, &y, &z);
+//    this->getCamera()->setCenterXYZ(x, y+0.0000001, z);
+//    this->getCamera()->setEyeXYZ(x, y, 70);
     CCSprite *backGroundImg = CCSprite::create("Court3.png");
     backGroundImg->setPosition(ccp(w/2, h/2));
     this->addChild(backGroundImg);
@@ -56,16 +56,20 @@ GameLayer::GameLayer() {
     this->addChild(_endLayerBg, 5);
     ew = _endLayerBg->getContentSize().width;
     eh = _endLayerBg->getContentSize().height;
-    _rematchButton = CCSprite::create("Continue.png");
-    _rematchButton->setPosition(ccp(ew/2, eh/2));
-    _endLayerBg->addChild(_rematchButton);
     
-    _quitButton = CCSprite::create("Quit.png");
+    _quitButton     = CCSprite::create("Quit.png");
+    _restartButton  = CCSprite::create("Restart.png");
+    _continueButton = CCSprite::create("Continue.png");
+    resultLabel     = CCLabelTTF::create("DRAW", "BankGothic Md BT", 64);
+
     _quitButton->setPosition(ccp(ew/2, eh/4));
-    _endLayerBg->addChild(_quitButton);
+    _restartButton->setPosition(ccp(ew/2, eh/2));
+    _continueButton->setPosition(ccp(ew/2, eh*3/4));
+    resultLabel->setPosition(ccp(ew/2, eh*3/4));
     
-    resultLabel = CCLabelTTF::create("DRAW", "BankGothic Md BT", 64);
-    resultLabel->setPosition(ccp(ew/2, eh*5/6));
+    _endLayerBg->addChild(_quitButton);
+    _endLayerBg->addChild(_restartButton);
+    _endLayerBg->addChild(_continueButton);
     _endLayerBg->addChild(resultLabel);
     _endLayerBg->setVisible(false);
     
@@ -106,7 +110,7 @@ GameLayer::~GameLayer() {
     delete _world;
     _world = NULL;
     
-    //delete m_debugDraw;
+//    delete m_debugDraw;
 }
 
 #pragma mark INIT PHYSICS
@@ -122,11 +126,11 @@ void GameLayer::initPhysics() {
     _contactListener = new MyContactListener();
     _world->SetContactListener(_contactListener);
     
-   // m_debugDraw = new GLESDebugDraw( PTM_RATIO );
-    //_world->SetDebugDraw(m_debugDraw);
+//    m_debugDraw = new GLESDebugDraw( PTM_RATIO );
+//    _world->SetDebugDraw(m_debugDraw);
 
-    uint32 flags = 0;
-    flags += b2Draw::e_shapeBit;
+//    uint32 flags = 0;
+//    flags += b2Draw::e_shapeBit;
 //    flags += b2Draw::e_jointBit;
 //    flags += b2Draw::e_aabbBit;
 //    flags += b2Draw::e_pairBit;
@@ -345,6 +349,7 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
         
         if (pauseRect.containsPoint(tap)) {
             _isPauseClicked = true;
+            _continueButton->setVisible(true);
         } else {
             if (tap.y < h/2 - _player1->getRadius() &&
                 tap.y > 10 + _player1->getRadius()  &&
@@ -368,27 +373,39 @@ void GameLayer::ccTouchesBegan(CCSet* touches, CCEvent* event) {
         CCTouch *touch = (CCTouch *)touches->anyObject();
         CCPoint tap = touch->getLocation();
         
-        CCPoint p1 = _endLayerBg->convertToWorldSpace(_rematchButton->getPosition());
+        CCPoint p1 = _endLayerBg->convertToWorldSpace(_restartButton->getPosition());
         CCPoint p2 = _endLayerBg->convertToWorldSpace(_quitButton->getPosition());
+        CCPoint p3 = _endLayerBg->convertToWorldSpace(_continueButton->getPosition());
         
-        float rmw = _rematchButton->getContentSize().width;
-        float rmh = _rematchButton->getContentSize().height;
+        float rmw = _restartButton->getContentSize().width;
+        float rmh = _restartButton->getContentSize().height;
         
         float qw  = _quitButton->getContentSize().width;
         float qh  = _quitButton->getContentSize().height;
         
-        CCRect rematchRect = CCRectMake(p1.x - rmw/2, p1.y - rmh/2, rmw, rmh);
-        CCRect quitRect    = CCRectMake(p2.x - qw/2, p2.y - qh/2, qw, qh);
+        float cw = _continueButton->getContentSize().width;
+        float ch = _continueButton->getContentSize().height;
+        
+        CCRect restartRect  = CCRectMake(p1.x - rmw/2, p1.y - rmh/2, rmw, rmh);
+        CCRect quitRect     = CCRectMake(p2.x - qw/2, p2.y - qh/2, qw, qh);
+        CCRect continueRect = CCRectMake(p3.x - cw/2, p3.y - ch/2, cw, ch);
+        
         CCRect p1Rect = _player1->boundingBox();
+        
+        if (continueRect.containsPoint(tap)) {
+            _playing = true;
+            this->resumeSchedulerAndActions();
+            _endLayerBg->setVisible(false);
+        }
         
         if (quitRect.containsPoint(tap)) {
             CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
         }
-        if (rematchRect.containsPoint(tap)) {
+        if (restartRect.containsPoint(tap)) {
             _playing = true;
             this->resumeSchedulerAndActions();
             _endLayerBg->setVisible(false);
-            if (_isEnd) this->gameReset();
+            this->gameReset();
         }
         if (p1Rect.containsPoint(tap)) {
             b2MouseJointDef md;
@@ -430,7 +447,7 @@ void GameLayer::ccTouchesEnded(CCSet* touches, CCEvent* event) {
             _endLayerBg->setVisible(true);
             this->pauseSchedulerAndActions();
             _playing = false;
-            resultLabel->setVisible(false);
+            if (!_isEnd)    resultLabel->setVisible(false);
         }
     } else {
         if (_mouseJoint != NULL) {
@@ -533,18 +550,12 @@ void GameLayer::checkHighScore() {
 #pragma mark HTTP REQUEST
 void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
     CCHttpResponse *response = (CCHttpResponse*)data;
-    if (!response)
-    {
+    if (!response) {
+        CCMessageBox("Cannot get Respond !", "ERROR");
         return;
     }
-    
-    int statusCode = response->getResponseCode();
-    char statusString[64] = {};
-    sprintf(statusString, "HTTP Status Code: %d, tag = %s", statusCode,
-            response->getHttpRequest()->getTag());
-    
-    if (!response->isSucceed())
-    {
+    if (!response->isSucceed()) {
+        CCMessageBox("Respond not succeeded !", "ERROR");
         return;
     }
     
@@ -552,78 +563,71 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
     std::vector<char> *buffer = response->getResponseData();
     char * data2 = (char*)(malloc(buffer->size() *  sizeof(char)));
     int d = -1;
-    printf("Http Test, dump data: ");
-    for (unsigned int i = 0; i < buffer->size(); i++)
-    {
+    CCLOG("Http Test, dump data: %s", data2);
+    for (unsigned int i = 0; i < buffer->size(); i++) {
         d++ ;
         data2[d] = (*buffer)[i];
     }
     data2[d + 1] = '\0';
     //-----------------------
     rapidjson::Document document;
-    if(data2 != NULL && !document.Parse<0>(data2).HasParseError())
-    {
-        string name = CCUserDefault::sharedUserDefault()->getStringForKey("username");
-        int point = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
-        (GameManager::sharedGameManager()->getLevel() * 2000);
-        for (rapidjson::SizeType  i = 0; i < document.Size(); i++)
-        {
-            if (point > document[i]["point"].GetInt()) {
-                if (i == 0) {
-                    int r = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
-                    CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", r + 1);
-                    int r2 = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
-                    if (name == "") {
-                        CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
-                        break;
-                    }else {
-                        CCHttpRequest * request = new CCHttpRequest();
-                        string name = CCUserDefault::sharedUserDefault()->getStringForKey("username");
-                        char strP[20] = {0};
-                        sprintf(strP, "%i", point);
-                        string email  = CCUserDefault::sharedUserDefault()->getStringForKey("email");
-                        string ipAddr = GameManager::sharedGameManager()->getIpAddr();
-                        string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
-                        request->setUrl(url.c_str());
-                        request->setRequestType(CCHttpRequest::kHttpPost);
-                        CCHttpClient::getInstance()->send(request);
-                        request->release();
-                        CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
-                        break;
+    if(data2 != NULL && !document.Parse<0>(data2).HasParseError()) {
+        string name = GameManager::sharedGameManager()->getName();
+        int point = _score1 * (_minutes * 60 + _seconds) *
+            (GameManager::sharedGameManager()->getLevel() * 2000);
+        if (document.Size() <= 9) {
+            if (name == "")
+                CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
+            else {
+                CCHttpRequest * request = new CCHttpRequest();
+                string email  = GameManager::sharedGameManager()->getEmail();
+                string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+                char strP[20] = {0};
+                sprintf(strP, "%i", point);
+                string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
+                request->setUrl(url.c_str());
+                request->setRequestType(CCHttpRequest::kHttpPost);
+                CCHttpClient::getInstance()->send(request);
+                request->release();
+            }
+        } else {
+            for (rapidjson::SizeType  i = 0; i < document.Size(); i++) {
+                if (point > document[i]["point"].GetInt()) {
+                    if (i == 0) {
+                        int r = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+                        CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", r + 1);
+
+                        if (name == "") {
+                            CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
+                            break;
+                        } else {
+                            CCHttpRequest * request = new CCHttpRequest();
+                            char strP[20] = {0};
+                            sprintf(strP, "%i", point);
+                            string email  = GameManager::sharedGameManager()->getEmail();
+                            string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+                            string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
+                            request->setUrl(url.c_str());
+                            request->setRequestType(CCHttpRequest::kHttpPost);
+                            CCHttpClient::getInstance()->send(request);
+                            request->release();
+                            break;
+                        }
                     }
-                }
-                if (name == "") {
-                    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
-                    break;
-                }else {
-                    CCHttpRequest * request = new CCHttpRequest();
-                    string name = CCUserDefault::sharedUserDefault()->getStringForKey("username");
-                    char strP[20] = {0};
-                    sprintf(strP, "%i", point);
-                    string email  = CCUserDefault::sharedUserDefault()->getStringForKey("email");
-                    string ipAddr = GameManager::sharedGameManager()->getIpAddr();
-                    string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
-                    request->setUrl(url.c_str());
-                    request->setRequestType(CCHttpRequest::kHttpPost);
-                    CCHttpClient::getInstance()->send(request);
-                    request->release();
-                    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
-                    break;
                 }
             }
         }
-    }
-    else
-    {
+    } else {
         CCLog(document.GetParseError());
     }
+    
     d = -1;
     delete []data2;
 }
 
 void GameLayer::endGame() {
     if (_score1 > _score2) {
-        int p = (_score1 + 1) * (180 - (_minutes * 60 + _seconds)) *
+        int p = _score1 * (_minutes * 60 + _seconds) *
                 (GameManager::sharedGameManager()->getLevel() * 2000);
         resultLabel->setString("YOU WIN");
         resultLabel->runAction(CCBlink::create(2.0f, 5.0f));
@@ -639,7 +643,8 @@ void GameLayer::endGame() {
     else resultLabel->setString("YOU LOSE");
     
     _endLayerBg->setVisible(true);
-    resultLabel->setVisible(true);  
+    resultLabel->setVisible(true);
+    _continueButton->setVisible(false);
 }
 
 
