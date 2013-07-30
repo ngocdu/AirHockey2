@@ -230,7 +230,6 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
         this->addChild(notConnectLabel);
         return;
     }
-    
     // dump data
     std::vector<char> *buffer = response->getResponseData();
     char * data2 = (char*)(malloc(buffer->size() *  sizeof(char)));
