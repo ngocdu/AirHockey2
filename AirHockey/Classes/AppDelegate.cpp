@@ -11,7 +11,7 @@
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
 #include "RankingScene.h"
-
+//#include "GetPresent.h"
 USING_NS_CC;
 using namespace CocosDenshion;
 

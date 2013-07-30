@@ -14,6 +14,8 @@ private:
     string email;
     int point;
     string ipAddr;
+    int reward;
+    
     //Constructor
     GameManager();
 
@@ -35,6 +37,8 @@ public:
     void setPoint(int point);
     string getIpAddr();
     void setIpAddr(string ipAddr);
+    int getReward();
+    void setReward(int reward);
 };
 
 #endif

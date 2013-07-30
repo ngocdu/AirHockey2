@@ -43,21 +43,21 @@ static AppDelegate s_sharedApplication;
     viewController.wantsFullScreenLayout = YES;
     viewController.view = __glView;
 
-    //check conect internet
-    NSURL *scriptUrl = [NSURL URLWithString:@"http://google.com"];
-    NSData *data = [NSData dataWithContentsOfURL:scriptUrl];
-    if (data) {
-        NSLog(@"Device is connected to the internet");
-//        UIAlertView *someError = [[UIAlertView alloc] initWithTitle: @"Messeage" message: @"Device is connected to the internet" delegate: self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
+//    //check conect internet
+//    NSURL *scriptUrl = [NSURL URLWithString:@"http://google.com"];
+//    NSData *data = [NSData dataWithContentsOfURL:scriptUrl];
+//    if (data) {
+//        NSLog(@"Device is connected to the internet");
+////        UIAlertView *someError = [[UIAlertView alloc] initWithTitle: @"Messeage" message: @"Device is connected to the internet" delegate: self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
+////        [someError show];
+////        [someError release];
+//    }
+//    else {
+//        NSLog(@"Device is not connected to the internet");
+//        UIAlertView *someError = [[UIAlertView alloc] initWithTitle: @"Messeage" message: @"Device is not connected to the internet" delegate: self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
 //        [someError show];
 //        [someError release];
-    }
-    else {
-        NSLog(@"Device is not connected to the internet");
-        UIAlertView *someError = [[UIAlertView alloc] initWithTitle: @"Messeage" message: @"Device is not connected to the internet" delegate: self cancelButtonTitle: @"Ok" otherButtonTitles: nil];
-        [someError show];
-        [someError release];
-    }
+//    }
     
     // Set RootViewController to window
     if ( [[UIDevice currentDevice].systemVersion floatValue] < 6.0)

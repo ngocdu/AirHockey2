@@ -31,7 +31,7 @@ CCScene* RankingScene::scene() {
 }
 
 bool RankingScene::init() {
-    CCSprite *background = CCSprite::create("BackGround2.png");
+    CCSprite *background = CCSprite::create("BackGrounds/BackGround2.png");
     background->setPosition(ccp(w/2, h/2));
     this->addChild(background);
     
@@ -65,7 +65,7 @@ bool RankingScene::init() {
     
     //create startMenuItem
     CCMenuItemImage *playItem =
-        CCMenuItemImage::create("StartButton.png", "StartButtonOnClicked.png",
+        CCMenuItemImage::create("Buttons/StartButton.png", "Buttons/StartButtonOnClicked.png",
                                 this, menu_selector(RankingScene::play));
     playItem->setPosition(ccp(w/2, h/8 - 10));
     //create bgmItem
@@ -110,9 +110,14 @@ void RankingScene::onHttpRequestCompleted(CCNode *sender, void *data) {
     
     if (!response->isSucceed()) {
         CCLabelTTF *notConnectLabel =
-        CCLabelTTF::create("Can't load Data", "BankGothic Md BT", 20);
+            CCLabelTTF::create("Can't load Data", "BankGothic Md BT", 20);
         notConnectLabel->setPosition(ccp(w/2, h/2));
+        
+        CCLabelTTF *checkInternetMsg = CCLabelTTF::create("Please check your internet connection !!", "BankGothic Md BT", 24);
+        checkInternetMsg->setPosition(ccp(w/2, h/2 - 40));
+        
         this->addChild(notConnectLabel);
+        this->addChild(checkInternetMsg);
         return;
     }
     
@@ -201,20 +206,20 @@ CCTableViewCell* RankingScene::tableCellAtIndex(CCTableView *table, unsigned int
     
     // Player Rank
     char rankBuf[3];
-    sprintf(rankBuf, "%i.png", idx+1);
+    sprintf(rankBuf, "Numbers/%i.png", idx+1);
     CCSprite *rank = CCSprite::create(rankBuf);
     rank->setAnchorPoint(CCPointZero);
     rank->setPosition(CCPointZero);
     cell->addChild(rank);
     
     if (idx == 0) {
-        int rewardLocal = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+        int rewardLocal = GameManager::sharedGameManager()->getReward();
         std::string nameLocal = GameManager::sharedGameManager()->getName();
         int pointMax = CCUserDefault::sharedUserDefault()->getIntegerForKey("pointMax");
         if (p->getReward() != 0 && rewardLocal != 0 &&
             p->getName() == nameLocal && p->getPoint() == pointMax) {
             CCMenuItemImage *bt_send_email =
-                CCMenuItemImage::create("Present.png","Present.png",
+                CCMenuItemImage::create("Present.png","PresentOnClicked.png",
                                         this, menu_selector(RankingScene::reward));
             CCMenu * menu = CCMenu::create(bt_send_email, NULL);
             menu->setPosition(ccp(550, 30));

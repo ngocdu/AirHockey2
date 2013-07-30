@@ -38,7 +38,7 @@ private:
     CCSize size = CCDirector::sharedDirector()->getWinSize();
     float w = size.width;
     float h = size.height;
-    CCMenu * menu;
+    CCMenu * rewardMenu;
     
     CCArray *players = new CCArray();
     int celltouch;
@@ -49,12 +49,12 @@ public:
     
     void back(CCObject* pSender);
     void clickBtSendEmail(CCObject* pSender);
-    CREATE_FUNC(RewardScene);
     virtual void scrollViewDidScroll(CCScrollView* view){};
     virtual void scrollViewDidZoom(CCScrollView* view){}
     virtual void tableCellTouched(CCTableView* table, CCTableViewCell* cell);
     virtual CCSize tableCellSizeForIndex(CCTableView *table, unsigned int idx);
     virtual CCTableViewCell* tableCellAtIndex(CCTableView *table, unsigned int idx);
     virtual unsigned int numberOfCellsInTableView(CCTableView *table);
+    CREATE_FUNC(RewardScene); 
 };
 #endif /* defined(__AirHockey__RewardScene__) */

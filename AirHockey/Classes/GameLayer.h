@@ -18,6 +18,8 @@
 #include "RankingScene.h"
 #include "GetPresent.h"
 
+
+
 USING_NS_CC;
 using namespace cocos2d::extension;
 using namespace CocosDenshion;
@@ -75,9 +77,7 @@ private:
     float h  = s.height;
     
     b2Body *_groundBody;
-    
-    CCSprite *_p1;
-    CCSprite *_p2;
+
     CCSprite *_pauseButton;
     CCSprite *_endLayerBg;
     CCSprite *_continueButton;
@@ -94,9 +94,11 @@ private:
     
     int _score1  = 0;
     int _score2  = 0;
-    int lastHit  = 0;
+    int lastHit  = -1200;
     int _minutes, _seconds;
-    
+    int point = 0;
+    int pointCal = 0;
+    int pointUnit = 0;
     // Game Level Easy = 1, Medium = 2, Hard = 3
     int _level;
     
@@ -112,7 +114,8 @@ private:
     CCLabelTTF *_scoreLabel1;
     CCLabelTTF *_scoreLabel2;
     CCLabelTTF *_time;
-    CCLabelTTF *resultLabel = new CCLabelTTF;
+    CCLabelTTF *_resultLabel;
+    CCLabelTTF *_scoreLabel;
     
     MyContactListener *_contactListener;
 };

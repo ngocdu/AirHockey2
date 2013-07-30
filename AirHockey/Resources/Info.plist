@@ -29,8 +29,8 @@
 	<string>APPL</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>BankGothic Md BT.ttf</string>
-		<string>BankGothic Lt BT.ttf</string>
+		<string>Fonts/BankGothic Md BT.ttf</string>
+		<string>Fonts/BankGothic Lt BT.ttf</string>
 	</array>
 	<key>CFBundleSignature</key>
 	<string>????</string>

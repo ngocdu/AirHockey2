@@ -30,13 +30,13 @@ CCScene* RewardScene::scene() {
 }
 
 bool RewardScene::init() {
-    CCSprite *background = CCSprite::create("RewardBG.png");
+    CCSprite *background = CCSprite::create("BackGrounds/RewardBG.png");
     background->setPosition(ccp(w/2, h/2));
     this->addChild(background);
     
     string playerName = GameManager::sharedGameManager()->getName();
     if (playerName != "") {
-        char nameBuf[30];
+        char nameBuf[50];
         sprintf(nameBuf, "Player Name: %s", playerName.c_str());
         CCLabelTTF *playerNameLabel = CCLabelTTF::create(nameBuf, "BankGothic Md BT", 30);
         playerNameLabel->setPosition(ccp(w/2, h*3/4));
@@ -53,7 +53,7 @@ bool RewardScene::init() {
     
     //create startMenuItem
     CCMenuItemImage *playItem =
-        CCMenuItemImage::create("BackButton.png", "BackButtonOnClicked.png",
+        CCMenuItemImage::create("Buttons/BackButton.png", "Buttons/BackButtonOnClicked.png",
                                 this, menu_selector(RewardScene::back));
     playItem->setPosition(ccp(w/2, h/8));
     
@@ -84,7 +84,12 @@ void RewardScene::onHttpRequestCompleted(CCNode *sender, void *data) {
         CCLabelTTF *notConnectLabel =
         CCLabelTTF::create("Can't load Data", "BankGothic Md BT", 20);
         notConnectLabel->setPosition(ccp(w/2, h/2));
+        CCLabelTTF *checkInternetMsg = CCLabelTTF::create("Please check your internet connection !!", "BankGothic Md BT", 24);
+        checkInternetMsg->setPosition(ccp(w/2, h/2 - 40));
+        
         this->addChild(notConnectLabel);
+        this->addChild(checkInternetMsg);
+
         return;
     }
     
@@ -140,16 +145,16 @@ void RewardScene::clickBtSendEmail(cocos2d::CCObject *pSender) {
     string name = GameManager::sharedGameManager()->getName();
     char strP[20] = {0};
     sprintf(strP, "%i", point);
-    string email  = GameManager::sharedGameManager()->getName();
+    string email  = GameManager::sharedGameManager()->getEmail();
     string ipAddr = GameManager::sharedGameManager()->getIpAddr();
     string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email+"&reward=abc&time="+p->getTime();
     request->setUrl(url.c_str());
     request->setRequestType(CCHttpRequest::kHttpPost);
     CCHttpClient::getInstance()->send(request);
     request->release();
-    p->setReward(0);
-    int r = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
-    CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", r - 1);
+    p->setReward(-1);
+    int r = GameManager::sharedGameManager()->getReward();
+    GameManager::sharedGameManager()->setReward(r - 1);
     bt_send_email->removeFromParentAndCleanup(true);
 }
 
@@ -178,43 +183,42 @@ CCTableViewCell* RewardScene::tableCellAtIndex(CCTableView *table, unsigned int 
 
     CCLabelTTF *Pointlabel = CCLabelTTF::create(string->getCString(), "Helvetica", 36);
     Pointlabel->setAnchorPoint(ccp(1, 0));
-    Pointlabel->setPosition(ccp(500, 20));
+    Pointlabel->setPosition(ccp(500, 15));
     Pointlabel->setTag(123);
     cell->addChild(Pointlabel);
     //time
 
     CCLabelTTF *timeLabel = CCLabelTTF::create(p->getTime().c_str(), "Helvetica", 16);
     timeLabel->setAnchorPoint(CCPointZero);
-    timeLabel->setOpacity(70);
-    timeLabel->setPosition(ccp(100, 0));
+    timeLabel->setOpacity(90);
+    timeLabel->setPosition(ccp(100, 10));
     cell->addChild(timeLabel);
 
     // Player Name
     std::string name = p->getName();
-
     CCLabelTTF *Namelabel = CCLabelTTF::create(p->getName().c_str(), "Helvetica", 36);
     Namelabel->setAnchorPoint(CCPointZero);
-    Namelabel->setPosition(ccp(100, 20));
+    Namelabel->setPosition(ccp(100, 30));
     cell->addChild(Namelabel);
     
     // Player Rank
-    char rankBuf[3];
-    sprintf(rankBuf, "%i.png", idx+1);
-    CCSprite *rank = CCSprite::create(rankBuf);
+    CCSprite *rank;
+    if (p->getReward() != 0) rank = CCSprite::create("BestScore.png");
+    else rank = CCSprite::create("Top10.png");
     rank->setAnchorPoint(CCPointZero);
-    rank->setPosition(ccp(0, 10));
+    rank->setPosition(CCPointZero);
     cell->addChild(rank);
     
-    int rewardLocal = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+    int rewardLocal = GameManager::sharedGameManager()->getReward();
     std::string nameLocal = GameManager::sharedGameManager()->getName();
-    if (p->getReward() != 0 && rewardLocal != 0) {
+    if (p->getReward() > 0 && rewardLocal != 0) {
         CCMenuItemImage *bt_send_email =
-            CCMenuItemImage::create("Present.png","Present.png",
+            CCMenuItemImage::create("Present.png","PresentOnClicked.png",
                                     this, menu_selector(RewardScene::clickBtSendEmail));
         bt_send_email->setTag(idx + 100);
-        menu = CCMenu::create(bt_send_email, NULL);
-        menu->setPosition(ccp(550, 30));
-        cell->addChild(menu);
+        rewardMenu = CCMenu::create(bt_send_email, NULL);
+        rewardMenu->setPosition(ccp(550, 40));
+        cell->addChild(rewardMenu);
     }
     
     return cell;

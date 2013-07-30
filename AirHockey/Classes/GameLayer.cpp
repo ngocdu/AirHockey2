@@ -21,7 +21,7 @@ CCScene* GameLayer::scene() {
 GameLayer::GameLayer() {
     setTouchEnabled(true);
     setAccelerometerEnabled(true);
-    SimpleAudioEngine::sharedEngine()->preloadEffect("hitPuck.wav");
+    SimpleAudioEngine::sharedEngine()->preloadEffect("Sounds/hitPuck.wav");
     _level = GameManager::sharedGameManager()->getLevel();
     CCLOG("gamelayer name: %s", GameManager::sharedGameManager()->getName().c_str());
 
@@ -46,33 +46,37 @@ GameLayer::GameLayer() {
     this->addChild(_scoreLabel2);
 
     // Pause Button
-    _pauseButton = CCSprite::create("PauseButton.png");
+    _pauseButton = CCSprite::create("Buttons/PauseButton.png");
     _pauseButton->setPosition(ccp(w - 70, h/2));
     this->addChild(_pauseButton);
     
     // End Game
-    _endLayerBg = CCSprite::create("EndGameBG.png");
+    _endLayerBg = CCSprite::create("BackGrounds/EndGameBG.png");
     _endLayerBg->setPosition(ccp(w/2, h/2));
     this->addChild(_endLayerBg, 5);
     ew = _endLayerBg->getContentSize().width;
     eh = _endLayerBg->getContentSize().height;
     
-    _quitButton     = CCSprite::create("Quit.png");
-    _restartButton  = CCSprite::create("Restart.png");
-    _continueButton = CCSprite::create("Continue.png");
-    resultLabel     = CCLabelTTF::create("DRAW", "BankGothic Md BT", 64);
+    _quitButton     = CCSprite::create("Buttons/Quit.png");
+    _restartButton  = CCSprite::create("Buttons/Restart.png");
+    _continueButton = CCSprite::create("Buttons/Continue.png");
+    _resultLabel    = CCLabelTTF::create("DRAW", "BankGothic Md BT", 60);
+    _scoreLabel     = CCLabelTTF::create("score: 0", "BankGothic Md BT", 36);
 
     _quitButton->setPosition(ccp(ew/2, eh/4));
     _restartButton->setPosition(ccp(ew/2, eh/2));
     _continueButton->setPosition(ccp(ew/2, eh*3/4));
-    resultLabel->setPosition(ccp(ew/2, eh*3/4));
+    _resultLabel->setPosition(ccp(ew/2, eh - 50));
+    _scoreLabel->setPosition(ccp(ew/2, eh*3/4 - 15));
     
     _endLayerBg->addChild(_quitButton);
     _endLayerBg->addChild(_restartButton);
     _endLayerBg->addChild(_continueButton);
-    _endLayerBg->addChild(resultLabel);
-    _endLayerBg->setVisible(false);
+    _endLayerBg->addChild(_resultLabel);
+    _endLayerBg->addChild(_scoreLabel);
     
+    _endLayerBg->setVisible(false);
+
     // Timer
     _minutes = 3;
     _seconds = 00;
@@ -89,7 +93,7 @@ GameLayer::GameLayer() {
     // Physics
     this->initPhysics();
     
-    CCSprite *startGame = CCSprite::create("OnStart.png");
+    CCSprite *startGame = CCSprite::create("Buttons/OnStart.png");
     startGame->setPosition(ccp(-w/2, h/2));
     this->addChild(startGame, 9, 1);
     
@@ -165,15 +169,15 @@ void GameLayer::initPhysics() {
     this->createEdge(0, h/2, w, h/2, -10);
     
     // Create 2 Player and Puck
-    _player1 = Ball::create(this, humanPlayer, "Mallet1_2.png");
+    _player1 = Ball::create(this, humanPlayer, "Player/Mallet1_2.png");
     _player1->setStartPos(ccp(w/2, _player1->getRadius()*2));
     _player1->setSpritePosition(_player1->getStartPos());
     this->addChild(_player1);
-    _player2 = Ball::create(this, aiPlayer, "Mallet2_2.png");
+    _player2 = Ball::create(this, aiPlayer, "Player/Mallet2_2.png");
     _player2->setStartPos(ccp(w/2, h - _player2->getRadius()*2));
     _player2->setSpritePosition(_player2->getStartPos());
     this->addChild(_player2);
-    _puck = Ball::create(this, puck, "Puck.png");
+    _puck = Ball::create(this, puck, "Player/Puck.png");
     _puck->setStartPos(ccp(w/2, h/2));
     _puck->setSpritePosition(_puck->getStartPos());
     this->addChild(_puck);
@@ -207,48 +211,51 @@ void GameLayer::draw() {
 
 #pragma mark UPDATE
 void GameLayer::update(float dt) {
+    _world->Step(dt, 8, 3);
     if (_playing) {
-        _world->Step(dt, 8, 3);
         _player1->update(dt);
         _player2->update(dt);
         _puck->update(dt);
     }
     
-    if ((_minutes == 0 && _seconds == 0) || _score1 == 1 || _score2 == 1) {
+    if ((_minutes == 0 && _seconds == 0) || _score1 == 3 || _score2 == 3) {
         _playing = false ;
         _isEnd = true;
-        this->pauseSchedulerAndActions();
+        _player1->reset();
+        _player2->reset();
+        _puck->reset();
+//        this->pauseSchedulerAndActions();
         this->endGame();
     }
 
     // Apply impluse when the puck is near the edges
     if (_puck->getPositionX() <= 15 + _puck->getRadius())
-        _puck->getBody()->ApplyLinearImpulse(b2Vec2(10, 0),
+        _puck->getBody()->ApplyLinearImpulse(b2Vec2(5, 0),
                                              _puck->getBody()->GetWorldCenter());
 
     if (_puck->getPositionX() >= w - 15 - _puck->getRadius())
-        _puck->getBody()->ApplyLinearImpulse(b2Vec2(-10, 0),
+        _puck->getBody()->ApplyLinearImpulse(b2Vec2(-5, 0),
                                              _puck->getBody()->GetWorldCenter());
     
     if (_puck->getPositionX() <= 260 || _puck->getPositionX() >= w - 260) {
         if (_puck->getPositionY() >= h - 15 - _puck->getRadius())
-            _puck->getBody()->ApplyLinearImpulse(b2Vec2(0, -10),
+            _puck->getBody()->ApplyLinearImpulse(b2Vec2(0, -5),
                                              _puck->getBody()->GetWorldCenter());
         if (_puck->getPositionY() <= 15 + _puck->getRadius())
-            _puck->getBody()->ApplyLinearImpulse(b2Vec2(0, 10),
+            _puck->getBody()->ApplyLinearImpulse(b2Vec2(0, 5),
                                              _puck->getBody()->GetWorldCenter());
     }
     
     // Gloal !!!
     if (_puck->getPositionY() > h + _puck->getRadius()) {
-        SimpleAudioEngine::sharedEngine()->playEffect("score.wav");
+        SimpleAudioEngine::sharedEngine()->playEffect("Sounds/score.wav");
         this->scoreCounter(1);
         this->newTurn();
         _puck->setPosition(ccp(w/2, h/2 + 3 * _puck->getRadius()));
     }
     
     if (_puck->getPositionY() < -_puck->getRadius()) {
-        SimpleAudioEngine::sharedEngine()->playEffect("score.wav");
+        SimpleAudioEngine::sharedEngine()->playEffect("Sounds/score.wav");
         this->scoreCounter(2);
         this->newTurn();
         _puck->setPosition(ccp(w/2, h/2 - 3 * _puck->getRadius()));
@@ -262,7 +269,7 @@ void GameLayer::update(float dt) {
         
         if (contact.fixtureA == _puck->getFixture() ||
             contact.fixtureB == _puck->getFixture()) {
-            SimpleAudioEngine::sharedEngine()->playEffect("hitPuck.wav");
+            SimpleAudioEngine::sharedEngine()->playEffect("Sounds/hitPuck.wav");
         }
         
         if ((contact.fixtureA == _puck->getFixture()     &&
@@ -447,7 +454,10 @@ void GameLayer::ccTouchesEnded(CCSet* touches, CCEvent* event) {
             _endLayerBg->setVisible(true);
             this->pauseSchedulerAndActions();
             _playing = false;
-            if (!_isEnd)    resultLabel->setVisible(false);
+            if (!_isEnd)    {
+                 _resultLabel->setVisible(false);
+                _scoreLabel->setVisible(false);
+            }
         }
     } else {
         if (_mouseJoint != NULL) {
@@ -551,19 +561,19 @@ void GameLayer::checkHighScore() {
 void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
     CCHttpResponse *response = (CCHttpResponse*)data;
     if (!response) {
-        CCMessageBox("Cannot get Respond !", "ERROR");
+//        CCMessageBox("Cannot get Respond !", "ERROR");
+        CCLOG("Error !! Cannot get Respond !");
         return;
     }
     if (!response->isSucceed()) {
-        CCMessageBox("Respond not succeeded !", "ERROR");
+//        CCMessageBox("Respond not succeeded !", "ERROR");
+        CCLOG("Error !! Respond not succeeded !");
         return;
     }
     
-    // dump data
     std::vector<char> *buffer = response->getResponseData();
     char * data2 = (char*)(malloc(buffer->size() *  sizeof(char)));
     int d = -1;
-    CCLOG("Http Test, dump data: %s", data2);
     for (unsigned int i = 0; i < buffer->size(); i++) {
         d++ ;
         data2[d] = (*buffer)[i];
@@ -573,9 +583,17 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
     rapidjson::Document document;
     if(data2 != NULL && !document.Parse<0>(data2).HasParseError()) {
         string name = GameManager::sharedGameManager()->getName();
-        int point = _score1 * (_minutes * 60 + _seconds) *
-            (GameManager::sharedGameManager()->getLevel() * 2000);
-        if (document.Size() <= 9) {
+        if (point == 0) point = _score1 * (_minutes * 60 + _seconds) *
+            pow(10.0, GameManager::sharedGameManager()->getLevel() + 1.0);
+        if (document.Size() == 0) {
+            int r = GameManager::sharedGameManager()->getReward();
+            GameManager::sharedGameManager()->setReward(r + 1);
+            CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
+        } else if (document.Size() <= 9) {
+            if (point >= document[rapidjson::SizeType(0)]["point"].GetInt()) {
+                int r = GameManager::sharedGameManager()->getReward();
+                GameManager::sharedGameManager()->setReward(r + 1);
+            }
             if (name == "")
                 CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
             else {
@@ -592,28 +610,27 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
             }
         } else {
             for (rapidjson::SizeType  i = 0; i < document.Size(); i++) {
-                if (point > document[i]["point"].GetInt()) {
+                if (point >= document[i]["point"].GetInt()) {
                     if (i == 0) {
-                        int r = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
-                        CCUserDefault::sharedUserDefault()->setIntegerForKey("reward", r + 1);
-
-                        if (name == "") {
-                            CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
-                            break;
-                        } else {
-                            CCHttpRequest * request = new CCHttpRequest();
-                            char strP[20] = {0};
-                            sprintf(strP, "%i", point);
-                            string email  = GameManager::sharedGameManager()->getEmail();
-                            string ipAddr = GameManager::sharedGameManager()->getIpAddr();
-                            string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
-                            request->setUrl(url.c_str());
-                            request->setRequestType(CCHttpRequest::kHttpPost);
-                            CCHttpClient::getInstance()->send(request);
-                            request->release();
-                            break;
-                        }
+                        int r = GameManager::sharedGameManager()->getReward();
+                        GameManager::sharedGameManager()->setReward(r + 1);
                     }
+                    if (name == "") {
+                        CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, GetPresent::scene()));
+                        break;
+                    } else {
+                        CCHttpRequest * request = new CCHttpRequest();
+                        char strP[20] = {0};
+                        sprintf(strP, "%i", point);
+                        string email  = GameManager::sharedGameManager()->getEmail();
+                        string ipAddr = GameManager::sharedGameManager()->getIpAddr();
+                        string url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
+                        request->setUrl(url.c_str());
+                        request->setRequestType(CCHttpRequest::kHttpPost);
+                        CCHttpClient::getInstance()->send(request);
+                        request->release();
+                        break;
+                    }                    
                 }
             }
         }
@@ -626,24 +643,61 @@ void GameLayer::onHttpRequestCompleted(CCNode *sender, void *data) {
 }
 
 void GameLayer::endGame() {
+    
     if (_score1 > _score2) {
-        int p = _score1 * (_minutes * 60 + _seconds) *
-                (GameManager::sharedGameManager()->getLevel() * 2000);
-        resultLabel->setString("YOU WIN");
-        resultLabel->runAction(CCBlink::create(2.0f, 5.0f));
-        CCPoint effectPoint =
-            _endLayerBg->convertToWorldSpace(resultLabel->getPosition());
-        this->addEffect(ccp(effectPoint.x - 100, effectPoint.y));
-        this->addEffect(ccp(effectPoint.x + 100, effectPoint.y));
+        if (point == 0) point = _score1 * (_minutes * 60 + _seconds) *
+                pow(10.0, GameManager::sharedGameManager()->getLevel() + 1.0);
+        _resultLabel->setString("YOU WIN");
+        _resultLabel->runAction(CCBlink::create(2.0f, 5.0f));
+//        CCPoint effectPoint =
+//            _endLayerBg->convertToWorldSpace(_resultLabel->getPosition());
+//        this->addEffect(ccp(effectPoint.x - 100, effectPoint.y));
+//        this->addEffect(ccp(effectPoint.x + 100, effectPoint.y));
+        if (pointCal < point) {
+            if (pointUnit == 0) pointUnit = point/(_minutes*60 + _seconds);
+            
+            if(_minutes >= 0) {
+                if(_seconds > 0) {
+                    _seconds--;
+                }
+                else {
+                    if(_minutes > 0) {
+                        _minutes--;
+                        _seconds = 59;
+                    }
+                }
+                char timeBuf[20] = {0};
+                if(_minutes < 10 && _seconds < 10)
+                    sprintf(timeBuf, "0%i:0%i", _minutes, _seconds);
+                else if(_minutes < 10 && _seconds >= 10)
+                    sprintf(timeBuf, "0%i:%i", _minutes, _seconds);
+                
+                _time->setString(timeBuf);
+                
+                pointCal += pointUnit;
+                char scoreBuf[20];
+                sprintf(scoreBuf, "score: %d",pointCal);
+                _scoreLabel->setString(scoreBuf);
+                _scoreLabel->setColor(ccYELLOW);
+            }
+            
+            
+        }
+        GameManager::sharedGameManager()->setPoint(point);
         
-        GameManager::sharedGameManager()->setPoint(p);
         this->checkHighScore();
     }
-    else if (_score1 == _score2) resultLabel->setString("DRAW");
-    else resultLabel->setString("YOU LOSE");
+    else if (_score1 == _score2) _resultLabel->setString("DRAW");
+    else {
+        _scoreLabel->setString("score: 0");
+        _scoreLabel->setColor(ccWHITE);
+        
+        _resultLabel->setString("YOU LOSE");
+    }
     
     _endLayerBg->setVisible(true);
-    resultLabel->setVisible(true);
+    _resultLabel->setVisible(true);
+    _scoreLabel->setVisible(true);
     _continueButton->setVisible(false);
 }
 
