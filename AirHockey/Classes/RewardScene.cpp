@@ -189,8 +189,9 @@ CCTableViewCell* RewardScene::tableCellAtIndex(CCTableView *table, unsigned int 
     Pointlabel->setTag(123);
     cell->addChild(Pointlabel);
     //time
-
-    CCLabelTTF *timeLabel = CCLabelTTF::create(p->getTime().c_str(), "Helvetica", 16);
+    std::string sttime = p->getTime();
+    convertTime((char*)sttime.c_str());
+    CCLabelTTF *timeLabel = CCLabelTTF::create(sttime.c_str(), "Helvetica", 16);
     timeLabel->setAnchorPoint(CCPointZero);
     timeLabel->setOpacity(90);
     timeLabel->setPosition(ccp(100, 10));
@@ -247,6 +248,18 @@ void RewardScene::convertName2(char *str_name) {
         {
             str_name[i] = '_';
         }
+    }
+}
+void RewardScene::convertTime(char *str_time) {
+    int len = 0;
+    int i = 0;
+    len=strlen(str_time);
+    for(i=0;i<len;i++)
+    {
+        if(str_time[i] == 'T')
+        {
+            str_time[i] = '  ';
+        }else if (str_time[i] == 'Z') str_time[i] = '\0';
     }
 }
 unsigned int RewardScene::numberOfCellsInTableView(CCTableView *table) {

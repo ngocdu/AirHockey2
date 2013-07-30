@@ -57,6 +57,7 @@ public:
     virtual unsigned int numberOfCellsInTableView(CCTableView *table);
     void convertName(char *str_name);
     void convertName2(char *str_name);
+    void convertTime(char *str_time);
     CREATE_FUNC(RewardScene); 
 };
 #endif /* defined(__AirHockey__RewardScene__) */
