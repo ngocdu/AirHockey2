@@ -75,3 +75,12 @@ string GameManager::getIpAddr()
 void GameManager::setIpAddr(string ipAddr) {
     this->ipAddr = ipAddr;
 }
+
+int GameManager::getReward() {
+    return CCUserDefault::sharedUserDefault()->getIntegerForKey("Reward");
+}
+
+void GameManager::setReward(int reward) {
+    CCUserDefault::sharedUserDefault()->setIntegerForKey("Reward", reward);
+    CCUserDefault::sharedUserDefault()->flush();
+}

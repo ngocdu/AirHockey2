@@ -43,6 +43,7 @@ bool GetPresent::init() {
                                  extension::CCScale9Sprite::create("GreenBox.png"));
     m_pUserEmail->setPosition(ccp(w/2, emailLabel2->getPositionY() - 60));
     m_pUserEmail->setFontSize(40);
+    m_pUserEmail->setMaxLength(30);
     m_pUserEmail->setFontColor(ccWHITE);
 
     m_pUserEmail->setMaxLength(55);
@@ -50,6 +51,14 @@ bool GetPresent::init() {
     m_pUserEmail->setInputMode(kEditBoxInputModeEmailAddr);
     m_pUserEmail->setDelegate(this);
     this->addChild(m_pUserEmail);
+    
+    // Email Fail Message
+    
+    emailFailMsg = CCLabelTTF::create("Invalid Email !! Please Try Again !!", "BankGothic Md BT", 20);
+    emailFailMsg->setPosition(ccp(m_pUserEmail->getPosition().x,
+                                  m_pUserEmail->getPosition().y - 30));
+    emailFailMsg->setVisible(false);
+    this->addChild(emailFailMsg);
     
     // name
     CCLabelTTF *nameLabel = CCLabelTTF::create("Please choose an username:","BankGothic Md BT", 40);
@@ -61,14 +70,16 @@ bool GetPresent::init() {
     m_pUserName->setPosition(ccp(w/2, nameLabel->getPositionY() - 60));
     m_pUserName->setFontSize(40);
     m_pUserName->setPlaceholderFontColor(ccWHITE);
-    m_pUserName->setMaxLength(25);
+    m_pUserName->setMaxLength(15);
     m_pUserName->setReturnType(cocos2d::extension::kKeyboardReturnTypeDone);
     m_pUserName->setInputMode(kEditBoxInputModeAny);
     m_pUserName->setDelegate(this);
     this->addChild(m_pUserName);
     
     
-    CCMenuItemImage *sendMenuItem = CCMenuItemImage::create("GetPresent.png", "GetPresentOnClicked.png", this, menu_selector(GetPresent::menuSendEmail));
+    CCMenuItemImage *sendMenuItem = CCMenuItemImage::create("Buttons/SubmitButton.png",
+                                                            "Buttons/SubmitButtonOnClicked.png",
+                                                            this, menu_selector(GetPresent::menuSendEmail));
     sendMenuItem->setPosition(ccp(w/2, 100));
     
 //    CCMenuItemImage *backMenuItem =
@@ -191,21 +202,16 @@ void GetPresent::standardizeName(char *xau)
     xau[j-1*(j&&xau[j-1]==' ')]=NULL;
 }
 void GetPresent::removeSpace(char *xau) {
-    char * s;
-    int d = -1;
     int len = 0;
-    int i = 0, j;
+    int i = 0;
     len=strlen(xau);
     for(i=0;i<len;i++)
     {
-        if(xau[i] != ' ')
+        if(xau[i] == ' ')
         {
-            d++;
-            s[d] = xau[i];
+           xau[i] = '_';
         }
     }
-    s[d+1] = '\0';
-    xau = s;
 }
 
 void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
@@ -254,7 +260,9 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
             CCLOG("text name : %s", n);
             if (strcmp(n, name.c_str()) == 0) {
                if(strcmp(m_pUserEmail->getText(), "") != 0 && strcmp(m_pUserEmail->getText(), email_server.c_str()) == 0 ){
-                   m_pUserName->setText("the name was existed");
+                   CCFiniteTimeAction *showAction = CCFadeIn::create(0.2f);
+                   CCFiniteTimeAction *hideAction = CCFadeOut::create(0.2f);
+                   emailFailMsg->runAction(CCSequence::create(showAction, hideAction, NULL));
                    return;
                } 
             }
@@ -272,11 +280,11 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
         sprintf(strP, "%i", p);
         string email  = GameManager::sharedGameManager()->getEmail();
         string ipAddr = GameManager::sharedGameManager()->getIpAddr();
-        int reward = CCUserDefault::sharedUserDefault()->getIntegerForKey("reward");
+        int reward    = GameManager::sharedGameManager()->getReward();
         string url;
         if (reward != 0) {
             url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
-        }else {
+        } else {
             url    = ipAddr + ":3000/users?name="+name+"&point="+strP+"&email="+email;
         }
         request->setUrl(url.c_str());
@@ -284,16 +292,16 @@ void GetPresent::onHttpRequestCompleted(CCNode *sender, void *data) {
         CCHttpClient::getInstance()->send(request);
         request->release();
         GameManager::sharedGameManager()->setEmail(m_pUserEmail->getText());
-        m_pUserEmail->setText("email send succses");
+//        m_pUserEmail->setText("email send succses");
         
         char * n =(char*) m_pUserName->getText();
         standardizeName(n);
-        removeSpace(n);
-       
-        GameManager::sharedGameManager()->setName(m_pUserName->getText());
+        GameManager::sharedGameManager()->setName(n);
         CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5f, RankingScene::scene()));
     } else {
-        m_pUserEmail->setText("email fail");
+        CCFiniteTimeAction *showAction = CCFadeIn::create(0.2f);
+        CCFiniteTimeAction *hideAction = CCFadeOut::create(0.2f);
+        emailFailMsg->runAction(CCSequence::create(showAction, hideAction, NULL));
     }
     d-=1;
 }

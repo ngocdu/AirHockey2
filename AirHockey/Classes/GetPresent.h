@@ -15,6 +15,7 @@ private:
     CCSize size = CCDirector::sharedDirector()->getWinSize();
     float w = size.width;
     float h = size.height;
+    CCLabelTTF *emailFailMsg;
     extension::CCEditBox* m_pUserEmail;
     extension::CCEditBox* m_pUserName;
     CCLabelTTF* m_pTTFShowEditReturn;

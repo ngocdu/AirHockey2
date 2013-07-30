@@ -26,7 +26,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "525"
          endingLineNumber = "525"
-         landmarkName = "GameLayer::checkHighScore()"
+         landmarkName = "GameLayer::scoreCounter(int player)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -47,11 +47,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "AirHockey/Classes/GameLayer.cpp"
-         timestampString = "396427027.302194"
+         timestampString = "396849710.88948"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "594"
-         endingLineNumber = "594"
+         startingLineNumber = "595"
+         endingLineNumber = "595"
          landmarkName = "GameLayer::onHttpRequestCompleted(CCNode *sender, void *data)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -60,11 +60,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "AirHockey/Classes/RewardScene.cpp"
-         timestampString = "396429557.100387"
+         timestampString = "396848899.742425"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "122"
-         endingLineNumber = "122"
+         startingLineNumber = "123"
+         endingLineNumber = "123"
          landmarkName = "RewardScene::onHttpRequestCompleted(CCNode *sender, void *data)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -73,24 +73,24 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "AirHockey/Classes/RewardScene.cpp"
-         timestampString = "396429557.100387"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "129"
-         endingLineNumber = "129"
-         landmarkName = "RewardScene::onHttpRequestCompleted(CCNode *sender, void *data)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "AirHockey/Classes/RewardScene.cpp"
-         timestampString = "396429557.100387"
+         timestampString = "396848899.742425"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "130"
          endingLineNumber = "130"
+         landmarkName = "RewardScene::onHttpRequestCompleted(CCNode *sender, void *data)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "AirHockey/Classes/RewardScene.cpp"
+         timestampString = "396848899.742425"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "131"
+         endingLineNumber = "131"
          landmarkName = "RewardScene::onHttpRequestCompleted(CCNode *sender, void *data)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -112,13 +112,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "AirHockey/Classes/RewardScene.cpp"
-         timestampString = "396506784.714731"
+         timestampString = "396848899.742425"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "165"
-         endingLineNumber = "165"
-         landmarkName = "RewardScene::clickBtSendEmail(cocos2d::CCObject *pSender)"
-         landmarkType = "5">
+         startingLineNumber = "166"
+         endingLineNumber = "166">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -138,11 +136,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "AirHockey/Classes/RewardScene.cpp"
-         timestampString = "396506642.282654"
+         timestampString = "396848899.742425"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "149"
-         endingLineNumber = "149"
+         startingLineNumber = "150"
+         endingLineNumber = "150"
          landmarkName = "RewardScene::clickBtSendEmail(cocos2d::CCObject *pSender)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -151,36 +149,116 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "AirHockey/Classes/GetPresent.cpp"
-         timestampString = "396521303.661494"
+         timestampString = "396525503.729136"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "176"
-         endingLineNumber = "176">
+         startingLineNumber = "171"
+         endingLineNumber = "171"
+         landmarkName = "GetPresent::menuSendEmail(CCObject *pSender)"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "AirHockey/Classes/GetPresent.cpp"
-         timestampString = "396522159.130929"
+         timestampString = "396847837.473064"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "265"
-         endingLineNumber = "265"
+         startingLineNumber = "247"
+         endingLineNumber = "247"
          landmarkName = "GetPresent::onHttpRequestCompleted(CCNode *sender, void *data)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "Yes"
+         shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "AirHockey/Classes/GetPresent.cpp"
-         timestampString = "396522159.130929"
+         timestampString = "396847837.473064"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "264"
-         endingLineNumber = "264"
+         startingLineNumber = "246"
+         endingLineNumber = "246"
          landmarkName = "GetPresent::onHttpRequestCompleted(CCNode *sender, void *data)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "AirHockey/Classes/RewardScene.cpp"
+         timestampString = "396849023.412631"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "39"
+         endingLineNumber = "39"
+         landmarkName = "RewardScene::init()"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "AirHockey/Classes/GameLayer.cpp"
+         timestampString = "396849912.135525"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "587"
+         endingLineNumber = "587"
+         landmarkName = "GameLayer::onHttpRequestCompleted(CCNode *sender, void *data)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "AirHockey/Classes/GameLayer.cpp"
+         timestampString = "396850090.002727"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "607"
+         endingLineNumber = "607"
+         landmarkName = "GameLayer::onHttpRequestCompleted(CCNode *sender, void *data)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "AirHockey/Classes/GameLayer.cpp"
+         timestampString = "396850096.378765"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "630"
+         endingLineNumber = "630"
+         landmarkName = "GameLayer::onHttpRequestCompleted(CCNode *sender, void *data)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "AirHockey/Classes/GameLayer.cpp"
+         timestampString = "396850524.692378"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "588"
+         endingLineNumber = "588"
+         landmarkName = "GameLayer::onHttpRequestCompleted(CCNode *sender, void *data)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "AirHockey/Classes/RewardScene.cpp"
+         timestampString = "396850946.346691"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "219"
+         endingLineNumber = "219"
+         landmarkName = "RewardScene::tableCellAtIndex(CCTableView *table, unsigned int idx)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

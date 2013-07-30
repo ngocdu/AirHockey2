@@ -58,5 +58,6 @@ public:
     virtual CCSize tableCellSizeForIndex(CCTableView *table, unsigned int idx);
     virtual CCTableViewCell* tableCellAtIndex(CCTableView *table, unsigned int idx);
     virtual unsigned int numberOfCellsInTableView(CCTableView *table);
+    void convertName(char *str_name);
 };
 #endif /* defined(__AirHockey__RankingScene__) */

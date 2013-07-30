@@ -45,10 +45,9 @@ class UsersController < ApplicationController
                 if user.updated_at.strftime("%Y-%m-%dT%H:%M:%SZ") == ti &&
                     user.name == params[:name] && user.email == params[:email] &&
                     user.reward != 0
-                    r = user.reward - 1
                     user.destroy
                     @user = User.new(name: params[:name], point: params[:point],
-                                     email: params[:email], reward: 0)
+                                     email: params[:email], reward: -1)
                     @user.save
                     UserMailer.welcome_email(@user).deliver
                     return
