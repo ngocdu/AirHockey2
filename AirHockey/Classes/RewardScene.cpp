@@ -144,6 +144,7 @@ void RewardScene::clickBtSendEmail(cocos2d::CCObject *pSender) {
     Player1 *p = (Player1*)players->objectAtIndex(bt_send_email->getTag() - 100);
     int point = p->getPoint();
     string name = GameManager::sharedGameManager()->getName();
+    convertName2((char*)name.c_str());
     char strP[20] = {0};
     sprintf(strP, "%i", point);
     string email  = GameManager::sharedGameManager()->getEmail();
@@ -236,7 +237,18 @@ void RewardScene::convertName(char *str_name) {
         }
     }
 }
-
+void RewardScene::convertName2(char *str_name) {
+    int len = 0;
+    int i = 0;
+    len=strlen(str_name);
+    for(i=0;i<len;i++)
+    {
+        if(str_name[i] == ' ')
+        {
+            str_name[i] = '_';
+        }
+    }
+}
 unsigned int RewardScene::numberOfCellsInTableView(CCTableView *table) {
     return players->count();
 }

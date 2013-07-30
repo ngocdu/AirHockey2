@@ -56,6 +56,7 @@ public:
     virtual CCTableViewCell* tableCellAtIndex(CCTableView *table, unsigned int idx);
     virtual unsigned int numberOfCellsInTableView(CCTableView *table);
     void convertName(char *str_name);
+    void convertName2(char *str_name);
     CREATE_FUNC(RewardScene); 
 };
 #endif /* defined(__AirHockey__RewardScene__) */

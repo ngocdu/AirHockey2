@@ -650,10 +650,6 @@ void GameLayer::endGame() {
                 pow(10.0, GameManager::sharedGameManager()->getLevel() + 1.0);
         _resultLabel->setString("YOU WIN");
         _resultLabel->runAction(CCBlink::create(2.0f, 5.0f));
-//        CCPoint effectPoint =
-//            _endLayerBg->convertToWorldSpace(_resultLabel->getPosition());
-//        this->addEffect(ccp(effectPoint.x - 100, effectPoint.y));
-//        this->addEffect(ccp(effectPoint.x + 100, effectPoint.y));
         if (pointCal < point) {
             if (pointUnit == 0) pointUnit = point/(_minutes*60 + _seconds);
             
@@ -680,13 +676,13 @@ void GameLayer::endGame() {
                 sprintf(scoreBuf, "score: %d",pointCal);
                 _scoreLabel->setString(scoreBuf);
                 _scoreLabel->setColor(ccYELLOW);
-            }
-            
-            
+            }  
+        } else {
+            this->pauseSchedulerAndActions();
+            this->checkHighScore();
+            GameManager::sharedGameManager()->setPoint(point);
         }
-        GameManager::sharedGameManager()->setPoint(point);
         
-        this->checkHighScore();
     }
     else if (_score1 == _score2) _resultLabel->setString("DRAW");
     else {
